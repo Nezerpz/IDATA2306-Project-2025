@@ -12,7 +12,10 @@ mvn package
 
 Then, create a file named `.env` and put the following variables inside of it:
 ```
+POSTGRES_USER="postgres"
 POSTGRES_PASSWORD="elephont"
+DB_PORT=5432
+BACKEND_PORT=8080
 ```
 (the password off-course being a good and secret one)
 
