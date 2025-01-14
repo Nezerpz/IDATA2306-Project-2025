@@ -1,7 +1,7 @@
 services:
   db:
-    restart: always
-    image: postgres
+    restart: unless-stopped
+    image: docker.io/postgres
     env_file: .env
     volumes:
       - ./data:/var/lib/postgresql
@@ -9,6 +9,10 @@ services:
       - 5432:5432
 
   backend:
-    restart: always
-    build: .
+    restart: unless-stopped
+    build:
+      context: .
+      dockerfile: Containerfile
     env_file: .env
+    depends_on:
+      - db
