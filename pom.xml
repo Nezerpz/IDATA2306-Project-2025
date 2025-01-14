@@ -9,10 +9,10 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>no.ntnu</groupId>
-	<artifactId>hello</artifactId>
+	<artifactId>rentalroulette</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>hello</name>
-	<description>Demo project for Spring Boot</description>
+	<name>backend</name>
+	<description>Backend application for rental roulette application</description>
 	<url/>
 	<licenses>
 		<license/>
