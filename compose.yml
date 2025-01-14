@@ -10,4 +10,5 @@ services:
 
   backend:
     restart: always
-    image: 
+    build: .
+    env_file: .env
