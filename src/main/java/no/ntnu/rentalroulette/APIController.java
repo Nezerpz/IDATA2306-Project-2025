@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class APIController {
     @GetMapping("/hello")
     public String greeting() {
-        return "Hello, World";
+        return "Sjalabais";
     }
 
 }
