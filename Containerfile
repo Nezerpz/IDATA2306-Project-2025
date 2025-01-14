@@ -1,0 +1,2 @@
+IMAGE sapmachine:latest
+COPY
