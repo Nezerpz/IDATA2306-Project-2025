@@ -1,5 +1,6 @@
 package no.ntnu.rentalroulette;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -15,10 +16,15 @@ public class Car {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+	@Column(name = "car_model")
     private String carModel;
+	@Column(name = "number_of_seats")
     private int numberOfSeats;
+	@Column(name = "transmission_type")
     private String transmissionType;
+	@Column(name = "fuel_type")
     private String fuelType;
+	@Column(name = "year")
     private int productionYear;
 
     public Car() {
