@@ -1,3 +1,5 @@
+package no.ntnu.rentalroulette;
+
 import org.hibernate.SessionFactory;
 import org.junit.jupiter.api.Test;
 
