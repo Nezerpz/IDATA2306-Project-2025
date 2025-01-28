@@ -1,5 +1,6 @@
 package no.ntnu.rentalroulette;
 
+import java.util.ArrayList;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -13,4 +14,9 @@ public class APIController {
         return "Sjalabais";
     }
 
+    @GetMapping("/cars")
+    public ArrayList<Car> getCars() {
+        SessionUtil su = new SessionUtil();
+        return new ArrayList<>(su.getAll(Car.class));
+    }
 }

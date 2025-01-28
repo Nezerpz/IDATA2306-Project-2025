@@ -13,6 +13,12 @@ public class CarManufacturer {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private int id;
-  @Column(name = "manufacturer_name")
   private String manufacturerName;
+
+    public CarManufacturer() {
+    }
+
+    public CarManufacturer(String manufacturerName) {
+        this.manufacturerName = manufacturerName;
+    }
 }

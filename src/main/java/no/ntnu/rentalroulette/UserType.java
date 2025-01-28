@@ -13,6 +13,16 @@ public class UserType {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private int id;
-  @Column(name = "user_type")
   private String userType;
+
+    public UserType() {
+    }
+
+    public UserType(String userType) {
+        this.userType = userType;
+    }
+
+    public int getId(){
+      return this.id;
+    }
 }
