@@ -1,6 +1,6 @@
 package no.ntnu.rentalroulette;
 
-import jakarta.persistence.EntityManager;
+
 import jakarta.persistence.EntityManagerFactory;
 
 import jakarta.persistence.TypedQuery;
@@ -36,45 +36,44 @@ public class SessionUtil {
     }
 
     public void save(Object object) {
-        Session session = getSession();
-        Transaction transaction = session.beginTransaction();
-        session.save(object);
-        transaction.commit();
-        closeSession(session);
+        try (Session session = sessionFactory.openSession()) {
+            Transaction transaction = session.beginTransaction();
+            session.save(object);
+            transaction.commit();
+        }
     }
 
     public <T> List<T> getAll(Class<T> clazz) {
-        Session session = getSession();
-        CriteriaBuilder cb = session.getCriteriaBuilder();
-        CriteriaQuery<T> cq = cb.createQuery(clazz);
-        Root<T> rootEntry = cq.from(clazz);
-        CriteriaQuery<T> all = cq.select(rootEntry);
+        try (Session session = sessionFactory.openSession()) {
+            CriteriaBuilder cb = session.getCriteriaBuilder();
+            CriteriaQuery<T> cq = cb.createQuery(clazz);
+            Root<T> rootEntry = cq.from(clazz);
+            CriteriaQuery<T> all = cq.select(rootEntry);
 
-        TypedQuery<T> allQuery = session.createQuery(all);
-        closeSession(session);
-        return allQuery.getResultList();
+            TypedQuery<T> allQuery = session.createQuery(all);
+            return allQuery.getResultList();
+        }
     }
 
     public Object get(Class<?> clazz, int id) {
-        Session session = getSession();
-        Object object = session.get(clazz, id);
-        closeSession(session);
-        return object;
+        try (Session session = sessionFactory.openSession()) {
+            return session.get(clazz, id);
+        }
     }
 
     public void update(Object object) {
-        Session session = getSession();
-        Transaction transaction = session.beginTransaction();
-        session.update(object);
-        transaction.commit();
-        closeSession(session);
+        try (Session session = sessionFactory.openSession()) {
+            Transaction transaction = session.beginTransaction();
+            session.update(object);
+            transaction.commit();
+        }
     }
 
     public void delete(Object object) {
-        Session session = getSession();
-        Transaction transaction = session.beginTransaction();
-        session.delete(object);
-        transaction.commit();
-        closeSession(session);
+        try (Session session = sessionFactory.openSession()) {
+            Transaction transaction = session.beginTransaction();
+            session.delete(object);
+            transaction.commit();
+        }
     }
 }
