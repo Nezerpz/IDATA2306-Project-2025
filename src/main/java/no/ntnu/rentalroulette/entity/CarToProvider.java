@@ -1,4 +1,4 @@
-package no.ntnu.rentalroulette;
+package no.ntnu.rentalroulette.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

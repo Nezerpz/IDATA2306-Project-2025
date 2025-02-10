@@ -2,6 +2,10 @@ package no.ntnu.rentalroulette;
 
 import java.util.ArrayList;
 import java.util.List;
+import no.ntnu.rentalroulette.entity.Car;
+import no.ntnu.rentalroulette.entity.CarManufacturer;
+import no.ntnu.rentalroulette.entity.User;
+import no.ntnu.rentalroulette.entity.UserType;
 
 public class CreateDefaultEntries {
   public void createDefaultEntries() {
