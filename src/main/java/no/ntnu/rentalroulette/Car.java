@@ -24,7 +24,7 @@ public class Car {
     private String transmissionType;
 	@Column(name = "fuel_type")
     private String fuelType;
-	@Column(name = "year")
+	@Column(name = "productionYear")
     private int productionYear;
 
     public Car() {
