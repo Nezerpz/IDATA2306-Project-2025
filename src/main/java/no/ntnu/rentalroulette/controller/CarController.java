@@ -8,14 +8,15 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-/**
- * Simple example controller
- */
 @RestController
-public class APIController {
+public class CarController {
 
-  @GetMapping("/hello")
-  public String greeting() {
-    return "Sjalabais";
+  @Autowired
+  private CarService carService;
+
+  @CrossOrigin(origins = "http://localhost:5173")
+  @GetMapping("/cars")
+  public List<Car> getCars() {
+    return carService.getAllCars();
   }
 }

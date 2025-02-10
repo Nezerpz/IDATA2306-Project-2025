@@ -107,7 +107,6 @@ public class Car {
   @Getter
   @Column(name = "fuel_type")
   private String fuelType;
-
   /**
    * -- SETTER --
    * Set car entity's production year.
