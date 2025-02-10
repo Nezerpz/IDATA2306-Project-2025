@@ -43,6 +43,10 @@ public class Car {
   @Column(name = "car_model")
   private String carModel;
 
+  @Getter
+  @Column(name = "manufacturer")
+  private CarManufacturer manufacturer;
+
   /**
    * Entiity number_of_seats this car entity has.
    *
@@ -88,11 +92,13 @@ public class Car {
 
   public Car(
       String model,
+      CarManufacturer manufacturer,
       int seats,
       String transmissionType,
       String fuelType,
       int productionYear) {
     this.carModel = model;
+    this.manufacturer = manufacturer;
     this.numberOfSeats = seats;
     this.transmissionType = transmissionType;
     this.fuelType = fuelType;

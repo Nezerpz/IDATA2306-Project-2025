@@ -29,14 +29,10 @@ public class BackendApplication {
   @Bean
   public CommandLineRunner run(ApplicationContext context) {
     return args -> {
-      CarRepository carRepository = context.getBean(CarRepository.class);
-
-      Car car = new Car("Golf", 5, "Manual", "Diesel", 2007);
-      CarManufacturer carManufacturer = new CarManufacturer("Volkswagen");
-      UserType userType = new UserType("Customer");
-      User user = new User(userType, "Ola", "Nordmann", "ola123", "1234", "ola.nordmann@gmail.com");
-
-      carRepository.save(car);
+      
+        SampleDataGenerator generator = new SampleDataGenerator(context);
+        generator.createDefaultEntries();
+      
     };
   }
 
