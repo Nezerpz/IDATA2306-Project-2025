@@ -1,6 +1,5 @@
-package no.ntnu.rentalroulette;
+package no.ntnu.rentalroulette.entity;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -15,14 +14,14 @@ public class UserType {
   private int id;
   private String userType;
 
-    public UserType() {
-    }
+  public UserType() {
+  }
 
-    public UserType(String userType) {
-        this.userType = userType;
-    }
+  public UserType(String userType) {
+    this.userType = userType;
+  }
 
-    public int getId(){
-      return this.id;
-    }
+  public int getId() {
+    return this.id;
+  }
 }

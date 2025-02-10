@@ -1,0 +1,3 @@
+FROM docker.io/maven:latest AS build
+WORKDIR /src
+CMD mvn clean verify -DskipTests && mvn spring-boot:run

@@ -1,6 +1,5 @@
-package no.ntnu.rentalroulette;
+package no.ntnu.rentalroulette.entity;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -15,10 +14,10 @@ public class CarManufacturer {
   private int id;
   private String manufacturerName;
 
-    public CarManufacturer() {
-    }
+  public CarManufacturer() {
+  }
 
-    public CarManufacturer(String manufacturerName) {
-        this.manufacturerName = manufacturerName;
-    }
+  public CarManufacturer(String manufacturerName) {
+    this.manufacturerName = manufacturerName;
+  }
 }

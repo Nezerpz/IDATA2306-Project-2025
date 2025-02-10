@@ -1,4 +1,4 @@
-package no.ntnu.rentalroulette;
+package no.ntnu.rentalroulette.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -25,15 +25,16 @@ public class User {
   private String password;
   private String email;
 
-    public User() {
-    }
+  public User() {
+  }
 
-    public User(UserType userType, String firstName, String lastName, String username, String password, String email) {
-        this.userType = userType;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.username = username;
-        this.password = password;
-        this.email = email;
-    }
+  public User(UserType userType, String firstName, String lastName, String username,
+              String password, String email) {
+    this.userType = userType;
+    this.firstName = firstName;
+    this.lastName = lastName;
+    this.username = username;
+    this.password = password;
+    this.email = email;
+  }
 }
