@@ -4,6 +4,7 @@ import no.ntnu.rentalroulette.entity.Car;
 import no.ntnu.rentalroulette.entity.CarManufacturer;
 import no.ntnu.rentalroulette.entity.User;
 import no.ntnu.rentalroulette.entity.UserType;
+import no.ntnu.rentalroulette.service.CarService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -26,22 +27,16 @@ public class BackendApplication {
 
   @Bean
   public CommandLineRunner run(ApplicationContext context) {
-    /*
     return args -> {
-      SessionUtil su = context.getBean(SessionUtil.class);
+      CarService su = context.getBean(CarService.class);
 
       Car car = new Car("Golf", 5, "Manual", "Diesel", 2007);
       CarManufacturer carManufacturer = new CarManufacturer("Volkswagen");
       UserType userType = new UserType("Customer");
       User user = new User(userType, "Ola", "Nordmann", "ola123", "1234", "ola.nordmann@gmail.com");
-
-      su.save(car);
-      su.save(carManufacturer);
-      su.save(userType);
-      su.save(user);
+      
+      su.addCar(car);
     };
-     */
-    return null;
   }
 
 
