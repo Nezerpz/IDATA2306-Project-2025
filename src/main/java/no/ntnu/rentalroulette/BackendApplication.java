@@ -4,7 +4,7 @@ import no.ntnu.rentalroulette.entity.Car;
 import no.ntnu.rentalroulette.entity.CarManufacturer;
 import no.ntnu.rentalroulette.entity.User;
 import no.ntnu.rentalroulette.entity.UserType;
-import no.ntnu.rentalroulette.service.CarServiceImpl;
+import no.ntnu.rentalroulette.service.CarService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -28,7 +28,7 @@ public class BackendApplication {
   @Bean
   public CommandLineRunner run(ApplicationContext context) {
     return args -> {
-      CarServiceImpl carService = context.getBean(CarServiceImpl.class);
+      CarService carService = context.getBean(CarService.class);
 
       Car car = new Car("Golf", 5, "Manual", "Diesel", 2007);
       CarManufacturer carManufacturer = new CarManufacturer("Volkswagen");

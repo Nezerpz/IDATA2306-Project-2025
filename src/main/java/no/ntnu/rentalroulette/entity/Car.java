@@ -24,15 +24,7 @@ import lombok.Setter;
 @Table(name = "car")
 public class Car {
   /**
-   * -- SETTER --
-   * Set Entity's row ID in Database.
-   *
-   * @param id
-   */
-  @Setter
-  /**
-   * -- GETTER --
-   * Get Entity's row ID in Database.
+   * Entity's row ID in Database.
    *
    * @return id
    */
@@ -41,85 +33,55 @@ public class Car {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private int id;
   /**
-   * -- SETTER --
-   * Set Entity car model.
+   * Entity car model
    *
    * @param carModel
+   * @return carModel
    */
   @Setter
-  /**
-   * -- GETTER --
-   * Get Entity car model.
-   *
-   * @return car model
-   */
   @Getter
   @Column(name = "car_model")
   private String carModel;
 
   /**
-   * -- SETTER --
-   * Set number of seats this car entity has
+   * Entiity number_of_seats this car entity has.
    *
    * @param numberOfSeats
+   * @return numberOfSeats
    */
   @Setter
-  /**
-   * -- GETTER --
-   * Get number of seats this car entity has
-   *
-   * @return number of seats
-   */
   @Getter
   @Column(name = "number_of_seats")
   private int numberOfSeats;
 
   /**
-   * -- SETTER --
-   * Set car entity's transmission type.
+   * Car entity's transmission type.
    *
    * @param transmissionType
+   * @return transmissionType
    */
   @Setter
-  /**
-   * -- GETTER --
-   * Get car entity's transmission type.
-   *
-   * @return transmission type
-   */
   @Getter
   @Column(name = "transmission_type")
   private String transmissionType;
 
   /**
-   * -- SETTER --
-   * Set car entity's fuel type.
+   * Car entity's fuel type.
    *
    * @param fuelType
+   * @return fuelType
    */
   @Setter
-  /**
-   * -- GETTER --
-   * Get car entity's fuel type.
-   *
-   * @return fuel type
-   */
   @Getter
   @Column(name = "fuel_type")
   private String fuelType;
   /**
-   * -- SETTER --
-   * Set car entity's production year.
+   * Car entity's production year.
    *
    * @param productionYear
+   * @return productionYear
    */
   @Setter
-  /**
-   * -- GETTER --
-   * Get car entity's production year.
-   *
-   * @return production year
-   */
   @Getter
   @Column(name = "production_year")
   private int productionYear;
