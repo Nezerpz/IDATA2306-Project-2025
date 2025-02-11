@@ -19,15 +19,17 @@ import lombok.Setter;
 @Builder
 @Table(name = "provider")
 public class Provider {
-  @Id
   /**
    * Entity's row ID in Database.
    *
    * @return id
    */
+  @Id
   @Getter
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private int id;
+
+
   /**
    * Entity's name.
    *
@@ -37,6 +39,8 @@ public class Provider {
   @Setter
   @Getter
   private String name;
+
+
   /**
    * Entity's address.
    *
@@ -46,6 +50,8 @@ public class Provider {
   @Setter
   @Getter
   private String address;
+
+
   /**
    * Entity's email.
    *

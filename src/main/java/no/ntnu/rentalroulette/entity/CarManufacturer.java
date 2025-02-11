@@ -1,9 +1,13 @@
 package no.ntnu.rentalroulette.entity;
 
+import java.util.Set;
+
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -36,9 +40,13 @@ public class CarManufacturer {
    */
   @Setter
   @Getter
-  private String manufacturerName;
+  private String name;
+
+  @Getter
+  @OneToMany(mappedBy = "manufacturer")
+  private Set<Car> cars;
 
   public CarManufacturer(String manufacturerName) {
-    this.manufacturerName = manufacturerName;
+    this.name = manufacturerName;
   }
 }

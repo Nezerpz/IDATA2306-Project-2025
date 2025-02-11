@@ -6,6 +6,9 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Table;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -44,7 +47,8 @@ public class Car {
   private String carModel;
 
   @Getter
-  @Column(name = "manufacturer")
+  @ManyToOne
+  @JoinColumn(name = "manufacturer_id", nullable = false)
   private CarManufacturer manufacturer;
 
   /**

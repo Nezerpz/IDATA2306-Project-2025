@@ -37,8 +37,8 @@ public class SampleDataGenerator {
     carManufacturers.add(peugeot);
     carManufacturers.add(skoda);
     carManufacturers.add(mazda);
-    //CarManufacturerRepository carManufacturerRepository = this.context.getBean(CarManufacturerRepository.class);
-    //carManufacturerRepository.saveAll(carManufacturers);
+    CarManufacturerRepository carManufacturerRepository = this.context.getBean(CarManufacturerRepository.class);
+    carManufacturerRepository.saveAll(carManufacturers);
 
     // Cars
     List<Car> cars = new ArrayList<>();

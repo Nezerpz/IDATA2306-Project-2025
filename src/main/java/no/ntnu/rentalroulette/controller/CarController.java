@@ -1,5 +1,6 @@
 package no.ntnu.rentalroulette.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 import no.ntnu.rentalroulette.entity.Car;
 import no.ntnu.rentalroulette.repository.CarRepository;
@@ -17,6 +18,6 @@ public class CarController {
   @CrossOrigin(origins = "http://localhost:5173")
   @GetMapping("/cars")
   public List<Car> getCars() {
-    return carRepository.findAll();
+    return new ArrayList<>(carRepository.findByManufacturerName("Ford"));
   }
 }
