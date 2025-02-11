@@ -1,6 +1,7 @@
 package no.ntnu.rentalroulette.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -50,7 +51,7 @@ public class Car {
   @Getter
   @ManyToOne
   @JoinColumn(name = "manufacturer_id", nullable = false)
-  @JsonIgnore
+  @JsonProperty("manufacturer")
   private CarManufacturer manufacturer;
 
   /**
@@ -109,5 +110,10 @@ public class Car {
     this.transmissionType = transmissionType;
     this.fuelType = fuelType;
     this.productionYear = productionYear;
+  }
+
+  @JsonProperty("manufacturer")
+  public String getManufacturerName() {
+    return manufacturer.getName();
   }
 }
