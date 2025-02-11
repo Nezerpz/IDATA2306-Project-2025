@@ -35,9 +35,4 @@ public class APIController {
         return "Sjalabais";
     }
 
-    @CrossOrigin(origins = "http://localhost:5173")
-    @GetMapping("/cars")
-    public List<Car> getCars() {
-        return sessionUtil.getAll(Car.class);
-    }
 }

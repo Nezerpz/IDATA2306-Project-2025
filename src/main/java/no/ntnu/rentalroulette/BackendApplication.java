@@ -1,7 +1,10 @@
 package no.ntnu.rentalroulette;
 
-import java.util.ArrayList;
-import java.util.List;
+import no.ntnu.rentalroulette.entity.Car;
+import no.ntnu.rentalroulette.entity.CarManufacturer;
+import no.ntnu.rentalroulette.entity.User;
+import no.ntnu.rentalroulette.entity.UserType;
+import no.ntnu.rentalroulette.service.CarService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -9,36 +12,32 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.env.Environment;
-import org.springframework.web.bind.annotation.GetMapping;
 
 @SpringBootApplication
 public class BackendApplication {
 
-    @Autowired
-    private Environment env;
+  @Autowired
+  private Environment env;
 
-	public static void main(String[] args) {
+  public static void main(String[] args) {
 
-		SpringApplication.run(BackendApplication.class, args);
-	}
+    SpringApplication.run(BackendApplication.class, args);
+  }
 
 
-	@Bean
-	public CommandLineRunner run(ApplicationContext context) {
-		return args -> {
-			SessionUtil su = context.getBean(SessionUtil.class);
+  @Bean
+  public CommandLineRunner run(ApplicationContext context) {
+    return args -> {
+      CarService su = context.getBean(CarService.class);
 
-			Car car = new Car("Golf", 5, "Manual", "Diesel", 2007);
-			CarManufacturer carManufacturer = new CarManufacturer("Volkswagen");
-			UserType userType = new UserType("Customer");
-			User user = new User(userType, "Ola", "Nordmann", "ola123", "1234", "ola.nordmann@gmail.com");
-
-			su.save(car);
-			su.save(carManufacturer);
-			su.save(userType);
-			su.save(user);
-		};
-	}
+      Car car = new Car("Golf", 5, "Manual", "Diesel", 2007);
+      CarManufacturer carManufacturer = new CarManufacturer("Volkswagen");
+      UserType userType = new UserType("Customer");
+      User user = new User(userType, "Ola", "Nordmann", "ola123", "1234", "ola.nordmann@gmail.com");
+      
+      su.addCar(car);
+    };
+  }
 
 
 }
