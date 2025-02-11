@@ -37,23 +37,24 @@ public class SampleDataGenerator {
     carManufacturers.add(peugeot);
     carManufacturers.add(skoda);
     carManufacturers.add(mazda);
-    CarManufacturerRepository carManufacturerRepository = this.context.getBean(CarManufacturerRepository.class);
+    CarManufacturerRepository carManufacturerRepository =
+        this.context.getBean(CarManufacturerRepository.class);
     carManufacturerRepository.saveAll(carManufacturers);
 
     // Cars
     List<Car> cars = new ArrayList<>();
-    cars.add(new Car("Golf", volkswagen.getId(), 5, "Manual", "Petrol", 2007));
-    cars.add(new Car("Model 3", tesla.getId(), 5, "Automatic", "Electric", 2019));
-    cars.add(new Car("Model Y", tesla.getId(), 5, "Automatic", "Electric", 2022));
-    cars.add(new Car("Leaf", nissan.getId(), 5, "Automatic", "Electric", 2016));
-    cars.add(new Car("2", mazda.getId(), 5, "Automatic", "Petrol", 2017));
-    cars.add(new Car("Transporter", volkswagen.getId(), 8, "Manual", "Petrol", 1978));
-    cars.add(new Car("M3 Evo", bmw.getId(), 4, "Manual", "Petrol", 1988));
-    cars.add(new Car("Fabia", skoda.getId(), 5, "Automatic", "Diesel", 2011));
-    cars.add(new Car("307 SW", peugeot.getId(), 7, "Manual", "Diesel", 2008));
-    cars.add(new Car("207", peugeot.getId(), 5, "Manual", "Diesel", 2007));
-    cars.add(new Car("3008", peugeot.getId(), 5, "Manual", "Diesel", 2010));
-    cars.add(new Car("iOn", peugeot.getId(), 4, "Automatic", "Electric", 2015));
+    cars.add(new Car("Golf", volkswagen, 5, "Manual", "Petrol", 2007));
+    cars.add(new Car("Model 3", tesla, 5, "Automatic", "Electric", 2019));
+    cars.add(new Car("Model Y", tesla, 5, "Automatic", "Electric", 2022));
+    cars.add(new Car("Leaf", nissan, 5, "Automatic", "Electric", 2016));
+    cars.add(new Car("2", mazda, 5, "Automatic", "Petrol", 2017));
+    cars.add(new Car("Transporter", volkswagen, 8, "Manual", "Petrol", 1978));
+    cars.add(new Car("M3 Evo", bmw, 4, "Manual", "Petrol", 1988));
+    cars.add(new Car("Fabia", skoda, 5, "Automatic", "Diesel", 2011));
+    cars.add(new Car("307 SW", peugeot, 7, "Manual", "Diesel", 2008));
+    cars.add(new Car("207", peugeot, 5, "Manual", "Diesel", 2007));
+    cars.add(new Car("3008", peugeot, 5, "Manual", "Diesel", 2010));
+    cars.add(new Car("iOn", peugeot, 4, "Automatic", "Electric", 2015));
     CarRepository carRepository = this.context.getBean(CarRepository.class);
     carRepository.saveAll(cars);
 
