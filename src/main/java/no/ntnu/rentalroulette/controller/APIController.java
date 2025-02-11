@@ -1,12 +1,15 @@
-package no.ntnu.rentalroulette.controller;
+package no.ntnu.rentalroulette;
 
+import java.util.ArrayList;
 import java.util.List;
-import no.ntnu.rentalroulette.entity.Car;
-import no.ntnu.rentalroulette.service.CarServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 
 /**
  * Simple example controller
@@ -14,15 +17,22 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class APIController {
 
-  @GetMapping("/hello")
-  public String greeting() {
-    return "Sjalabais";
-  }
+    @Autowired
+    private SessionUtil sessionUtil;
 
-  @CrossOrigin(origins = "http://localhost:5173")
-  @GetMapping("/cars")
-  public List<Car> getCars() {
-    CarServiceImpl carService = new CarServiceImpl();
-    return null;
-  }
+    @GetMapping("/hello")
+    @Operation(
+        summary = "A simple test endpoint",
+        description = "Returns a small text"
+    )
+    @ApiResponses(value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "The small text returned in response body"
+        )
+    })
+    public String greeting() {
+        return "Sjalabais";
+    }
+
 }
