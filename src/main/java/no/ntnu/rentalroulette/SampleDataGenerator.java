@@ -41,6 +41,9 @@ public class SampleDataGenerator {
         this.context.getBean(CarManufacturerRepository.class);
     carManufacturerRepository.saveAll(carManufacturers);
 
+
+    //TODO: fuelType and transmissionType should be enums or database tables
+
     // Cars
     List<Car> cars = new ArrayList<>();
     cars.add(new Car("Golf", volkswagen, 5, "Manual", "Petrol", 2007));
