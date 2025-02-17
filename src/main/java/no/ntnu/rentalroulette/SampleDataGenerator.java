@@ -70,7 +70,7 @@ public class SampleDataGenerator {
     List<Car> cars = new ArrayList<>();
     cars.add(new Car("Golf", volkswagen, 5, manual, petrol, 2007));
     cars.add(new Car("Model 3", tesla, 5, automatic, electric, 2019));
-    cars.add(new Car("Model Y", tesla, 5, automatic electric, 2022));
+    cars.add(new Car("Model Y", tesla, 5, automatic, electric, 2022));
     cars.add(new Car("Leaf", nissan, 5, automatic, electric, 2016));
     cars.add(new Car("2", mazda, 5, automatic, petrol, 2017));
     cars.add(new Car("Transporter", volkswagen, 8, manual, petrol, 1978));
