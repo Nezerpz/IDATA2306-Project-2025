@@ -10,7 +10,6 @@ import jakarta.persistence.Table;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -73,8 +72,10 @@ public class Car {
    */
   @Setter
   @Getter
-  @Column(name = "transmission_type")
-  private String transmissionType;
+  @ManyToOne
+  @JoinColumn(name = "transmission_type_id", nullable = false)
+  @JsonProperty("transmissionType")
+  private TransmissionType transmissionType;
 
   /**
    * Car entity's fuel type.
@@ -84,8 +85,10 @@ public class Car {
    */
   @Setter
   @Getter
-  @Column(name = "fuel_type")
-  private String fuelType;
+  @ManyToOne
+  @JoinColumn(name = "fuel_type_id", nullable = false)
+  @JsonProperty("fuelType")
+  private FuelType fuelType;
   /**
    * Car entity's production year.
    *
@@ -101,8 +104,8 @@ public class Car {
       String model,
       CarManufacturer manufacturer,
       int seats,
-      String transmissionType,
-      String fuelType,
+      TransmissionType transmissionType,
+      FuelType fuelType,
       int productionYear) {
     this.carModel = model;
     this.manufacturer = manufacturer;
@@ -115,5 +118,15 @@ public class Car {
   @JsonProperty("manufacturer")
   public String getManufacturerName() {
     return manufacturer.getName();
+  }
+
+  @JsonProperty("transmissionType")
+  public String getTransmissionTypeName() {
+    return transmissionType.getTransmissionType();
+  }
+
+  @JsonProperty("fuelType")
+  public String getFuelTypeName() {
+    return fuelType.getFuelType();
   }
 }
