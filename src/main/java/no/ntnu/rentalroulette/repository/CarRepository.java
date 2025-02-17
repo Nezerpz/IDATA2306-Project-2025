@@ -10,4 +10,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface CarRepository extends JpaRepository<Car, Integer> {
   Set<Car> findByManufacturer_Name(String name);
+
+  Car findByCarModel(String carModel);
 }
