@@ -6,6 +6,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -39,7 +40,7 @@ public class User {
    */
   @Setter
   @Getter
-  @OneToOne
+  @ManyToOne
   @JoinColumn(name = "user_type_id", referencedColumnName = "id")
   private UserType userType;
   /**
