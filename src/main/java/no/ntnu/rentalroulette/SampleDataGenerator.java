@@ -1,18 +1,22 @@
 package no.ntnu.rentalroulette;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import no.ntnu.rentalroulette.entity.Car;
 import no.ntnu.rentalroulette.entity.CarManufacturer;
 import no.ntnu.rentalroulette.entity.CarToProvider;
 import no.ntnu.rentalroulette.entity.FuelType;
+import no.ntnu.rentalroulette.entity.Order;
 import no.ntnu.rentalroulette.entity.Provider;
 import no.ntnu.rentalroulette.entity.TransmissionType;
 import no.ntnu.rentalroulette.entity.User;
 import no.ntnu.rentalroulette.entity.UserType;
 import no.ntnu.rentalroulette.repository.CarManufacturerRepository;
 import no.ntnu.rentalroulette.repository.CarRepository;
+import no.ntnu.rentalroulette.repository.CarToProviderRepository;
 import no.ntnu.rentalroulette.repository.FuelTypeRepository;
+import no.ntnu.rentalroulette.repository.OrderRepository;
 import no.ntnu.rentalroulette.repository.ProviderRepository;
 import no.ntnu.rentalroulette.repository.TransmissionTypeRepository;
 import no.ntnu.rentalroulette.repository.UserRepository;
@@ -64,6 +68,22 @@ public class SampleDataGenerator {
     UserRepository userRepository = this.context.getBean(UserRepository.class);
     List<User> users = createDefaultUsers(userTypeRepository);
     userRepository.saveAll(users);
+
+    // Providers
+    ProviderRepository providerRepository = this.context.getBean(ProviderRepository.class);
+    List<Provider> providers = createDefaultProviders();
+    providerRepository.saveAll(providers);
+
+    // Car providers
+    CarToProviderRepository carToProviderRepository =
+        this.context.getBean(CarToProviderRepository.class);
+    List<CarToProvider> carProviders = createDefaultCarProviders(carRepository, providerRepository);
+    carToProviderRepository.saveAll(carProviders);
+
+    // Orders
+    OrderRepository orderRepository = this.context.getBean(OrderRepository.class);
+    List<Order> orders = createDefaultOrders(carToProviderRepository, userRepository);
+    orderRepository.saveAll(orders);
   }
 
   private List<UserType> createDefaultUserTypes() {
@@ -234,5 +254,55 @@ public class SampleDataGenerator {
     carProviders.add(new CarToProvider(peugeotiOn, auto1010, 1, 201));
 
     return carProviders;
+  }
+
+  private List<Order> createDefaultOrders(CarToProviderRepository carToProviderRepository,
+                                          UserRepository userRepository) {
+    List<Order> orders = new ArrayList<>();
+    List<CarToProvider> carToProviders = carToProviderRepository.findAll();
+    User user = userRepository.findByUsername("ola.nordmann");
+
+    // Some cars may be busy in some periods for one provider, but always available from another supplier
+    orders.add(
+        new Order(carToProviders.get(0), user, LocalDate.of(2025, 1, 1), LocalDate.of(2025, 6, 10),
+            "96000"));
+    orders.add(
+        new Order(carToProviders.get(0), user, LocalDate.of(2025, 1, 1), LocalDate.of(2025, 6, 10),
+            "96000"));
+
+    // Some cars may be busy from all providers for some weeks
+    orders.add(
+        new Order(carToProviders.get(9), user, LocalDate.of(2025, 3, 1), LocalDate.of(2025, 3, 15),
+            "2800"));
+    orders.add(
+        new Order(carToProviders.get(10), user, LocalDate.of(2025, 3, 1), LocalDate.of(2025, 3, 15),
+            "980"));
+    orders.add(
+        new Order(carToProviders.get(11), user, LocalDate.of(2025, 3, 1), LocalDate.of(2025, 3, 15),
+            "2520"));
+
+    // Some cars may be “fully booked” out of 2025
+    orders.add(
+        new Order(carToProviders.get(15), user, LocalDate.of(2025, 1, 1),
+            LocalDate.of(2025, 12, 31),
+            "109200"));
+    orders.add(
+        new Order(carToProviders.get(15), user, LocalDate.of(2025, 1, 1),
+            LocalDate.of(2025, 12, 31),
+            "109200"));
+    orders.add(
+        new Order(carToProviders.get(16), user, LocalDate.of(2025, 1, 1),
+            LocalDate.of(2025, 12, 31),
+            "108836"));
+    orders.add(
+        new Order(carToProviders.get(16), user, LocalDate.of(2025, 1, 1),
+            LocalDate.of(2025, 12, 31),
+            "108836"));
+    orders.add(
+        new Order(carToProviders.get(16), user, LocalDate.of(2025, 1, 1),
+            LocalDate.of(2025, 12, 31),
+            "108836"));
+
+    return orders;
   }
 }

@@ -8,6 +8,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import java.time.LocalDate;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
@@ -30,11 +31,8 @@ public class Order {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private int id;
   @ManyToOne
-  @JoinColumn(name = "car_id")
-  private CarToProvider car;
-  @ManyToOne
-  @JoinColumn(name = "provider_id")
-  private CarToProvider provider;
+  @JoinColumn(name = "car_to_provider_id")
+  private CarToProvider carToProvider;
   @ManyToOne
   @JoinColumn(name = "user_id")
   private User user;
@@ -46,7 +44,7 @@ public class Order {
    */
   @Setter
   @Getter
-  private String startDate;
+  private LocalDate startDate;
   /**
    * Entity's end date.
    *
@@ -55,7 +53,7 @@ public class Order {
    */
   @Setter
   @Getter
-  private String endDate;
+  private LocalDate endDate;
   /**
    * Entity's price paid.
    *
@@ -65,4 +63,13 @@ public class Order {
   @Setter
   @Getter
   private String pricePaid;
+
+  public Order(CarToProvider carToProvider, User user, LocalDate startDate, LocalDate endDate,
+               String pricePaid) {
+    this.carToProvider = carToProvider;
+    this.user = user;
+    this.startDate = startDate;
+    this.endDate = endDate;
+    this.pricePaid = pricePaid;
+  }
 }
