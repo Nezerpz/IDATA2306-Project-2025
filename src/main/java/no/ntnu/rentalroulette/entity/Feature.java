@@ -4,7 +4,11 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
@@ -35,6 +39,9 @@ public class Feature {
   @Setter
   @Getter
   private String featureName;
+
+  @ManyToMany(mappedBy = "features")
+  private List<Car> cars;
 
   public Feature(String featureName) {
     this.featureName = featureName;

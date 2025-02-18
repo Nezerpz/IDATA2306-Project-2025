@@ -1,11 +1,13 @@
 package no.ntnu.rentalroulette;
 
+import jakarta.transaction.Transactional;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import no.ntnu.rentalroulette.entity.Car;
 import no.ntnu.rentalroulette.entity.CarManufacturer;
 import no.ntnu.rentalroulette.entity.CarToProvider;
+import no.ntnu.rentalroulette.entity.Feature;
 import no.ntnu.rentalroulette.entity.FuelType;
 import no.ntnu.rentalroulette.entity.Order;
 import no.ntnu.rentalroulette.entity.Provider;
@@ -15,6 +17,7 @@ import no.ntnu.rentalroulette.entity.UserType;
 import no.ntnu.rentalroulette.repository.CarManufacturerRepository;
 import no.ntnu.rentalroulette.repository.CarRepository;
 import no.ntnu.rentalroulette.repository.CarToProviderRepository;
+import no.ntnu.rentalroulette.repository.FeatureRepository;
 import no.ntnu.rentalroulette.repository.FuelTypeRepository;
 import no.ntnu.rentalroulette.repository.OrderRepository;
 import no.ntnu.rentalroulette.repository.ProviderRepository;
@@ -32,6 +35,7 @@ public class SampleDataGenerator {
     this.context = context;
   }
 
+  @Transactional
   public void createDefaultEntries() {
 
     // Manufacturers
@@ -57,6 +61,10 @@ public class SampleDataGenerator {
     List<Car> cars = createDefaultCars(carManufacturerRepository, transmissionTypeRepository,
         fuelTypeRepository);
     carRepository.saveAll(cars);
+
+    // Features
+    FeatureRepository featureRepository = this.context.getBean(FeatureRepository.class);
+    createDefaultFeatures(carRepository, featureRepository);
 
     // User types
     UserTypeRepository userTypeRepository = this.context.getBean(UserTypeRepository.class);
@@ -304,5 +312,119 @@ public class SampleDataGenerator {
             "108836"));
 
     return orders;
+  }
+
+  private void createDefaultFeatures(CarRepository carRepository,
+                                     FeatureRepository featureRepository) {
+    List<Feature> features = new ArrayList<>();
+
+    Feature sunroof = new Feature("Sunroof");
+    Feature heatedSeats = new Feature("Heated Seats");
+    Feature dabRadio = new Feature("DAB Radio");
+    Feature autonomousDriving = new Feature("Autonomous Driving");
+    Feature longRange = new Feature("Long Range");
+    Feature fourWheelDrive = new Feature("Four Wheel Drive");
+    Feature yellowPaint = new Feature("Yellow Paint");
+    Feature retroDesign = new Feature("Retro Design");
+    Feature threeStripes = new Feature("Three Stripes");
+    Feature originalTireDiscs = new Feature("Original Tire Discs");
+    Feature towHook = new Feature("Tow Hook");
+    Feature roofBox = new Feature("Roof Box");
+    Feature glassWindow = new Feature("Glass Window");
+    Feature heatedSteeringWheel = new Feature("Heated Steering Wheel");
+    Feature heatedMirrors = new Feature("Heated Mirrors");
+    Feature heatedTires = new Feature("Heated Tires");
+    Feature heatedRug = new Feature("Heated Rug");
+    Feature heated360 = new Feature("Heated 360");
+    Feature fMRadio = new Feature("FM Radio");
+    Feature cDPlayer = new Feature("CD Player");
+    Feature metallicPaint = new Feature("Metallic Paint");
+    Feature fiveDoors = new Feature("Five Doors");
+    Feature veryEconomical = new Feature("Very Economical");
+    Feature bluetooth = new Feature("Bluetooth");
+
+    features.add(sunroof);
+    features.add(heatedSeats);
+    features.add(dabRadio);
+    features.add(autonomousDriving);
+    features.add(longRange);
+    features.add(fourWheelDrive);
+    features.add(yellowPaint);
+    features.add(retroDesign);
+    features.add(threeStripes);
+    features.add(originalTireDiscs);
+    features.add(towHook);
+    features.add(roofBox);
+    features.add(glassWindow);
+    features.add(heatedSteeringWheel);
+    features.add(heatedMirrors);
+    features.add(heatedTires);
+    features.add(heatedRug);
+    features.add(heated360);
+    features.add(fMRadio);
+    features.add(cDPlayer);
+    features.add(metallicPaint);
+    features.add(fiveDoors);
+    features.add(veryEconomical);
+    features.add(bluetooth);
+
+
+    featureRepository.saveAll(features);
+
+    Car golf = carRepository.findByCarModel("Golf");
+    Car model3 = carRepository.findByCarModel("Model 3");
+    Car modelY = carRepository.findByCarModel("Model Y");
+    Car leaf = carRepository.findByCarModel("Leaf");
+    Car mazda2 = carRepository.findByCarModel("2");
+    Car transporter = carRepository.findByCarModel("Transporter");
+    Car m3 = carRepository.findByCarModel("M3 Evo");
+    Car fabia = carRepository.findByCarModel("Fabia");
+    Car peugeot307 = carRepository.findByCarModel("307 SW");
+    Car peugeot207 = carRepository.findByCarModel("207");
+    Car peugeot3008 = carRepository.findByCarModel("3008");
+    Car peugeotiOn = carRepository.findByCarModel("iOn");
+
+    golf.getFeatures().add(bluetooth);
+    golf.getFeatures().add(dabRadio);
+    golf.getFeatures().add(heatedSeats);
+
+    model3.getFeatures().add(autonomousDriving);
+    model3.getFeatures().add(longRange);
+    model3.getFeatures().add(heatedSeats);
+
+    modelY.getFeatures().add(fourWheelDrive);
+    modelY.getFeatures().add(sunroof);
+    modelY.getFeatures().add(autonomousDriving);
+
+    mazda2.getFeatures().add(dabRadio);
+
+    transporter.getFeatures().add(yellowPaint);
+    transporter.getFeatures().add(retroDesign);
+
+    m3.getFeatures().add(threeStripes);
+    m3.getFeatures().add(originalTireDiscs);
+
+    fabia.getFeatures().add(towHook);
+
+    peugeot307.getFeatures().add(roofBox);
+
+    peugeot207.getFeatures().add(glassWindow);
+    peugeot207.getFeatures().add(heatedSeats);
+    peugeot207.getFeatures().add(heatedSteeringWheel);
+    peugeot207.getFeatures().add(heatedMirrors);
+    peugeot207.getFeatures().add(heatedTires);
+    peugeot207.getFeatures().add(heatedRug);
+    peugeot207.getFeatures().add(heated360);
+
+    peugeot3008.getFeatures().add(fMRadio);
+    peugeot3008.getFeatures().add(cDPlayer);
+    peugeot3008.getFeatures().add(metallicPaint);
+
+    peugeotiOn.getFeatures().add(fiveDoors);
+    peugeotiOn.getFeatures().add(veryEconomical);
+
+    carRepository.saveAll(
+        List.of(golf, model3, modelY, leaf, mazda2, transporter, m3, fabia, peugeot307, peugeot207,
+            peugeot3008, peugeotiOn));
   }
 }

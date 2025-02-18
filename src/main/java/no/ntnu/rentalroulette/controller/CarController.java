@@ -24,11 +24,12 @@ public class CarController {
     return new ResponseEntity<>(cars, HttpStatus.OK);
   }
 
-
+/*
   @CrossOrigin(origins = "http://localhost:5173")
   @GetMapping("/cars/models")
   public ResponseEntity<List<String>> getCarModels() {
     List<String> cars = new CopyOnWriteArrayList<String>(carRepository.findDistinctCarModel());
     return new ResponseEntity<>(cars, HttpStatus.OK);
   }
+ */
 }

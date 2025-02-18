@@ -4,12 +4,17 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -100,6 +105,18 @@ public class Car {
   @Column(name = "production_year")
   private int productionYear;
 
+
+  @Getter
+  @ManyToMany(fetch = FetchType.EAGER)
+  @JoinTable(
+      name = "car_feature",
+      joinColumns = @JoinColumn(name = "car_id"),
+      inverseJoinColumns = @JoinColumn(name = "feature_id")
+  )
+  @JsonProperty("features")
+  private List<Feature> features = new ArrayList<>();
+
+
   public Car(
       String model,
       CarManufacturer manufacturer,
@@ -128,5 +145,10 @@ public class Car {
   @JsonProperty("fuelType")
   public String getFuelTypeName() {
     return fuelType.getFuelType();
+  }
+
+  @JsonProperty("features")
+  public List<String> getFeatureNames() {
+    return features.stream().map(Feature::getFeatureName).toList();
   }
 }
