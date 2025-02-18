@@ -3,6 +3,8 @@ package no.ntnu.rentalroulette.controller;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import no.ntnu.rentalroulette.entity.Car;
+import no.ntnu.rentalroulette.entity.CarManufacturer;
+import no.ntnu.rentalroulette.repository.CarManufacturerRepository;
 import no.ntnu.rentalroulette.repository.CarRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,6 +19,8 @@ public class CarController {
 
   @Autowired
   private CarRepository carRepository;
+  @Autowired
+  private CarManufacturerRepository carManufacturerRepository;
 
   @CrossOrigin(origins = "http://localhost:5173")
   @GetMapping("/cars")
@@ -32,6 +36,13 @@ public class CarController {
     return new ResponseEntity<>(car, HttpStatus.OK);
   }
 
+
+  @GetMapping("/manufacturers")
+  public ResponseEntity<List<CarManufacturer>> getCarManufacturers() {
+    List<CarManufacturer> carManufacturers =
+        new CopyOnWriteArrayList<>(carManufacturerRepository.findAll());
+    return new ResponseEntity<>(carManufacturers, HttpStatus.OK);
+  }
 
 /*
   @CrossOrigin(origins = "http://localhost:5173")
