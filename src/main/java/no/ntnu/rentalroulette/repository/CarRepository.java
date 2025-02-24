@@ -13,6 +13,6 @@ public interface CarRepository extends JpaRepository<Car, Integer> {
   Set<Car> findByManufacturer_Name(String name);
 
   Car findByCarModel(String carModel);
-
+  Car findById(int id);
   Set<String> findDistinctByCarModel(String carModel);
 }

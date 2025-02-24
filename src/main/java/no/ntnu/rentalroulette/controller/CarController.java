@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -29,7 +30,14 @@ public class CarController {
   }
 
   @CrossOrigin(origins = "http://localhost:5173")
-  @GetMapping("/cars")
+  @GetMapping("/car/{id}")
+  public ResponseEntity<Car> getCar(@PathVariable(value="id") int id) {
+    Car car = carRepository.findById(id);
+    return new ResponseEntity<>(car, HttpStatus.OK);
+  }
+
+
+  @GetMapping("/manufacturers")
   public ResponseEntity<List<CarManufacturer>> getCarManufacturers() {
     List<CarManufacturer> carManufacturers =
         new CopyOnWriteArrayList<>(carManufacturerRepository.findAll());
