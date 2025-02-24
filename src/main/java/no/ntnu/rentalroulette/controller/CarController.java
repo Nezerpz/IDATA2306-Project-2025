@@ -9,7 +9,6 @@ import no.ntnu.rentalroulette.repository.CarRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
@@ -22,16 +21,14 @@ public class CarController {
   @Autowired
   private CarManufacturerRepository carManufacturerRepository;
 
-  @CrossOrigin(origins = "http://localhost:5173")
   @GetMapping("/cars")
   public ResponseEntity<List<Car>> getCars() {
     List<Car> cars = new CopyOnWriteArrayList<>(carRepository.findAll());
     return new ResponseEntity<>(cars, HttpStatus.OK);
   }
 
-  @CrossOrigin(origins = "http://localhost:5173")
   @GetMapping("/car/{id}")
-  public ResponseEntity<Car> getCar(@PathVariable(value="id") int id) {
+  public ResponseEntity<Car> getCar(@PathVariable(value = "id") int id) {
     Car car = carRepository.findById(id);
     return new ResponseEntity<>(car, HttpStatus.OK);
   }
