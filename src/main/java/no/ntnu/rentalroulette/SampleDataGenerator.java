@@ -6,18 +6,22 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import no.ntnu.rentalroulette.entity.Car;
+import no.ntnu.rentalroulette.entity.CarReview;
 import no.ntnu.rentalroulette.entity.Feature;
 import no.ntnu.rentalroulette.entity.Order;
 import no.ntnu.rentalroulette.entity.User;
+import no.ntnu.rentalroulette.entity.UserReview;
 import no.ntnu.rentalroulette.enums.CarStatus;
 import no.ntnu.rentalroulette.enums.FuelType;
 import no.ntnu.rentalroulette.enums.Manufacturer;
 import no.ntnu.rentalroulette.enums.TransmissionType;
 import no.ntnu.rentalroulette.enums.UserType;
 import no.ntnu.rentalroulette.repository.CarRepository;
+import no.ntnu.rentalroulette.repository.CarReviewRepository;
 import no.ntnu.rentalroulette.repository.FeatureRepository;
 import no.ntnu.rentalroulette.repository.OrderRepository;
 import no.ntnu.rentalroulette.repository.UserRepository;
+import no.ntnu.rentalroulette.repository.UserReviewRepository;
 import org.springframework.context.ApplicationContext;
 
 public class SampleDataGenerator {
@@ -51,6 +55,11 @@ public class SampleDataGenerator {
     // Orders
     OrderRepository orderRepository = this.context.getBean(OrderRepository.class);
     createDefaultOrders(carRepository, userRepository, orderRepository);
+
+    // Reviews
+    UserReviewRepository userReviewRepository = this.context.getBean(UserReviewRepository.class);
+    CarReviewRepository carReviewRepository = this.context.getBean(CarReviewRepository.class);
+    createDefaultReviews(userRepository, carRepository, carReviewRepository, userReviewRepository);
   }
 
 
@@ -481,5 +490,33 @@ public class SampleDataGenerator {
     allCars.addAll(peugeotiOnCars);
 
     carRepository.saveAll(allCars);
+  }
+
+  private void createDefaultReviews(UserRepository userRepository, CarRepository carRepository,
+                                    CarReviewRepository carReviewRepository,
+                                    UserReviewRepository userReviewRepository) {
+    User olaNordmann = userRepository.findByUsername("ola.nordmann");
+    User kariNordmann = userRepository.findByUsername("kari.nordmann");
+    User millerBil = userRepository.findByUsername("miller.bil");
+    User billerBil = userRepository.findByUsername("biller.bil");
+
+    Car golf1 = carRepository.findById(1);
+    Car golf2 = carRepository.findById(2);
+    Car model3_1 = carRepository.findById(3);
+    Car model3_2 = carRepository.findById(4);
+
+    carReviewRepository.saveAll(List.of(
+        new CarReview(olaNordmann, golf1, 5, "Great car!"),
+        new CarReview(kariNordmann, golf2, 4, "Good car!"),
+        new CarReview(olaNordmann, model3_1, 5, "Great car!"),
+        new CarReview(kariNordmann, model3_2, 4, "Good car!")
+    ));
+
+    userReviewRepository.saveAll(List.of(
+        new UserReview(millerBil, olaNordmann, 5, "Great provider!"),
+        new UserReview(billerBil, kariNordmann, 4, "Good provider!"),
+        new UserReview(kariNordmann, billerBil, 5, "Great customer!"),
+        new UserReview(olaNordmann, millerBil, 4, "Good customer!")
+    ));
   }
 }

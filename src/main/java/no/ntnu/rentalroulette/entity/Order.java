@@ -5,11 +5,9 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.time.LocalDate;
-import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
@@ -23,38 +21,18 @@ import lombok.Setter;
 @Table(name = "\"ORDER\"")
 public class Order {
   @Id
-  /**
-   * Entity's row ID in Database.
-   *
-   * @return id
-   */
   @Getter
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private int id;
-  /**
-   * Entity's start date.
-   *
-   * @param startDate
-   * @return startDate
-   */
+
   @Setter
   @Getter
   private LocalDate startDate;
-  /**
-   * Entity's end date.
-   *
-   * @param endDate
-   * @return endDate
-   */
+
   @Setter
   @Getter
   private LocalDate endDate;
-  /**
-   * Entity's price paid.
-   *
-   * @param pricePaid
-   * @return pricePaid
-   */
+
   @Setter
   @Getter
   private String pricePaid;
