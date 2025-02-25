@@ -1,5 +1,6 @@
 package no.ntnu.rentalroulette.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -129,6 +130,7 @@ public class Car {
 
   @ManyToOne
   @JoinColumn(name = "user_id")
+  @JsonProperty("user")
   private User user;
 
 
@@ -164,5 +166,15 @@ public class Car {
   @JsonProperty("features")
   public List<String> getFeatureNames() {
     return features.stream().map(Feature::getFeatureName).toList();
+  }
+
+  @JsonProperty("user")
+  public String getProviderName() {
+    StringBuilder sb = new StringBuilder();
+    sb.append(user.getFirstName());
+    sb.append(" ");
+    sb.append(user.getLastName());
+    String providerName = sb.toString();
+    return providerName;
   }
 }
