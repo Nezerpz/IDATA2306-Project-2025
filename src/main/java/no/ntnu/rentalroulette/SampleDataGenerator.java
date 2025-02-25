@@ -2,29 +2,21 @@ package no.ntnu.rentalroulette;
 
 import jakarta.transaction.Transactional;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import no.ntnu.rentalroulette.entity.Car;
-import no.ntnu.rentalroulette.entity.CarManufacturer;
-import no.ntnu.rentalroulette.entity.CarToProvider;
 import no.ntnu.rentalroulette.entity.Feature;
-import no.ntnu.rentalroulette.entity.FuelType;
 import no.ntnu.rentalroulette.entity.Order;
-import no.ntnu.rentalroulette.entity.Provider;
-import no.ntnu.rentalroulette.entity.TransmissionType;
 import no.ntnu.rentalroulette.entity.User;
-import no.ntnu.rentalroulette.entity.UserType;
-import no.ntnu.rentalroulette.repository.CarManufacturerRepository;
+import no.ntnu.rentalroulette.enums.FuelType;
+import no.ntnu.rentalroulette.enums.Manufacturer;
+import no.ntnu.rentalroulette.enums.TransmissionType;
+import no.ntnu.rentalroulette.enums.UserType;
 import no.ntnu.rentalroulette.repository.CarRepository;
-import no.ntnu.rentalroulette.repository.CarToProviderRepository;
 import no.ntnu.rentalroulette.repository.FeatureRepository;
-import no.ntnu.rentalroulette.repository.FuelTypeRepository;
 import no.ntnu.rentalroulette.repository.OrderRepository;
-import no.ntnu.rentalroulette.repository.ProviderRepository;
-import no.ntnu.rentalroulette.repository.TransmissionTypeRepository;
 import no.ntnu.rentalroulette.repository.UserRepository;
-
-import no.ntnu.rentalroulette.repository.UserTypeRepository;
 import org.springframework.context.ApplicationContext;
 
 public class SampleDataGenerator {
@@ -38,393 +30,453 @@ public class SampleDataGenerator {
   @Transactional
   public void createDefaultEntries() {
 
-    // Manufacturers
-    CarManufacturerRepository carManufacturerRepository =
-        this.context.getBean(CarManufacturerRepository.class);
-    List<CarManufacturer> carManufacturers = createDefaultCarManufacturers();
-    carManufacturerRepository.saveAll(carManufacturers);
+    // Users
 
-
-    // Transmission types
-    TransmissionTypeRepository transmissionTypeRepository =
-        this.context.getBean(TransmissionTypeRepository.class);
-    List<TransmissionType> transmissionTypes = createDefaultTransmissionTypes();
-    transmissionTypeRepository.saveAll(transmissionTypes);
-
-    // Fuel types
-    FuelTypeRepository fuelTypeRepository = this.context.getBean(FuelTypeRepository.class);
-    List<FuelType> fuelTypes = createDefaultFuelTypes();
-    fuelTypeRepository.saveAll(fuelTypes);
+    UserRepository userRepository = this.context.getBean(UserRepository.class);
+    List<User> users = createDefaultUsers();
+    userRepository.saveAll(users);
 
     // Cars
     CarRepository carRepository = this.context.getBean(CarRepository.class);
-    List<Car> cars = createDefaultCars(carManufacturerRepository, transmissionTypeRepository,
-        fuelTypeRepository);
+    List<Car> cars = createDefaultCars(userRepository);
     carRepository.saveAll(cars);
 
     // Features
     FeatureRepository featureRepository = this.context.getBean(FeatureRepository.class);
     createDefaultFeatures(carRepository, featureRepository);
 
-    // User types
-    UserTypeRepository userTypeRepository = this.context.getBean(UserTypeRepository.class);
-    List<UserType> userTypes = createDefaultUserTypes();
-    userTypeRepository.saveAll(userTypes);
-
-    // Users
-
-    UserRepository userRepository = this.context.getBean(UserRepository.class);
-    List<User> users = createDefaultUsers(userTypeRepository);
-    userRepository.saveAll(users);
-
-    // Providers
-    ProviderRepository providerRepository = this.context.getBean(ProviderRepository.class);
-    List<Provider> providers = createDefaultProviders();
-    providerRepository.saveAll(providers);
-
-    // Car providers
-    CarToProviderRepository carToProviderRepository =
-        this.context.getBean(CarToProviderRepository.class);
-    List<CarToProvider> carProviders = createDefaultCarProviders(carRepository, providerRepository);
-    carToProviderRepository.saveAll(carProviders);
-
     // Orders
     OrderRepository orderRepository = this.context.getBean(OrderRepository.class);
-    List<Order> orders = createDefaultOrders(carToProviderRepository, userRepository);
-    orderRepository.saveAll(orders);
+    createDefaultOrders(carRepository, userRepository, orderRepository);
   }
 
-  private List<UserType> createDefaultUserTypes() {
-    List<UserType> userTypes = new ArrayList<>();
-    userTypes.add(new UserType("Customer"));
-    //TODO: Find out if -> userTypes.add(new UserType("Provider"));
-    userTypes.add(new UserType("Admin"));
-    return userTypes;
-  }
 
-  private List<User> createDefaultUsers(UserTypeRepository userTypeRepository) {
+  private List<User> createDefaultUsers() {
     List<User> users = new ArrayList<>();
+    users.add(new User(UserType.CUSTOMER, "Ola", "Nordmann", "ola.nordmann", "teletubbies",
+        "ola.nordmann@telenor.no", "+47 12345678"));
+    users.add(new User(UserType.CUSTOMER, "Kari", "Nordmann", "kari.nordmann", "cars",
+        "kari.nordmann@telenor.no", "+47 87654321"));
+    users.add(new User(UserType.ADMIN, "Jeremy", "Clarkson", "jClarkson", "france",
+        "jClarkson@rentalroulette.fr", "+47 23456789"));
+    users.add(new User(UserType.PROVIDER, "Miller", "Bil", "miller.bil", "password",
+        "miller.bil@example.com", "+47 98765432"));
+    users.add(new User(UserType.PROVIDER, "Biller", "Bil", "biller.bil", "password",
+        "biller.bil@example.com", "+47 86754321"));
+    users.add(new User(UserType.PROVIDER, "Biggernes", "Tesla", "biggernes.tesla", "password",
+        "biggernes.tesla@example.com", "+47 76543210"));
+    users.add(new User(UserType.PROVIDER, "Tesla", "Tom", "tesla.tom", "password",
+        "tesla.tom@example.com", "+47 65432109"));
     users.add(
-        new User(userTypeRepository.findByUserType("Customer"), "Ola", "Nordmann", "ola.nordmann",
-            "teletubbies",
-            "ola.nordmann@telenor.no"));
+        new User(UserType.PROVIDER, "Auto", "9-9", "auto.9-9", "password", "auto.9-9@example.com",
+            "+47 54321098"));
+    users.add(new User(UserType.PROVIDER, "Auto", "10-10", "auto.10-10", "password",
+        "auto.10-10@example.com", "+47 43210987"));
+    users.add(new User(UserType.PROVIDER, "Bilikist", "", "bilikist", "password",
+        "bilikist@example.com", "+47 32109876"));
+    users.add(new User(UserType.PROVIDER, "Ørsta", "kommune", "orsta.kommune", "password",
+        "orsta.kommune@example.com", "+47 21098765"));
+    users.add(new User(UserType.PROVIDER, "Sirkelsliper", "", "sirkelsliper", "password",
+        "sirkelsliper@example.com", "+47 10987654"));
+    users.add(new User(UserType.PROVIDER, "Peace", "Per", "peace.per", "password",
+        "peace.per@example.com", "+47 09876543"));
+    users.add(new User(UserType.PROVIDER, "Bilverksted", "", "bilverksted", "password",
+        "bilverksted@example.com", "+47 97865432"));
     users.add(
-        new User(userTypeRepository.findByUserType("Customer"), "Kari", "Nordmann", "kari.nordmann",
-            "cars",
-            "kari.nordmann@telenor.no"));
+        new User(UserType.PROVIDER, "Grabes", "", "grabes", "password", "grabes@example.com",
+            "+47 87645321"));
     users.add(
-        new User(userTypeRepository.findByUserType("Admin"), "Jeremy", "Clarkson", "jClarkson",
-            "france",
-            "jClarkson@rentalroulette.fr"));
+        new User(UserType.PROVIDER, "Djarney", "", "djarney", "password", "djarney@example.com",
+            "+47 76534210"));
+    users.add(new User(UserType.PROVIDER, "Sprekksaver", "", "sprekksaver", "password",
+        "sprekksaver@example.com", "+47 65423109"));
+    users.add(
+        new User(UserType.PROVIDER, "Smidig", "bilforhandler", "smidig.bilforhandler", "password",
+            "smidig.bilforhandler@example.com", "+47 54231098"));
+    users.add(new User(UserType.PROVIDER, "Fossefall", "bilforhandler", "fossefall.bilforhandler",
+        "password", "fossefall.bilforhandler@example.com", "+47 43109876"));
+    users.add(new User(UserType.PROVIDER, "Betrel", "Ostein", "betrel.ostein", "password",
+        "betrel.ostein@example.com", "+47 31098765"));
+
     return users;
   }
 
-  private List<CarManufacturer> createDefaultCarManufacturers() {
-    List<CarManufacturer> carManufacturers = new ArrayList<>();
-    carManufacturers.add(new CarManufacturer("Volkswagen"));
-    carManufacturers.add(new CarManufacturer("Tesla"));
-    carManufacturers.add(new CarManufacturer("Nissan"));
-    carManufacturers.add(new CarManufacturer("BMW"));
-    carManufacturers.add(new CarManufacturer("Peugeot"));
-    carManufacturers.add(new CarManufacturer("Skoda"));
-    carManufacturers.add(new CarManufacturer("Mazda"));
-    return carManufacturers;
-  }
 
-  private List<TransmissionType> createDefaultTransmissionTypes() {
-    List<TransmissionType> transmissionTypes = new ArrayList<>();
-    transmissionTypes.add(new TransmissionType("Manual"));
-    transmissionTypes.add(new TransmissionType("Automatic"));
-    return transmissionTypes;
-  }
-
-  private List<FuelType> createDefaultFuelTypes() {
-    List<FuelType> fuelTypes = new ArrayList<>();
-    fuelTypes.add(new FuelType("Petrol"));
-    fuelTypes.add(new FuelType("Diesel"));
-    fuelTypes.add(new FuelType("Electric"));
-    return fuelTypes;
-  }
-
-  private List<Car> createDefaultCars(CarManufacturerRepository carManufacturerRepository,
-                                      TransmissionTypeRepository transmissionTypeRepository,
-                                      FuelTypeRepository fuelTypeRepository) {
+  private List<Car> createDefaultCars(UserRepository userRepository) {
     List<Car> cars = new ArrayList<>();
-    CarManufacturer volkswagen = carManufacturerRepository.findByName("Volkswagen");
-    CarManufacturer tesla = carManufacturerRepository.findByName("Tesla");
-    CarManufacturer nissan = carManufacturerRepository.findByName("Nissan");
-    CarManufacturer bmw = carManufacturerRepository.findByName("BMW");
-    CarManufacturer peugeot = carManufacturerRepository.findByName("Peugeot");
-    CarManufacturer skoda = carManufacturerRepository.findByName("Skoda");
-    CarManufacturer mazda = carManufacturerRepository.findByName("Mazda");
-    TransmissionType manual = transmissionTypeRepository.findByTransmissionType("Manual");
-    TransmissionType automatic = transmissionTypeRepository.findByTransmissionType("Automatic");
-    FuelType petrol = fuelTypeRepository.findByFuelType("Petrol");
-    FuelType diesel = fuelTypeRepository.findByFuelType("Diesel");
-    FuelType electric = fuelTypeRepository.findByFuelType("Electric");
-    cars.add(new Car("Golf", volkswagen, 5, manual, petrol, 2007));
-    cars.add(new Car("Model 3", tesla, 5, automatic, electric, 2019));
-    cars.add(new Car("Model Y", tesla, 5, automatic, electric, 2022));
-    cars.add(new Car("Leaf", nissan, 5, automatic, electric, 2016));
-    cars.add(new Car("2", mazda, 5, automatic, petrol, 2017));
-    cars.add(new Car("Transporter", volkswagen, 8, manual, petrol, 1978));
-    cars.add(new Car("M3 Evo", bmw, 4, manual, petrol, 1988));
-    cars.add(new Car("Fabia", skoda, 5, automatic, diesel, 2011));
-    cars.add(new Car("307 SW", peugeot, 7, manual, diesel, 2008));
-    cars.add(new Car("207", peugeot, 5, manual, diesel, 2007));
-    cars.add(new Car("3008", peugeot, 5, manual, diesel, 2010));
-    cars.add(new Car("iOn", peugeot, 4, automatic, electric, 2015));
+    Manufacturer volkswagen = Manufacturer.VOLKSWAGEN;
+    Manufacturer tesla = Manufacturer.TESLA;
+    Manufacturer nissan = Manufacturer.NISSAN;
+    Manufacturer bmw = Manufacturer.BMW;
+    Manufacturer peugeot = Manufacturer.PEUGEOT;
+    Manufacturer skoda = Manufacturer.SKODA;
+    Manufacturer mazda = Manufacturer.MAZDA;
+    TransmissionType manual = TransmissionType.MANUAL;
+    TransmissionType automatic = TransmissionType.AUTOMATIC;
+    FuelType petrol = FuelType.PETROL;
+    FuelType diesel = FuelType.DIESEL;
+    FuelType electric = FuelType.ELECTRIC;
+    User millerBil = userRepository.findByUsername("miller.bil");
+    User billerBil = userRepository.findByUsername("biller.bil");
+    User biggernesTesla = userRepository.findByUsername("biggernes.tesla");
+    User teslaTom = userRepository.findByUsername("tesla.tom");
+    User auto99 = userRepository.findByUsername("auto.9-9");
+    User auto1010 = userRepository.findByUsername("auto.10-10");
+    User bilikist = userRepository.findByUsername("bilikist");
+    User orstaKommune = userRepository.findByUsername("orsta.kommune");
+    User sirkelsliper = userRepository.findByUsername("sirkelsliper");
+    User peacePer = userRepository.findByUsername("peace.per");
+    User bilverksted = userRepository.findByUsername("bilverksted");
+    User grabes = userRepository.findByUsername("grabes");
+    User djarney = userRepository.findByUsername("djarney");
+    User sprekksaver = userRepository.findByUsername("sprekksaver");
+    User smidigBilforhandler = userRepository.findByUsername("smidig.bilforhandler");
+    User fossefallBilforhandler = userRepository.findByUsername("fossefall.bilforhandler");
+    User betrelOstein = userRepository.findByUsername("betrel.ostein");
+
+    Car golf1 = new Car("/Images/Golf", "Golf", volkswagen, 5, manual, diesel, 600, 2007);
+    cars.add(golf1);
+    golf1.setUser(millerBil);
+
+    Car golf2 = new Car("/Images/Golf", "Golf", volkswagen, 5, manual, diesel, 550, 2007);
+    cars.add(golf2);
+    golf2.setUser(billerBil);
+
+    Car model3_1 = new Car("/Images/Model3", "Model 3", tesla, 5, automatic, electric, 700, 2019);
+    cars.add(model3_1);
+    model3_1.setUser(biggernesTesla);
+
+    Car model3_2 = new Car("/Images/Model3", "Model 3", tesla, 5, automatic, electric, 500, 2019);
+    cars.add(model3_2);
+    model3_2.setUser(teslaTom);
+
+    Car modelY_1 = new Car("/Images/ModelY", "Model Y", tesla, 5, automatic, electric, 900, 2022);
+    cars.add(modelY_1);
+    modelY_1.setUser(biggernesTesla);
+
+    Car modelY_2 = new Car("/Images/ModelY", "Model Y", tesla, 5, automatic, electric, 700, 2022);
+    cars.add(modelY_2);
+    modelY_2.setUser(teslaTom);
+
+    Car leaf1 = new Car("/Images/Leaf", "Leaf", nissan, 5, automatic, electric, 500, 2016);
+    cars.add(leaf1);
+    leaf1.setUser(auto99);
+
+    Car leaf2 = new Car("/Images/Leaf", "Leaf", nissan, 5, automatic, electric, 500, 2016);
+    cars.add(leaf2);
+    leaf2.setUser(auto1010);
+
+    Car mazda2 = new Car("/Images/Mazda2", "2", mazda, 5, automatic, petrol, 400, 2017);
+    cars.add(mazda2);
+    mazda2.setUser(bilikist);
+
+    Car transporter1 =
+        new Car("/Images/Transporter", "Transporter", volkswagen, 8, manual, petrol, 200, 1978);
+    cars.add(transporter1);
+    transporter1.setUser(orstaKommune);
+
+    Car transporter2 =
+        new Car("/Images/Transporter", "Transporter", volkswagen, 8, manual, petrol, 70, 1978);
+    cars.add(transporter2);
+    transporter2.setUser(sirkelsliper);
+
+    Car transporter3 =
+        new Car("/Images/Transporter", "Transporter", volkswagen, 8, manual, petrol, 180, 1978);
+    cars.add(transporter3);
+    transporter3.setUser(peacePer);
+
+    Car m3_1 = new Car("/Images/M3Evo", "M3 Evo", bmw, 4, manual, petrol, 400, 1988);
+    cars.add(m3_1);
+    m3_1.setUser(bilverksted);
+
+    Car m3_2 = new Car("/Images/M3Evo", "M3 Evo", bmw, 4, manual, petrol, 450, 1988);
+    cars.add(m3_2);
+    m3_2.setUser(grabes);
+
+    Car m3_3 = new Car("/Images/M3Evo", "M3 Evo", bmw, 4, manual, petrol, 449, 1988);
+    cars.add(m3_3);
+    m3_3.setUser(djarney);
+
+    Car fabia1 = new Car("/Images/Fabia", "Fabia", skoda, 5, automatic, diesel, 300, 2011);
+    cars.add(fabia1);
+    fabia1.setUser(sprekksaver);
+
+    Car fabia2 = new Car("/Images/Fabia", "Fabia", skoda, 5, automatic, diesel, 299, 2011);
+    cars.add(fabia2);
+    fabia2.setUser(smidigBilforhandler);
+
+    Car fabia3 = new Car("/Images/Fabia", "Fabia", skoda, 5, automatic, diesel, 700, 2011);
+    cars.add(fabia3);
+    fabia3.setUser(fossefallBilforhandler);
+
+    Car peugeot307_1 = new Car("/Images/307SW", "307 SW", peugeot, 7, manual, diesel, 600, 2008);
+    cars.add(peugeot307_1);
+    peugeot307_1.setUser(betrelOstein);
+
+    Car peugeot307_2 = new Car("/Images/307SW", "307 SW", peugeot, 7, manual, diesel, 550, 2008);
+    cars.add(peugeot307_2);
+    peugeot307_2.setUser(auto1010);
+
+    Car peugeot207_1 = new Car("/Images/207", "207", peugeot, 5, manual, diesel, 500, 2007);
+    cars.add(peugeot207_1);
+    peugeot207_1.setUser(betrelOstein);
+
+    Car peugeot207_2 = new Car("/Images/207", "207", peugeot, 5, manual, diesel, 550, 2007);
+    cars.add(peugeot207_2);
+    peugeot207_2.setUser(auto1010);
+
+    Car peugeot3008_1 = new Car("/Images/3008", "3008", peugeot, 5, manual, diesel, 600, 2010);
+    cars.add(peugeot3008_1);
+    peugeot3008_1.setUser(betrelOstein);
+
+    Car peugeot3008_2 = new Car("/Images/3008", "3008", peugeot, 5, manual, diesel, 600, 2010);
+    cars.add(peugeot3008_2);
+    peugeot3008_2.setUser(auto1010);
+
+    Car iOn1 = new Car("/Images/iOn", "iOn", peugeot, 4, automatic, electric, 200, 2015);
+    cars.add(iOn1);
+    iOn1.setUser(betrelOstein);
+
+    Car iOn2 = new Car("/Images/iOn", "iOn", peugeot, 4, automatic, electric, 201, 2015);
+    cars.add(iOn2);
+    iOn2.setUser(auto1010);
+
+    Car iOn3 = new Car("/Images/iOn", "iOn", peugeot, 4, automatic, electric, 200, 2015);
+    cars.add(iOn3);
+    iOn3.setUser(betrelOstein);
+
+    Car iOn4 = new Car("/Images/iOn", "iOn", peugeot, 4, automatic, electric, 201, 2015);
+    cars.add(iOn4);
+    iOn4.setUser(auto1010);
+
+    Car iOn5 = new Car("/Images/iOn", "iOn", peugeot, 4, automatic, electric, 201, 2015);
+    cars.add(iOn5);
+    iOn5.setUser(auto1010);
     return cars;
   }
 
-  private List<Provider> createDefaultProviders() {
-    List<Provider> providers = new ArrayList<>();
-    providers.add(new Provider("Miller Bil", ADDRESS, "bil@miller.no"));
-    providers.add(new Provider("Biller Bil", ADDRESS, "bil@biller.no"));
-    providers.add(new Provider("Biggernes Tesla", ADDRESS, "biggernes@tesla.com"));
-    providers.add(new Provider("Tesla Tom", ADDRESS, "tom.guldhav@outlook.com"));
-    providers.add(new Provider("Auto 9-9", ADDRESS, "9@auto.no"));
-    providers.add(new Provider("Auto 10-10", ADDRESS, "10@auto.no"));
-    providers.add(new Provider("Bilikist", ADDRESS, "bilikist@bilikist.no"));
-    providers.add(new Provider("Ørsta kommune", ADDRESS, "orsta@kommune.no"));
-    providers.add(new Provider("Sirkelsliper", ADDRESS, "sirkelsliper@sliper.no"));
-    providers.add(new Provider("Peace Per", ADDRESS, "peace@per.no"));
-    providers.add(new Provider("Bilverksted", ADDRESS, "bilverksted@verksted.no"));
-    providers.add(new Provider("Grabes", ADDRESS, "grabes@grabes.no"));
-    providers.add(new Provider("Djarney", ADDRESS, "djarney@djarney.no"));
-    providers.add(new Provider("Sprekksaver", ADDRESS, "sprekksaver@bil.no"));
-    providers.add(new Provider("Smidig bilforhandler", ADDRESS, "smidig@bil.no"));
-    providers.add(new Provider("Fossefall bilforhandler", ADDRESS, "fossefall@bil.no"));
-    providers.add(new Provider("Betrel Ostein", ADDRESS, "betrel@ostein.no"));
-    return providers;
-  }
 
-  private List<CarToProvider> createDefaultCarProviders(CarRepository carRepository,
-                                                        ProviderRepository providerRepository) {
-    List<CarToProvider> carProviders = new ArrayList<>();
-    Car golf = carRepository.findByCarModel("Golf");
-    Car model3 = carRepository.findByCarModel("Model 3");
-    Car modelY = carRepository.findByCarModel("Model Y");
-    Car leaf = carRepository.findByCarModel("Leaf");
-    Car mazda2 = carRepository.findByCarModel("2");
-    Car transporter = carRepository.findByCarModel("Transporter");
-    Car m3 = carRepository.findByCarModel("M3 Evo");
-    Car fabia = carRepository.findByCarModel("Fabia");
-    Car peugeot307 = carRepository.findByCarModel("307 SW");
-    Car peugeot207 = carRepository.findByCarModel("207");
-    Car peugeot3008 = carRepository.findByCarModel("3008");
-    Car peugeotiOn = carRepository.findByCarModel("iOn");
-
-
-    Provider millerBil = providerRepository.findByName("Miller Bil");
-    Provider billerBil = providerRepository.findByName("Biller Bil");
-    Provider biggernesTesla = providerRepository.findByName("Biggernes Tesla");
-    Provider teslaTom = providerRepository.findByName("Tesla Tom");
-    Provider auto99 = providerRepository.findByName("Auto 9-9");
-    Provider auto1010 = providerRepository.findByName("Auto 10-10");
-    Provider bilikist = providerRepository.findByName("Bilikist");
-    Provider orstaKommune = providerRepository.findByName("Ørsta kommune");
-    Provider sirkelsliper = providerRepository.findByName("Sirkelsliper");
-    Provider peacePer = providerRepository.findByName("Peace Per");
-    Provider bilverksted = providerRepository.findByName("Bilverksted");
-    Provider grabes = providerRepository.findByName("Grabes");
-    Provider djarney = providerRepository.findByName("Djarney");
-    Provider sprekksaver = providerRepository.findByName("Sprekksaver");
-    Provider smidigBilforhandler = providerRepository.findByName("Smidig bilforhandler");
-    Provider fossefallBilforhandler = providerRepository.findByName("Fossefall bilforhandler");
-    Provider betrelOstein = providerRepository.findByName("Betrel Ostein");
-
-    carProviders.add(new CarToProvider(golf, millerBil, 2, 600));
-    carProviders.add(new CarToProvider(golf, billerBil, 2, 550));
-    carProviders.add(new CarToProvider(model3, biggernesTesla, 3, 700));
-    carProviders.add(new CarToProvider(model3, teslaTom, 1, 500));
-    carProviders.add(new CarToProvider(modelY, biggernesTesla, 2, 900));
-    carProviders.add(new CarToProvider(modelY, teslaTom, 1, 700));
-    carProviders.add(new CarToProvider(leaf, auto99, 2, 500));
-    carProviders.add(new CarToProvider(leaf, auto1010, 2, 500));
-    carProviders.add(new CarToProvider(mazda2, bilikist, 3, 400));
-    carProviders.add(new CarToProvider(transporter, orstaKommune, 1, 200));
-    carProviders.add(new CarToProvider(transporter, sirkelsliper, 1, 70));
-    carProviders.add(new CarToProvider(transporter, peacePer, 1, 180));
-    carProviders.add(new CarToProvider(m3, bilverksted, 2, 400));
-    carProviders.add(new CarToProvider(m3, grabes, 1, 450));
-    carProviders.add(new CarToProvider(m3, djarney, 4, 449));
-    carProviders.add(new CarToProvider(fabia, sprekksaver, 1, 300));
-    carProviders.add(new CarToProvider(fabia, smidigBilforhandler, 2, 299));
-    carProviders.add(new CarToProvider(fabia, fossefallBilforhandler, 3, 700));
-    carProviders.add(new CarToProvider(peugeot307, betrelOstein, 2, 600));
-    carProviders.add(new CarToProvider(peugeot307, auto1010, 3, 550));
-    carProviders.add(new CarToProvider(peugeot207, betrelOstein, 1, 500));
-    carProviders.add(new CarToProvider(peugeot207, auto1010, 2, 550));
-    carProviders.add(new CarToProvider(peugeot3008, betrelOstein, 3, 600));
-    carProviders.add(new CarToProvider(peugeot3008, auto1010, 4, 600));
-    carProviders.add(new CarToProvider(peugeotiOn, betrelOstein, 5, 200));
-    carProviders.add(new CarToProvider(peugeotiOn, auto1010, 1, 201));
-
-    return carProviders;
-  }
-
-  private List<Order> createDefaultOrders(CarToProviderRepository carToProviderRepository,
-                                          UserRepository userRepository) {
+  private void createDefaultOrders(CarRepository carRepository,
+                                   UserRepository userRepository, OrderRepository orderRepository) {
     List<Order> orders = new ArrayList<>();
-    List<CarToProvider> carToProviders = carToProviderRepository.findAll();
-    User user = userRepository.findByUsername("ola.nordmann");
+    User customer1 = userRepository.findByUsername("ola.nordmann");
+    User customer2 = userRepository.findByUsername("kari.nordmann");
 
     // Some cars may be busy in some periods for one provider, but always available from another supplier
-    orders.add(
-        new Order(carToProviders.get(0), user, LocalDate.of(2025, 1, 1), LocalDate.of(2025, 6, 10),
-            "96000"));
-    orders.add(
-        new Order(carToProviders.get(0), user, LocalDate.of(2025, 1, 1), LocalDate.of(2025, 6, 10),
-            "96000"));
 
-    // Some cars may be busy from all providers for some weeks
-    orders.add(
-        new Order(carToProviders.get(9), user, LocalDate.of(2025, 3, 1), LocalDate.of(2025, 3, 15),
-            "2800"));
-    orders.add(
-        new Order(carToProviders.get(10), user, LocalDate.of(2025, 3, 1), LocalDate.of(2025, 3, 15),
-            "980"));
-    orders.add(
-        new Order(carToProviders.get(11), user, LocalDate.of(2025, 3, 1), LocalDate.of(2025, 3, 15),
-            "2520"));
+    LocalDate startDateOneProvider = LocalDate.of(2025, 1, 1);
+    LocalDate endDateOneProvider = LocalDate.of(2025, 6, 10);
+    Car golf1 = carRepository.findById(1);
+    User golf1Provider = userRepository.findById(golf1.getUser().getId()).orElse(null);
 
-    // Some cars may be “fully booked” out of 2025
     orders.add(
-        new Order(carToProviders.get(15), user, LocalDate.of(2025, 1, 1),
-            LocalDate.of(2025, 12, 31),
-            "109200"));
-    orders.add(
-        new Order(carToProviders.get(15), user, LocalDate.of(2025, 1, 1),
-            LocalDate.of(2025, 12, 31),
-            "109200"));
-    orders.add(
-        new Order(carToProviders.get(16), user, LocalDate.of(2025, 1, 1),
-            LocalDate.of(2025, 12, 31),
-            "108836"));
-    orders.add(
-        new Order(carToProviders.get(16), user, LocalDate.of(2025, 1, 1),
-            LocalDate.of(2025, 12, 31),
-            "108836"));
-    orders.add(
-        new Order(carToProviders.get(16), user, LocalDate.of(2025, 1, 1),
-            LocalDate.of(2025, 12, 31),
-            "108836"));
+        new Order(customer1, golf1Provider, startDateOneProvider, endDateOneProvider,
+            String.valueOf(golf1.getPrice() *
+                ChronoUnit.DAYS.between(startDateOneProvider, endDateOneProvider)), golf1, true));
+    golf1.setCarStatus(true);
 
-    return orders;
+// Some cars may be busy from all providers for some weeks
+    List<Car> transporters = carRepository.findByCarModel("Transporter");
+
+    LocalDate startDateSomeWeeks = LocalDate.of(2025, 3, 1);
+    LocalDate endDateSomeWeeks = LocalDate.of(2025, 3, 15);
+    Car transporter1 = transporters.get(0);
+    Car transporter2 = transporters.get(1);
+    Car transporter3 = transporters.get(2);
+    User transporter1Provider =
+        userRepository.findById(transporter1.getUser().getId()).orElse(null);
+    User transporter2Provider =
+        userRepository.findById(transporter2.getUser().getId()).orElse(null);
+    User transporter3Provider =
+        userRepository.findById(transporter3.getUser().getId()).orElse(null);
+
+    orders.add(
+        new Order(customer1, transporter1Provider, startDateSomeWeeks, endDateSomeWeeks,
+            String.valueOf(transporter1.getPrice() *
+                ChronoUnit.DAYS.between(startDateSomeWeeks, endDateSomeWeeks)), transporter1,
+            true));
+    transporter1.setCarStatus(true);
+    orders.add(
+        new Order(customer2, transporter2Provider, startDateSomeWeeks, endDateSomeWeeks,
+            String.valueOf(transporter2.getPrice() *
+                ChronoUnit.DAYS.between(startDateSomeWeeks, endDateSomeWeeks)), transporter2,
+            true));
+    transporter2.setCarStatus(true);
+    orders.add(
+        new Order(customer2, transporter3Provider, startDateSomeWeeks, endDateSomeWeeks,
+            String.valueOf(transporter3.getPrice() *
+                ChronoUnit.DAYS.between(startDateSomeWeeks, endDateSomeWeeks)), transporter3,
+            true));
+    transporter3.setCarStatus(true);
+
+// Some cars may be “fully booked” out of 2025
+    List<Car> iOns = carRepository.findByCarModel("iOn");
+
+    LocalDate startDateFullyBooked = LocalDate.of(2025, 1, 1);
+    LocalDate endDateFullyBooked = LocalDate.of(2025, 12, 31);
+    Car iOn1 = iOns.get(0);
+    Car iOn2 = iOns.get(1);
+    Car iOn3 = iOns.get(2);
+    Car iOn4 = iOns.get(3);
+    Car iOn5 = iOns.get(4);
+    User iOn1Provider = userRepository.findById(iOn1.getUser().getId()).orElse(null);
+    User iOn2Provider = userRepository.findById(iOn2.getUser().getId()).orElse(null);
+    User iOn3Provider = userRepository.findById(iOn3.getUser().getId()).orElse(null);
+    User iOn4Provider = userRepository.findById(iOn4.getUser().getId()).orElse(null);
+    User iOn5Provider = userRepository.findById(iOn5.getUser().getId()).orElse(null);
+
+    orders.add(
+        new Order(customer1, iOn1Provider, startDateFullyBooked, endDateFullyBooked,
+            String.valueOf(iOn1.getPrice() *
+                ChronoUnit.DAYS.between(startDateFullyBooked, endDateFullyBooked)), iOn1, true));
+    iOn1.setCarStatus(true);
+    orders.add(
+        new Order(customer1, iOn2Provider, startDateFullyBooked, endDateFullyBooked,
+            String.valueOf(iOn2.getPrice() *
+                ChronoUnit.DAYS.between(startDateFullyBooked, endDateFullyBooked)), iOn2, true));
+    iOn2.setCarStatus(true);
+    orders.add(
+        new Order(customer1, iOn3Provider, startDateFullyBooked, endDateFullyBooked,
+            String.valueOf(iOn3.getPrice() *
+                ChronoUnit.DAYS.between(startDateFullyBooked, endDateFullyBooked)), iOn3, true));
+    iOn3.setCarStatus(true);
+    orders.add(
+        new Order(customer2, iOn4Provider, startDateFullyBooked, endDateFullyBooked,
+            String.valueOf(iOn4.getPrice() *
+                ChronoUnit.DAYS.between(startDateFullyBooked, endDateFullyBooked)), iOn4, true));
+    iOn4.setCarStatus(true);
+    orders.add(
+        new Order(customer2, iOn5Provider, startDateFullyBooked, endDateFullyBooked,
+            String.valueOf(iOn5.getPrice() *
+                ChronoUnit.DAYS.between(startDateFullyBooked, endDateFullyBooked)), iOn5, true));
+    iOn5.setCarStatus(true);
+    carRepository.saveAll(List.of(golf1, transporter1, transporter2, transporter3, iOn1, iOn2, iOn3,
+        iOn4, iOn5));
+    orderRepository.saveAll(orders);
   }
 
   private void createDefaultFeatures(CarRepository carRepository,
                                      FeatureRepository featureRepository) {
-    List<Feature> features = new ArrayList<>();
 
-    Feature sunroof = new Feature("Sunroof");
-    Feature heatedSeats = new Feature("Heated Seats");
-    Feature dabRadio = new Feature("DAB Radio");
-    Feature autonomousDriving = new Feature("Autonomous Driving");
-    Feature longRange = new Feature("Long Range");
-    Feature fourWheelDrive = new Feature("Four Wheel Drive");
-    Feature yellowPaint = new Feature("Yellow Paint");
-    Feature retroDesign = new Feature("Retro Design");
-    Feature threeStripes = new Feature("Three Stripes");
-    Feature originalTireDiscs = new Feature("Original Tire Discs");
-    Feature towHook = new Feature("Tow Hook");
-    Feature roofBox = new Feature("Roof Box");
-    Feature glassWindow = new Feature("Glass Window");
-    Feature heatedSteeringWheel = new Feature("Heated Steering Wheel");
-    Feature heatedMirrors = new Feature("Heated Mirrors");
-    Feature heatedTires = new Feature("Heated Tires");
-    Feature heatedRug = new Feature("Heated Rug");
-    Feature heated360 = new Feature("Heated 360");
-    Feature fMRadio = new Feature("FM Radio");
-    Feature cDPlayer = new Feature("CD Player");
-    Feature metallicPaint = new Feature("Metallic Paint");
-    Feature fiveDoors = new Feature("Five Doors");
-    Feature veryEconomical = new Feature("Very Economical");
-    Feature bluetooth = new Feature("Bluetooth");
+    Feature sunroof = new Feature("Sunroof",
+        "The sunroof allows you to enjoy the sun and fresh air while driving.");
+    Feature heatedSeats =
+        new Feature("Heated Seats", "Heated seats keep you warm during cold days.");
+    Feature dabRadio =
+        new Feature("DAB Radio", "DAB Radio provides a better sound quality than FM Radio.");
+    Feature autonomousDriving =
+        new Feature("Autonomous Driving", "This car can drive itself! (almost)");
+    Feature longRange = new Feature("Long Range",
+        "This car can drive a long distance before needing to be recharged.");
+    Feature fourWheelDrive =
+        new Feature("Four Wheel Drive", "Four Wheel Drive provides better traction and control.");
+    Feature yellowPaint = new Feature("Yellow Paint", "Yellow paint makes the car stand out.");
+    Feature retroDesign =
+        new Feature("Retro Design", "Retro design gives the car a classic and cool look.");
+    Feature threeStripes = new Feature("Three Stripes", "Three stripes make the car look sporty.");
+    Feature originalTireDiscs =
+        new Feature("Original Tire Discs", "Original tire discs make the car look cool.");
+    Feature towHook = new Feature("Tow Hook", "Tow hook can be used to tow other vehicles.");
+    Feature roofBox = new Feature("Roof Box", "Roof box provides extra storage space.");
+    Feature glassWindow = new Feature("Glass Window", "Glass window provides a better view.");
+    Feature heatedSteeringWheel =
+        new Feature("Heated Steering Wheel", "Heated steering wheel keeps your hands warm.");
+    Feature heatedMirrors =
+        new Feature("Heated Mirrors", "Heated mirrors keep your mirrors clear.");
+    Feature heatedTires = new Feature("Heated Tires", "Heated tires provide better traction.");
+    Feature heatedRug = new Feature("Heated Rug", "Heated rug keeps your feet warm.");
+    Feature heated360 = new Feature("Heated 360", "Heated 360 keeps the whole car warm.");
+    Feature fMRadio = new Feature("FM Radio", "FM Radio provides a good sound quality.");
+    Feature cDPlayer = new Feature("CD Player", "CD Player allows you to play CDs.");
+    Feature metallicPaint =
+        new Feature("Metallic Paint", "Metallic paint makes the car look shiny.");
+    Feature fiveDoors = new Feature("Five Doors", "Five doors provide easy access to the car.");
+    Feature veryEconomical = new Feature("Very Economical", "This car is very economical.");
+    Feature bluetooth =
+        new Feature("Bluetooth", "Bluetooth allows you to connect your phone to the car.");
 
-    features.add(sunroof);
-    features.add(heatedSeats);
-    features.add(dabRadio);
-    features.add(autonomousDriving);
-    features.add(longRange);
-    features.add(fourWheelDrive);
-    features.add(yellowPaint);
-    features.add(retroDesign);
-    features.add(threeStripes);
-    features.add(originalTireDiscs);
-    features.add(towHook);
-    features.add(roofBox);
-    features.add(glassWindow);
-    features.add(heatedSteeringWheel);
-    features.add(heatedMirrors);
-    features.add(heatedTires);
-    features.add(heatedRug);
-    features.add(heated360);
-    features.add(fMRadio);
-    features.add(cDPlayer);
-    features.add(metallicPaint);
-    features.add(fiveDoors);
-    features.add(veryEconomical);
-    features.add(bluetooth);
+    List<Feature> features =
+        new ArrayList<>(List.of(sunroof, heatedSeats, dabRadio, autonomousDriving, longRange,
+            fourWheelDrive, yellowPaint, retroDesign, threeStripes, originalTireDiscs, towHook,
+            roofBox, glassWindow, heatedSteeringWheel, heatedMirrors, heatedTires, heatedRug,
+            heated360,
+            fMRadio, cDPlayer, metallicPaint, fiveDoors, veryEconomical, bluetooth));
 
 
     featureRepository.saveAll(features);
 
-    Car golf = carRepository.findByCarModel("Golf");
-    Car model3 = carRepository.findByCarModel("Model 3");
-    Car modelY = carRepository.findByCarModel("Model Y");
-    Car leaf = carRepository.findByCarModel("Leaf");
-    Car mazda2 = carRepository.findByCarModel("2");
-    Car transporter = carRepository.findByCarModel("Transporter");
-    Car m3 = carRepository.findByCarModel("M3 Evo");
-    Car fabia = carRepository.findByCarModel("Fabia");
-    Car peugeot307 = carRepository.findByCarModel("307 SW");
-    Car peugeot207 = carRepository.findByCarModel("207");
-    Car peugeot3008 = carRepository.findByCarModel("3008");
-    Car peugeotiOn = carRepository.findByCarModel("iOn");
+    List<Car> golfCars = carRepository.findByCarModel("Golf");
+    List<Car> model3Cars = carRepository.findByCarModel("Model 3");
+    List<Car> modelYCars = carRepository.findByCarModel("Model Y");
+    List<Car> leafCars = carRepository.findByCarModel("Leaf");
+    List<Car> mazda2Cars = carRepository.findByCarModel("2");
+    List<Car> transporterCars = carRepository.findByCarModel("Transporter");
+    List<Car> m3Cars = carRepository.findByCarModel("M3 Evo");
+    List<Car> fabiaCars = carRepository.findByCarModel("Fabia");
+    List<Car> peugeot307Cars = carRepository.findByCarModel("307 SW");
+    List<Car> peugeot207Cars = carRepository.findByCarModel("207");
+    List<Car> peugeot3008Cars = carRepository.findByCarModel("3008");
+    List<Car> peugeotiOnCars = carRepository.findByCarModel("iOn");
 
-    golf.getFeatures().add(bluetooth);
-    golf.getFeatures().add(dabRadio);
-    golf.getFeatures().add(heatedSeats);
+    for (Car car : golfCars) {
+      car.getFeatures().addAll(List.of(heatedSeats, dabRadio, bluetooth));
+    }
 
-    model3.getFeatures().add(autonomousDriving);
-    model3.getFeatures().add(longRange);
-    model3.getFeatures().add(heatedSeats);
+    for (Car car : model3Cars) {
+      car.getFeatures().addAll(List.of(autonomousDriving, longRange, heatedSeats));
+    }
 
-    modelY.getFeatures().add(fourWheelDrive);
-    modelY.getFeatures().add(sunroof);
-    modelY.getFeatures().add(autonomousDriving);
+    for (Car car : modelYCars) {
+      car.getFeatures().addAll(List.of(fourWheelDrive, sunroof, autonomousDriving));
+    }
 
-    mazda2.getFeatures().add(dabRadio);
+    for (Car car : mazda2Cars) {
+      car.getFeatures().add(dabRadio);
+    }
 
-    transporter.getFeatures().add(yellowPaint);
-    transporter.getFeatures().add(retroDesign);
+    for (Car car : transporterCars) {
+      car.getFeatures().addAll(List.of(yellowPaint, retroDesign));
+    }
 
-    m3.getFeatures().add(threeStripes);
-    m3.getFeatures().add(originalTireDiscs);
+    for (Car car : m3Cars) {
+      car.getFeatures().addAll(List.of(threeStripes, originalTireDiscs));
+    }
 
-    fabia.getFeatures().add(towHook);
+    for (Car car : fabiaCars) {
+      car.getFeatures().add(towHook);
+    }
 
-    peugeot307.getFeatures().add(roofBox);
+    for (Car car : peugeot307Cars) {
+      car.getFeatures().add(roofBox);
+    }
 
-    peugeot207.getFeatures().add(glassWindow);
-    peugeot207.getFeatures().add(heatedSeats);
-    peugeot207.getFeatures().add(heatedSteeringWheel);
-    peugeot207.getFeatures().add(heatedMirrors);
-    peugeot207.getFeatures().add(heatedTires);
-    peugeot207.getFeatures().add(heatedRug);
-    peugeot207.getFeatures().add(heated360);
+    for (Car car : peugeot207Cars) {
+      car.getFeatures().addAll(List.of(glassWindow, heatedSeats, heatedSteeringWheel, heatedMirrors,
+          heatedTires, heatedRug, heated360));
+    }
 
-    peugeot3008.getFeatures().add(fMRadio);
-    peugeot3008.getFeatures().add(cDPlayer);
-    peugeot3008.getFeatures().add(metallicPaint);
+    for (Car car : peugeot3008Cars) {
+      car.getFeatures().addAll(List.of(fMRadio, cDPlayer, metallicPaint));
+    }
 
-    peugeotiOn.getFeatures().add(fiveDoors);
-    peugeotiOn.getFeatures().add(veryEconomical);
+    for (Car car : peugeotiOnCars) {
+      car.getFeatures().addAll(List.of(fiveDoors, veryEconomical));
+    }
 
-    carRepository.saveAll(
-        List.of(golf, model3, modelY, leaf, mazda2, transporter, m3, fabia, peugeot307, peugeot207,
-            peugeot3008, peugeotiOn));
+    List<Car> allCars = new ArrayList<>();
+    allCars.addAll(golfCars);
+    allCars.addAll(model3Cars);
+    allCars.addAll(modelYCars);
+    allCars.addAll(leafCars);
+    allCars.addAll(mazda2Cars);
+    allCars.addAll(transporterCars);
+    allCars.addAll(m3Cars);
+    allCars.addAll(fabiaCars);
+    allCars.addAll(peugeot307Cars);
+    allCars.addAll(peugeot207Cars);
+    allCars.addAll(peugeot3008Cars);
+    allCars.addAll(peugeotiOnCars);
+
+    carRepository.saveAll(allCars);
   }
 }

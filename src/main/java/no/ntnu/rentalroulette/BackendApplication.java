@@ -1,11 +1,5 @@
 package no.ntnu.rentalroulette;
 
-import no.ntnu.rentalroulette.entity.Car;
-import no.ntnu.rentalroulette.entity.CarManufacturer;
-import no.ntnu.rentalroulette.entity.User;
-import no.ntnu.rentalroulette.entity.UserType;
-import no.ntnu.rentalroulette.repository.CarRepository;
-
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -29,10 +23,10 @@ public class BackendApplication {
   @Bean
   public CommandLineRunner run(ApplicationContext context) {
     return args -> {
-      
-        SampleDataGenerator generator = new SampleDataGenerator(context);
-        generator.createDefaultEntries();
-      
+
+      SampleDataGenerator generator = new SampleDataGenerator(context);
+      generator.createDefaultEntries();
+
     };
   }
 

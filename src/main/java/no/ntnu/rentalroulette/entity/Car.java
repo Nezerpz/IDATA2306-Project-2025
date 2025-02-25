@@ -1,18 +1,19 @@
 package no.ntnu.rentalroulette.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -21,6 +22,9 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import no.ntnu.rentalroulette.enums.FuelType;
+import no.ntnu.rentalroulette.enums.Manufacturer;
+import no.ntnu.rentalroulette.enums.TransmissionType;
 
 /**
  *
@@ -41,6 +45,16 @@ public class Car {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private int id;
+
+  @Setter
+  @Getter
+  @Column(name = "image_path")
+  private String imagePath;
+
+  @Getter
+  @Enumerated(EnumType.STRING)
+  private Manufacturer manufacturer;
+
   /**
    * Entity car model
    *
@@ -52,11 +66,16 @@ public class Car {
   @Column(name = "car_model")
   private String carModel;
 
+  /**
+   * Entity price this car entity has.
+   *
+   * @param price
+   * @return price
+   */
+  @Setter
   @Getter
-  @ManyToOne
-  @JoinColumn(name = "manufacturer_id", nullable = false)
-  @JsonProperty("manufacturer")
-  private CarManufacturer manufacturer;
+  @Column(name = "price")
+  private int price;
 
   /**
    * Entiity number_of_seats this car entity has.
@@ -77,9 +96,7 @@ public class Car {
    */
   @Setter
   @Getter
-  @ManyToOne
-  @JoinColumn(name = "transmission_type_id", nullable = false)
-  @JsonProperty("transmissionType")
+  @Enumerated(EnumType.STRING)
   private TransmissionType transmissionType;
 
   /**
@@ -90,9 +107,7 @@ public class Car {
    */
   @Setter
   @Getter
-  @ManyToOne
-  @JoinColumn(name = "fuel_type_id", nullable = false)
-  @JsonProperty("fuelType")
+  @Enumerated(EnumType.STRING)
   private FuelType fuelType;
   /**
    * Car entity's production year.
@@ -105,6 +120,15 @@ public class Car {
   @Column(name = "production_year")
   private int productionYear;
 
+  @Setter
+  @Getter
+  @Column(name = "car_status")
+  private boolean carStatus;
+
+  @ManyToOne
+  @JoinColumn(name = "user_id")
+  private User user;
+
 
   @Getter
   @ManyToMany(fetch = FetchType.EAGER)
@@ -116,35 +140,23 @@ public class Car {
   @JsonProperty("features")
   private List<Feature> features = new ArrayList<>();
 
-
   public Car(
+      String imagePath,
       String model,
-      CarManufacturer manufacturer,
+      Manufacturer manufacturer,
       int seats,
       TransmissionType transmissionType,
       FuelType fuelType,
+      int price,
       int productionYear) {
+    this.imagePath = imagePath;
     this.carModel = model;
     this.manufacturer = manufacturer;
     this.numberOfSeats = seats;
     this.transmissionType = transmissionType;
     this.fuelType = fuelType;
+    this.price = price;
     this.productionYear = productionYear;
-  }
-
-  @JsonProperty("manufacturer")
-  public String getManufacturerName() {
-    return manufacturer.getName();
-  }
-
-  @JsonProperty("transmissionType")
-  public String getTransmissionTypeName() {
-    return transmissionType.getTransmissionType();
-  }
-
-  @JsonProperty("fuelType")
-  public String getFuelTypeName() {
-    return fuelType.getFuelType();
   }
 
   @JsonProperty("features")
