@@ -9,6 +9,7 @@ import no.ntnu.rentalroulette.entity.Car;
 import no.ntnu.rentalroulette.entity.Feature;
 import no.ntnu.rentalroulette.entity.Order;
 import no.ntnu.rentalroulette.entity.User;
+import no.ntnu.rentalroulette.enums.CarStatus;
 import no.ntnu.rentalroulette.enums.FuelType;
 import no.ntnu.rentalroulette.enums.Manufacturer;
 import no.ntnu.rentalroulette.enums.TransmissionType;
@@ -22,6 +23,8 @@ import org.springframework.context.ApplicationContext;
 public class SampleDataGenerator {
   private ApplicationContext context;
   private static final String ADDRESS = "Smibakken 1, Verftsgata 2, 6018 Ålesund";
+
+  //TODO: Use the database scheme to create the two remaining tables for some reviews.
 
   public SampleDataGenerator(ApplicationContext context) {
     this.context = context;
@@ -273,7 +276,7 @@ public class SampleDataGenerator {
         new Order(customer1, golf1Provider, startDateOneProvider, endDateOneProvider,
             String.valueOf(golf1.getPrice() *
                 ChronoUnit.DAYS.between(startDateOneProvider, endDateOneProvider)), golf1, true));
-    golf1.setCarStatus(true);
+    golf1.setCarStatus(CarStatus.INUSE);
 
 // Some cars may be busy from all providers for some weeks
     List<Car> transporters = carRepository.findByCarModel("Transporter");
@@ -295,19 +298,19 @@ public class SampleDataGenerator {
             String.valueOf(transporter1.getPrice() *
                 ChronoUnit.DAYS.between(startDateSomeWeeks, endDateSomeWeeks)), transporter1,
             true));
-    transporter1.setCarStatus(true);
+    transporter1.setCarStatus(CarStatus.INUSE);
     orders.add(
         new Order(customer2, transporter2Provider, startDateSomeWeeks, endDateSomeWeeks,
             String.valueOf(transporter2.getPrice() *
                 ChronoUnit.DAYS.between(startDateSomeWeeks, endDateSomeWeeks)), transporter2,
             true));
-    transporter2.setCarStatus(true);
+    transporter2.setCarStatus(CarStatus.INUSE);
     orders.add(
         new Order(customer2, transporter3Provider, startDateSomeWeeks, endDateSomeWeeks,
             String.valueOf(transporter3.getPrice() *
                 ChronoUnit.DAYS.between(startDateSomeWeeks, endDateSomeWeeks)), transporter3,
             true));
-    transporter3.setCarStatus(true);
+    transporter3.setCarStatus(CarStatus.INUSE);
 
 // Some cars may be “fully booked” out of 2025
     List<Car> iOns = carRepository.findByCarModel("iOn");
@@ -329,27 +332,27 @@ public class SampleDataGenerator {
         new Order(customer1, iOn1Provider, startDateFullyBooked, endDateFullyBooked,
             String.valueOf(iOn1.getPrice() *
                 ChronoUnit.DAYS.between(startDateFullyBooked, endDateFullyBooked)), iOn1, true));
-    iOn1.setCarStatus(true);
+    iOn1.setCarStatus(CarStatus.INUSE);
     orders.add(
         new Order(customer1, iOn2Provider, startDateFullyBooked, endDateFullyBooked,
             String.valueOf(iOn2.getPrice() *
                 ChronoUnit.DAYS.between(startDateFullyBooked, endDateFullyBooked)), iOn2, true));
-    iOn2.setCarStatus(true);
+    iOn2.setCarStatus(CarStatus.INUSE);
     orders.add(
         new Order(customer1, iOn3Provider, startDateFullyBooked, endDateFullyBooked,
             String.valueOf(iOn3.getPrice() *
                 ChronoUnit.DAYS.between(startDateFullyBooked, endDateFullyBooked)), iOn3, true));
-    iOn3.setCarStatus(true);
+    iOn3.setCarStatus(CarStatus.INUSE);
     orders.add(
         new Order(customer2, iOn4Provider, startDateFullyBooked, endDateFullyBooked,
             String.valueOf(iOn4.getPrice() *
                 ChronoUnit.DAYS.between(startDateFullyBooked, endDateFullyBooked)), iOn4, true));
-    iOn4.setCarStatus(true);
+    iOn4.setCarStatus(CarStatus.INUSE);
     orders.add(
         new Order(customer2, iOn5Provider, startDateFullyBooked, endDateFullyBooked,
             String.valueOf(iOn5.getPrice() *
                 ChronoUnit.DAYS.between(startDateFullyBooked, endDateFullyBooked)), iOn5, true));
-    iOn5.setCarStatus(true);
+    iOn5.setCarStatus(CarStatus.INUSE);
     carRepository.saveAll(List.of(golf1, transporter1, transporter2, transporter3, iOn1, iOn2, iOn3,
         iOn4, iOn5));
     orderRepository.saveAll(orders);

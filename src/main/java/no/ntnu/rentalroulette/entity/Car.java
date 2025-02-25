@@ -22,6 +22,7 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import no.ntnu.rentalroulette.enums.CarStatus;
 import no.ntnu.rentalroulette.enums.FuelType;
 import no.ntnu.rentalroulette.enums.Manufacturer;
 import no.ntnu.rentalroulette.enums.TransmissionType;
@@ -123,7 +124,8 @@ public class Car {
   @Setter
   @Getter
   @Column(name = "car_status")
-  private boolean carStatus;
+  @Enumerated(EnumType.STRING)
+  private CarStatus carStatus;
 
   @ManyToOne
   @JoinColumn(name = "user_id")
