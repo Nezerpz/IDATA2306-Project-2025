@@ -18,9 +18,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 public class APIController {
 
 
-    @Autowired
-    private SessionUtil sessionUtil;
-
     @GetMapping("/hello")
     @Operation(
         summary = "A simple test endpoint",
