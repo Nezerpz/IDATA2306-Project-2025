@@ -1,15 +1,16 @@
 package no.ntnu.rentalroulette.entity;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 import no.ntnu.rentalroulette.enums.UserType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -110,6 +111,18 @@ public class User {
   private List<Car> cars;
 
 
+  @Getter
+  @Setter
+  private boolean active;
+
+  @ManyToMany
+  @JoinTable(name = "user_role",
+    joinColumns = @JoinColumn(name = "user_id"),
+    inverseJoinColumns = @JoinColumn(name = "role_id")
+  )
+  private Set<Role> roles = new LinkedHashSet<Role>();
+
+
   public User(UserType userType, String firstName, String lastName, String username,
               String password, String email, String telephoneNumber) {
     this.userType = userType;
@@ -119,6 +132,7 @@ public class User {
     this.password = password;
     this.email = email;
     this.telephoneNumber = telephoneNumber;
+    this.active = true;
   }
   
 }
