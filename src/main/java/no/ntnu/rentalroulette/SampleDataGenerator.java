@@ -128,23 +128,23 @@ public class SampleDataGenerator {
     FuelType petrol = FuelType.PETROL;
     FuelType diesel = FuelType.DIESEL;
     FuelType electric = FuelType.ELECTRIC;
-    User millerBil = userRepository.findByUsername("miller.bil");
-    User billerBil = userRepository.findByUsername("biller.bil");
-    User biggernesTesla = userRepository.findByUsername("biggernes.tesla");
-    User teslaTom = userRepository.findByUsername("tesla.tom");
-    User auto99 = userRepository.findByUsername("auto.9-9");
-    User auto1010 = userRepository.findByUsername("auto.10-10");
-    User bilikist = userRepository.findByUsername("bilikist");
-    User orstaKommune = userRepository.findByUsername("orsta.kommune");
-    User sirkelsliper = userRepository.findByUsername("sirkelsliper");
-    User peacePer = userRepository.findByUsername("peace.per");
-    User bilverksted = userRepository.findByUsername("bilverksted");
-    User grabes = userRepository.findByUsername("grabes");
-    User djarney = userRepository.findByUsername("djarney");
-    User sprekksaver = userRepository.findByUsername("sprekksaver");
-    User smidigBilforhandler = userRepository.findByUsername("smidig.bilforhandler");
-    User fossefallBilforhandler = userRepository.findByUsername("fossefall.bilforhandler");
-    User betrelOstein = userRepository.findByUsername("betrel.ostein");
+    User millerBil = userRepository.findByUsername("miller.bil").get();
+    User billerBil = userRepository.findByUsername("biller.bil").get();
+    User biggernesTesla = userRepository.findByUsername("biggernes.tesla").get();
+    User teslaTom = userRepository.findByUsername("tesla.tom").get();
+    User auto99 = userRepository.findByUsername("auto.9-9").get();
+    User auto1010 = userRepository.findByUsername("auto.10-10").get();
+    User bilikist = userRepository.findByUsername("bilikist").get();
+    User orstaKommune = userRepository.findByUsername("orsta.kommune").get();
+    User sirkelsliper = userRepository.findByUsername("sirkelsliper").get();
+    User peacePer = userRepository.findByUsername("peace.per").get();
+    User bilverksted = userRepository.findByUsername("bilverksted").get();
+    User grabes = userRepository.findByUsername("grabes").get();
+    User djarney = userRepository.findByUsername("djarney").get();
+    User sprekksaver = userRepository.findByUsername("sprekksaver").get();
+    User smidigBilforhandler = userRepository.findByUsername("smidig.bilforhandler").get();
+    User fossefallBilforhandler = userRepository.findByUsername("fossefall.bilforhandler").get();
+    User betrelOstein = userRepository.findByUsername("betrel.ostein").get();
 
     Car golf1 = new Car("/Images/Golf", "Golf", volkswagen, 5, manual, diesel, 600, 2007);
     cars.add(golf1);
@@ -271,8 +271,8 @@ public class SampleDataGenerator {
   private void createDefaultOrders(CarRepository carRepository,
                                    UserRepository userRepository, OrderRepository orderRepository) {
     List<Order> orders = new ArrayList<>();
-    User customer1 = userRepository.findByUsername("ola.nordmann");
-    User customer2 = userRepository.findByUsername("kari.nordmann");
+    User customer1 = userRepository.findByUsername("ola.nordmann").get();
+    User customer2 = userRepository.findByUsername("kari.nordmann").get();
 
     // Some cars may be busy in some periods for one provider, but always available from another supplier
 
@@ -495,10 +495,10 @@ public class SampleDataGenerator {
   private void createDefaultReviews(UserRepository userRepository, CarRepository carRepository,
                                     CarReviewRepository carReviewRepository,
                                     UserReviewRepository userReviewRepository) {
-    User olaNordmann = userRepository.findByUsername("ola.nordmann");
-    User kariNordmann = userRepository.findByUsername("kari.nordmann");
-    User millerBil = userRepository.findByUsername("miller.bil");
-    User billerBil = userRepository.findByUsername("biller.bil");
+    User olaNordmann = userRepository.findByUsername("ola.nordmann").get();
+    User kariNordmann = userRepository.findByUsername("kari.nordmann").get();
+    User millerBil = userRepository.findByUsername("miller.bil").get();
+    User billerBil = userRepository.findByUsername("biller.bil").get();
 
     Car golf1 = carRepository.findById(1);
     Car golf2 = carRepository.findById(2);

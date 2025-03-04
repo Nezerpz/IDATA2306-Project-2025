@@ -19,6 +19,7 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import no.ntnu.rentalroulette.security.JwtUtil;
 
 /**
  * A filter that is applied to all HTTP requests and checks for a valid JWT token in

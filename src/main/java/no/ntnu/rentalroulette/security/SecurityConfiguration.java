@@ -16,6 +16,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import no.ntnu.rentalroulette.security.JwtRequestFilter;
+
 /**
  * Creates AuthenticationManager - set up authentication type.
  * The @EnableMethodSecurity is needed so that each endpoint can specify which role it requires
@@ -28,6 +30,7 @@ public class SecurityConfiguration {
    */
   @Autowired
   private UserDetailsService userDetailsService;
+
   @Autowired
   private JwtRequestFilter jwtRequestFilter;
 
