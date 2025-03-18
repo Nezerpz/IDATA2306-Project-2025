@@ -6,6 +6,8 @@ import no.ntnu.rentalroulette.entity.Car;
 import java.util.Set;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -16,5 +18,9 @@ public interface CarRepository extends JpaRepository<Car, Integer> {
   Car findById(int id);
 
   Set<String> findDistinctByCarModel(String carModel);
+
+  @Query("SELECT c FROM Car c WHERE c.id IN (SELECT o.car.id FROM Order o WHERE o.endDate > :startDate)")
+  List<Car> findAvailableCars(@Param("startDate") String startDate,
+                              @Param("endDate") String endDate);
 
 }

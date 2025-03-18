@@ -9,6 +9,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -27,6 +30,13 @@ public class CarController {
   public ResponseEntity<Car> getCar(@PathVariable(value = "id") int id) {
     Car car = carRepository.findById(id);
     return new ResponseEntity<>(car, HttpStatus.OK);
+  }
+
+  @PostMapping("/cars")
+  public ResponseEntity<List<Car>> getCarsByDates(@RequestBody DateRange dateRange) {
+    List<Car> cars = new CopyOnWriteArrayList<>(
+        carRepository.findAvailableCars(dateRange.getStartDate(), dateRange.getEndDate()));
+    return new ResponseEntity<>(cars, HttpStatus.OK);
   }
 
 /*
