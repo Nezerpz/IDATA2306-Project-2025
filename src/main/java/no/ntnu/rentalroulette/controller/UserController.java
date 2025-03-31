@@ -19,13 +19,15 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-public class UserController {
+public class UserController extends ControllerUtil {
+
+  @Autowired
+  public UserController(JwtUtil jwtUtil, UserRepository userRepository) {
+    super(jwtUtil, userRepository);
+  }
 
   @Autowired
   private UserRepository userRepository;
-
-  @Autowired
-  private JwtUtil jwtUtil;
 
   @GetMapping("/users")
   @PreAuthorize("hasRole('ADMIN')")
@@ -46,14 +48,15 @@ public class UserController {
   }
 
   @GetMapping("/userType")
-  public ResponseEntity<String> getUserType(HttpServletRequest request) {
-    String jwtToken = request.getHeader("Authorization").substring(7);
-    String username = jwtUtil.extractUsername(jwtToken);
-    Optional<User> user = userRepository.findByUsername(username);
-    if (user.isPresent()) {
-      return new ResponseEntity<>(user.get().getUserType().toString(), HttpStatus.OK);
-    } else {
-      throw new UsernameNotFoundException("Username: " + username + " not found");
-    }
+  public ResponseEntity<UserType> getUserType(HttpServletRequest request) {
+    return new ResponseEntity<>(handleJwtAndReturnUser(request).getUserType(), HttpStatus.OK);
+  }
+
+  @GetMapping("/become-provider")
+  public ResponseEntity<User> becomeProvider(HttpServletRequest request) {
+    User user = handleJwtAndReturnUser(request);
+    user.setUserType(UserType.PROVIDER);
+    userRepository.save(user);
+    return new ResponseEntity<>(user, HttpStatus.OK);
   }
 }

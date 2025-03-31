@@ -18,16 +18,15 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-public class OrderController {
+public class OrderController extends ControllerUtil {
 
   @Autowired
   private OrderRepository orderRepository;
 
   @Autowired
-  private JwtUtil jwtUtil;
-
-  @Autowired
-  private UserRepository userRepository;
+  public OrderController(JwtUtil jwtUtil, UserRepository userRepository) {
+    super(jwtUtil, userRepository);
+  }
 
   @GetMapping("/orders")
   @Operation(
@@ -57,11 +56,9 @@ public class OrderController {
       )
   })
   public ResponseEntity<List<Order>> getOrdersByCustomer(HttpServletRequest request) {
-    String jwtToken = request.getHeader("Authorization").substring(7);
-    String username = jwtUtil.extractUsername(jwtToken);
-    Optional<User> user = userRepository.findByUsername(username);
-    return user.map(value -> ResponseEntity.ok(orderRepository.findAllByCustomerId(value.getId())))
-        .orElseGet(() -> ResponseEntity.notFound().build());
+    List<Order> orders =
+        orderRepository.findAllByCustomerId(handleJwtAndReturnUser(request).getId());
+    return ResponseEntity.ok(orders);
   }
 
   @GetMapping("/orders/provider")
@@ -76,10 +73,8 @@ public class OrderController {
       )
   })
   public ResponseEntity<List<Order>> getOrdersForProvider(HttpServletRequest request) {
-    String jwtToken = request.getHeader("Authorization").substring(7);
-    String username = jwtUtil.extractUsername(jwtToken);
-    Optional<User> user = userRepository.findByUsername(username);
-    return user.map(value -> ResponseEntity.ok(orderRepository.findAllByProviderId(value.getId())))
-        .orElseGet(() -> ResponseEntity.notFound().build());
+    List<Order> orders =
+        orderRepository.findAllByProviderId(handleJwtAndReturnUser(request).getId());
+    return ResponseEntity.ok(orders);
   }
 }
