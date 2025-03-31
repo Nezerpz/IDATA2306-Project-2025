@@ -1,11 +1,14 @@
 package no.ntnu.rentalroulette.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
 import no.ntnu.rentalroulette.entity.User;
+import no.ntnu.rentalroulette.enums.UserType;
 import no.ntnu.rentalroulette.repository.UserRepository;
 
+import no.ntnu.rentalroulette.security.JwtUtil;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +24,9 @@ public class UserController {
   @Autowired
   private UserRepository userRepository;
 
+  @Autowired
+  private JwtUtil jwtUtil;
+
   @GetMapping("/users")
   @PreAuthorize("hasRole('ADMIN')")
   public ResponseEntity<List<User>> getUsers() {
@@ -33,10 +39,21 @@ public class UserController {
   public ResponseEntity<User> getUser(@PathVariable(value = "username") String username) {
     Optional<User> user = userRepository.findByUsername(username);
     if (user.isPresent()) {
-        return new ResponseEntity<>(user.get(), HttpStatus.OK);
+      return new ResponseEntity<>(user.get(), HttpStatus.OK);
+    } else {
+      throw new UsernameNotFoundException("Username: " + username + " not found");
     }
-    else {
-        throw new UsernameNotFoundException("Username: " + username + " not found");
+  }
+
+  @GetMapping("/userType")
+  public ResponseEntity<String> getUserType(HttpServletRequest request) {
+    String jwtToken = request.getHeader("Authorization").substring(7);
+    String username = jwtUtil.extractUsername(jwtToken);
+    Optional<User> user = userRepository.findByUsername(username);
+    if (user.isPresent()) {
+      return new ResponseEntity<>(user.get().getUserType().toString(), HttpStatus.OK);
+    } else {
+      throw new UsernameNotFoundException("Username: " + username + " not found");
     }
   }
 }

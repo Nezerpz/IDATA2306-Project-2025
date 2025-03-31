@@ -59,10 +59,9 @@ public class OrderController {
   public ResponseEntity<List<Order>> getOrdersByCustomer(HttpServletRequest request) {
     String jwtToken = request.getHeader("Authorization").substring(7);
     String username = jwtUtil.extractUsername(jwtToken);
-    User user = userRepository.findByUsername(username).get();
-    int customerId = user.getId();
-    List<Order> orders = orderRepository.findAllByCustomerId(customerId);
-    return ResponseEntity.ok(orders);
+    Optional<User> user = userRepository.findByUsername(username);
+    return user.map(value -> ResponseEntity.ok(orderRepository.findAllByCustomerId(value.getId())))
+        .orElseGet(() -> ResponseEntity.notFound().build());
   }
 
   @GetMapping("/orders/provider")
@@ -79,9 +78,8 @@ public class OrderController {
   public ResponseEntity<List<Order>> getOrdersForProvider(HttpServletRequest request) {
     String jwtToken = request.getHeader("Authorization").substring(7);
     String username = jwtUtil.extractUsername(jwtToken);
-    User user = userRepository.findByUsername(username).get();
-    int providerId = user.getId();
-    List<Order> orders = orderRepository.findAllByProviderId(providerId);
-    return ResponseEntity.ok(orders);
+    Optional<User> user = userRepository.findByUsername(username);
+    return user.map(value -> ResponseEntity.ok(orderRepository.findAllByProviderId(value.getId())))
+        .orElseGet(() -> ResponseEntity.notFound().build());
   }
 }
