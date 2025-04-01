@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.function.Function;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
+import no.ntnu.rentalroulette.exception.JwtTokenExpiredException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
@@ -85,10 +86,11 @@ public class JwtUtil {
   }
 
   private Claims extractAllClaims(String token) {
-    return Jwts.parser().verifyWith(getSigningKey()).build().parseSignedClaims(token).getPayload();
+    return Jwts.parser().verifyWith(getSigningKey()).build().parseSignedClaims(token)
+        .getPayload();
   }
 
-  private Boolean isTokenExpired(String token) {
+  public Boolean isTokenExpired(String token) {
     return extractExpiration(token).before(new Date());
   }
 }

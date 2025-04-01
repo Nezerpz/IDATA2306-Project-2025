@@ -5,15 +5,13 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.List;
-import java.util.Optional;
 import no.ntnu.rentalroulette.entity.Order;
-import no.ntnu.rentalroulette.entity.User;
 import no.ntnu.rentalroulette.repository.OrderRepository;
 import no.ntnu.rentalroulette.repository.UserRepository;
-import no.ntnu.rentalroulette.security.AccessUserService;
 import no.ntnu.rentalroulette.security.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -28,7 +26,9 @@ public class OrderController extends ControllerUtil {
     super(jwtUtil, userRepository);
   }
 
+  //TODO: Remove this endpoint, it is only for testing purposes
   @GetMapping("/orders")
+  @PreAuthorize("hasRole('ADMIN')")
   @Operation(
       summary = "Orders endpoint",
       description = "Returns a list of all orders in the system"
@@ -62,6 +62,7 @@ public class OrderController extends ControllerUtil {
   }
 
   @GetMapping("/orders/provider")
+  @PreAuthorize("hasRole('PROVIDER')")
   @Operation(
       summary = "Orders by provider endpoint",
       description = "Returns a list of all orders for a specific provider"
