@@ -62,7 +62,6 @@ public class OrderController extends ControllerUtil {
   }
 
   @GetMapping("/orders/provider")
-  @PreAuthorize("hasRole('PROVIDER')")
   @Operation(
       summary = "Orders by provider endpoint",
       description = "Returns a list of all orders for a specific provider"

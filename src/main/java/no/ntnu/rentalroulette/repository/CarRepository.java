@@ -23,4 +23,6 @@ public interface CarRepository extends JpaRepository<Car, Integer> {
   List<Car> findAvailableCars(@Param("startDate") String startDate,
                               @Param("endDate") String endDate);
 
+  @Query("SELECT c FROM Car c WHERE c.user.id = :providerId")
+  List<Car> findAllByProviderId(@Param("providerId") int providerId);
 }

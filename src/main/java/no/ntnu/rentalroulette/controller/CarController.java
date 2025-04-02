@@ -1,9 +1,12 @@
 package no.ntnu.rentalroulette.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import no.ntnu.rentalroulette.entity.Car;
 import no.ntnu.rentalroulette.repository.CarRepository;
+import no.ntnu.rentalroulette.repository.UserRepository;
+import no.ntnu.rentalroulette.security.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,10 +17,16 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-public class CarController {
+public class CarController extends ControllerUtil {
+
 
   @Autowired
   private CarRepository carRepository;
+
+  @Autowired
+  public CarController(JwtUtil jwtUtil, UserRepository userRepository) {
+    super(jwtUtil, userRepository);
+  }
 
   @GetMapping("/cars")
   public ResponseEntity<List<Car>> getCars() {
@@ -25,7 +34,7 @@ public class CarController {
     return new ResponseEntity<>(cars, HttpStatus.OK);
   }
 
-  @GetMapping("/car/{id}")
+  @GetMapping("/cars/{id}")
   public ResponseEntity<Car> getCar(@PathVariable(value = "id") int id) {
     Car car = carRepository.findById(id);
     return new ResponseEntity<>(car, HttpStatus.OK);
@@ -35,6 +44,13 @@ public class CarController {
   public ResponseEntity<List<Car>> getCarsByDates(@RequestBody DateRange dateRange) {
     List<Car> cars = new CopyOnWriteArrayList<>(
         carRepository.findAvailableCars(dateRange.getStartDate(), dateRange.getEndDate()));
+    return new ResponseEntity<>(cars, HttpStatus.OK);
+  }
+
+  @GetMapping("/cars/provider")
+  public ResponseEntity<List<Car>> getCarsByProvider(HttpServletRequest request) {
+    List<Car> cars = new CopyOnWriteArrayList<>(
+        carRepository.findAllByProviderId(handleJwtAndReturnUser(request).getId()));
     return new ResponseEntity<>(cars, HttpStatus.OK);
   }
 

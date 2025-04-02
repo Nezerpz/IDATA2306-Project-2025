@@ -3,7 +3,6 @@ package no.ntnu.rentalroulette.controller;
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.Optional;
 import no.ntnu.rentalroulette.entity.User;
-import no.ntnu.rentalroulette.exception.JwtTokenExpiredException;
 import no.ntnu.rentalroulette.repository.UserRepository;
 import no.ntnu.rentalroulette.security.JwtUtil;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -26,9 +25,6 @@ public abstract class ControllerUtil {
    */
   protected User handleJwtAndReturnUser(HttpServletRequest request) {
     String jwtToken = request.getHeader("Authorization").substring(7);
-    if (Boolean.TRUE.equals(jwtUtil.isTokenExpired(jwtToken))) {
-      throw new JwtTokenExpiredException("Your token has expired, please log in again");
-    }
     String username = jwtUtil.extractUsername(jwtToken);
     Optional<User> user = userRepository.findByUsername(username);
     if (user.isPresent()) {
