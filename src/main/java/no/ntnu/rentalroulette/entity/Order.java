@@ -30,19 +30,19 @@ public class Order {
 
   @Setter
   @Getter
-  private LocalDate startDate;
+  private LocalDate dateFrom;
 
   @Setter
   @Getter
-  private LocalDate endDate;
+  private LocalDate dateTo;
 
   @Getter
   @Setter
-  private LocalTime startTime;
+  private LocalTime timeFrom;
 
   @Getter
   @Setter
-  private LocalTime endTime;
+  private LocalTime timeTo;
 
   @Getter
   @Setter
@@ -67,12 +67,23 @@ public class Order {
   @JsonProperty("carId")
   private Car car;
 
-  public Order(User customer, User provider, LocalDate startDate, LocalDate endDate,
-               String pricePaid, Car car, boolean orderStatus) {
+  public Order(
+          User customer, 
+          User provider, 
+          LocalDate startDate, 
+          LocalDate endDate,
+          LocalTime startTime,
+          LocalTime endTime,
+          String pricePaid, 
+          Car car, 
+          boolean orderStatus
+  ) {
     this.customer = customer;
     this.provider = provider;
-    this.startDate = startDate;
-    this.endDate = endDate;
+    this.dateFrom = startDate;
+    this.dateTo = endDate;
+    this.timeFrom = startTime;
+    this.timeTo = endTime;
     this.pricePaid = pricePaid;
     this.car = car;
     this.orderStatus = orderStatus;

@@ -1,13 +1,16 @@
 package no.ntnu.rentalroulette.controller;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
+
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
 public class DateRange {
-  private String startDate;
-  private String endDate;
-  private String startTime;
-  private String endTime;
+  private LocalDate dateFrom;
+  private LocalDate dateTo;
+  private LocalTime timeFrom;
+  private LocalTime timeTo;
 }

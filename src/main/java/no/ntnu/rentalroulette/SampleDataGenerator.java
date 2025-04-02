@@ -2,6 +2,7 @@ package no.ntnu.rentalroulette;
 
 import jakarta.transaction.Transactional;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
@@ -278,11 +279,13 @@ public class SampleDataGenerator {
 
     LocalDate startDateOneProvider = LocalDate.of(2025, 1, 1);
     LocalDate endDateOneProvider = LocalDate.of(2025, 6, 10);
+    LocalTime startTime = LocalTime.of(8, 0);
+    LocalTime endTime = LocalTime.of(17, 0);
     Car golf1 = carRepository.findById(1);
     User golf1Provider = userRepository.findById(golf1.getUser().getId()).orElse(null);
 
     orders.add(
-        new Order(customer1, golf1Provider, startDateOneProvider, endDateOneProvider,
+        new Order(customer1, golf1Provider, startDateOneProvider, endDateOneProvider, startTime, endTime,
             String.valueOf(golf1.getPrice() *
                 ChronoUnit.DAYS.between(startDateOneProvider, endDateOneProvider)), golf1, true));
     golf1.setCarStatus(CarStatus.INUSE);
@@ -303,19 +306,19 @@ public class SampleDataGenerator {
         userRepository.findById(transporter3.getUser().getId()).orElse(null);
 
     orders.add(
-        new Order(customer1, transporter1Provider, startDateSomeWeeks, endDateSomeWeeks,
+        new Order(customer1, transporter1Provider, startDateSomeWeeks, endDateSomeWeeks, startTime, endTime,
             String.valueOf(transporter1.getPrice() *
                 ChronoUnit.DAYS.between(startDateSomeWeeks, endDateSomeWeeks)), transporter1,
             true));
     transporter1.setCarStatus(CarStatus.INUSE);
     orders.add(
-        new Order(customer2, transporter2Provider, startDateSomeWeeks, endDateSomeWeeks,
+        new Order(customer2, transporter2Provider, startDateSomeWeeks, endDateSomeWeeks, startTime, endTime,
             String.valueOf(transporter2.getPrice() *
                 ChronoUnit.DAYS.between(startDateSomeWeeks, endDateSomeWeeks)), transporter2,
             true));
     transporter2.setCarStatus(CarStatus.INUSE);
     orders.add(
-        new Order(customer2, transporter3Provider, startDateSomeWeeks, endDateSomeWeeks,
+        new Order(customer2, transporter3Provider, startDateSomeWeeks, endDateSomeWeeks, startTime, endTime,
             String.valueOf(transporter3.getPrice() *
                 ChronoUnit.DAYS.between(startDateSomeWeeks, endDateSomeWeeks)), transporter3,
             true));
@@ -338,27 +341,27 @@ public class SampleDataGenerator {
     User iOn5Provider = userRepository.findById(iOn5.getUser().getId()).orElse(null);
 
     orders.add(
-        new Order(customer1, iOn1Provider, startDateFullyBooked, endDateFullyBooked,
+        new Order(customer1, iOn1Provider, startDateFullyBooked, endDateFullyBooked, startTime, endTime,
             String.valueOf(iOn1.getPrice() *
                 ChronoUnit.DAYS.between(startDateFullyBooked, endDateFullyBooked)), iOn1, true));
     iOn1.setCarStatus(CarStatus.INUSE);
     orders.add(
-        new Order(customer1, iOn2Provider, startDateFullyBooked, endDateFullyBooked,
+        new Order(customer1, iOn2Provider, startDateFullyBooked, endDateFullyBooked, startTime, endTime,
             String.valueOf(iOn2.getPrice() *
                 ChronoUnit.DAYS.between(startDateFullyBooked, endDateFullyBooked)), iOn2, true));
     iOn2.setCarStatus(CarStatus.INUSE);
     orders.add(
-        new Order(customer1, iOn3Provider, startDateFullyBooked, endDateFullyBooked,
+        new Order(customer1, iOn3Provider, startDateFullyBooked, endDateFullyBooked, startTime, endTime,
             String.valueOf(iOn3.getPrice() *
                 ChronoUnit.DAYS.between(startDateFullyBooked, endDateFullyBooked)), iOn3, true));
     iOn3.setCarStatus(CarStatus.INUSE);
     orders.add(
-        new Order(customer2, iOn4Provider, startDateFullyBooked, endDateFullyBooked,
+        new Order(customer2, iOn4Provider, startDateFullyBooked, endDateFullyBooked, startTime, endTime,
             String.valueOf(iOn4.getPrice() *
                 ChronoUnit.DAYS.between(startDateFullyBooked, endDateFullyBooked)), iOn4, true));
     iOn4.setCarStatus(CarStatus.INUSE);
     orders.add(
-        new Order(customer2, iOn5Provider, startDateFullyBooked, endDateFullyBooked,
+        new Order(customer2, iOn5Provider, startDateFullyBooked, endDateFullyBooked, startTime, endTime,
             String.valueOf(iOn5.getPrice() *
                 ChronoUnit.DAYS.between(startDateFullyBooked, endDateFullyBooked)), iOn5, true));
     iOn5.setCarStatus(CarStatus.INUSE);

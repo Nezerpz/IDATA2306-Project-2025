@@ -1,5 +1,7 @@
 package no.ntnu.rentalroulette.repository;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 import no.ntnu.rentalroulette.entity.Car;
 
@@ -19,12 +21,20 @@ public interface CarRepository extends JpaRepository<Car, Integer> {
 
   Set<String> findDistinctByCarModel(String carModel);
 
-  @Query("SELECT c FROM Car c WHERE not c.id IN ( SELECT o.car.id FROM Order o WHERE o.endDate > :startDate AND o.startDate < :endDate AND o.endTime > :endTime AND o.startTime < :startTime) ")
+  @Query("""
+    SELECT c FROM Car c WHERE not c.id IN (
+        SELECT o.car.id FROM Order o
+        WHERE o.dateFrom <= :dateFrom
+        AND   o.dateTo   >= :dateTo
+        AND   o.timeFrom <= :timeFrom
+        AND   o.timeTo   >= :timeTo
+    )
+  """)
   List<Car> findAvailableCars(
-          @Param("startDate") String startDate,
-          @Param("endDate") String endDate,
-          @Param("startTime") String startTime,
-          @Param("endTime") String endTime
+          @Param("dateFrom") LocalDate dateFrom,
+          @Param("dateTo") LocalDate dateTo,
+          @Param("timeFrom") LocalTime timeFrom,
+          @Param("timeTo") LocalTime timeTo
   );
 
   @Query("SELECT c FROM Car c WHERE c.user.id = :providerId")
