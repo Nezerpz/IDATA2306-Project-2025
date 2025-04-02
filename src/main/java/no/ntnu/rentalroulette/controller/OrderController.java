@@ -57,7 +57,7 @@ public class OrderController extends ControllerUtil {
   })
   public ResponseEntity<List<Order>> getOrdersByCustomer(HttpServletRequest request) {
     List<Order> orders =
-        orderRepository.findAllByCustomerId(handleJwtAndReturnUser(request).getId());
+        orderRepository.findAllByCustomerId(getUserBasedOnJWT(request).getId());
     return ResponseEntity.ok(orders);
   }
 
@@ -74,7 +74,7 @@ public class OrderController extends ControllerUtil {
   })
   public ResponseEntity<List<Order>> getOrdersForProvider(HttpServletRequest request) {
     List<Order> orders =
-        orderRepository.findAllByProviderId(handleJwtAndReturnUser(request).getId());
+        orderRepository.findAllByProviderId(getUserBasedOnJWT(request).getId());
     return ResponseEntity.ok(orders);
   }
 }

@@ -50,13 +50,13 @@ public class UserController extends ControllerUtil {
 
   @GetMapping("/userType")
   public ResponseEntity<UserType> getUserType(HttpServletRequest request) {
-    return new ResponseEntity<>(handleJwtAndReturnUser(request).getUserType(), HttpStatus.OK);
+    return new ResponseEntity<>(getUserBasedOnJWT(request).getUserType(), HttpStatus.OK);
   }
 
   @PostMapping("/become-provider")
   @PreAuthorize("hasRole('CUSTOMER')")
   public ResponseEntity<User> becomeProvider(HttpServletRequest request) {
-    User user = handleJwtAndReturnUser(request);
+    User user = getUserBasedOnJWT(request);
     user.setUserType(UserType.PROVIDER);
     userRepository.save(user);
     return new ResponseEntity<>(user, HttpStatus.OK);
