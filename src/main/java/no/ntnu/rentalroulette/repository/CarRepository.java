@@ -21,13 +21,20 @@ public interface CarRepository extends JpaRepository<Car, Integer> {
 
   Set<String> findDistinctByCarModel(String carModel);
 
+  // I am sorry...
+  // BUT JPQL DOES NOT HAVE IF-STATEMENTS!!!!!
   @Query("""
     SELECT c FROM Car c WHERE not c.id IN (
         SELECT o.car.id FROM Order o
-        WHERE o.dateFrom <= :dateFrom
-        AND   o.dateTo   >= :dateTo
-        AND   o.timeFrom <= :timeFrom
-        AND   o.timeTo   >= :timeTo
+        WHERE (
+           (o.dateFrom = :dateFrom  AND o.timeFrom   <= :timeFrom) OR  
+           (o.dateFrom = :dateFrom  AND o.timeTo     >= :timeTo)   OR  
+
+           (o.dateTo   = :dateTo    AND o.timeFrom   <= :timeFrom) OR  
+           (o.dateTo   = :dateTo    AND o.timeTo     >= :timeTo)   OR 
+
+           (o.dateFrom < :dateFrom  AND o.dateTo     >  :dateTo)
+        )
     )
   """)
   List<Car> findAvailableCars(
