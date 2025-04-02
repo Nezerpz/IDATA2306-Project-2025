@@ -34,7 +34,7 @@ SPRING_JPA_PROPERTIES_HIBERNATE_JDBC_LOB_NON_CONTEXTUAL_CREATION=true
 ## Development: Run
 To run the application for local development, run:
 ```
-podman-compose run --rm --service-ports backend
+podman-compose -f compose-dev.yml run --rm --service-ports devbackend
 ```
 The image is removed when you stop the running command.
 

@@ -34,8 +34,12 @@ public class CarController {
 
   @PostMapping("/cars")
   public ResponseEntity<List<Car>> getCarsByDates(@RequestBody DateRange dateRange) {
-    List<Car> cars = new CopyOnWriteArrayList<>(
-        carRepository.findAvailableCars(dateRange.getStartDate(), dateRange.getEndDate()));
+    List<Car> cars = new CopyOnWriteArrayList<>(carRepository.findAvailableCars(
+                dateRange.getStartDate(), 
+                dateRange.getEndDate(),
+                dateRange.getStartTime(),
+                dateRange.getEndTime()
+    ));
     return new ResponseEntity<>(cars, HttpStatus.OK);
   }
 

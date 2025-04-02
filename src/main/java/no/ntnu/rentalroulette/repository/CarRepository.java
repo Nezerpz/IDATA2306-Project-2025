@@ -19,8 +19,12 @@ public interface CarRepository extends JpaRepository<Car, Integer> {
 
   Set<String> findDistinctByCarModel(String carModel);
 
-  @Query("SELECT c FROM Car c WHERE not c.id IN ( SELECT o.car.id FROM Order o WHERE o.endDate > :startDate AND o.startDate < :endDate) ")
-  List<Car> findAvailableCars(@Param("startDate") String startDate,
-                              @Param("endDate") String endDate);
+  @Query("SELECT c FROM Car c WHERE not c.id IN ( SELECT o.car.id FROM Order o WHERE o.endDate > :startDate AND o.startDate < :endDate AND o.endTime > :endTime AND o.startTime < :startTime) ")
+  List<Car> findAvailableCars(
+          @Param("startDate") String startDate,
+          @Param("endDate") String endDate,
+          @Param("startTime") String startTime,
+          @Param("endTime") String endTime
+  );
 
 }
