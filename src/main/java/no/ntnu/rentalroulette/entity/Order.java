@@ -9,6 +9,8 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.time.LocalDate;
+import java.time.LocalTime;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
@@ -34,8 +36,16 @@ public class Order {
   @Getter
   private LocalDate endDate;
 
-  @Setter
   @Getter
+  @Setter
+  private LocalTime startTime;
+
+  @Getter
+  @Setter
+  private LocalTime endTime;
+
+  @Getter
+  @Setter
   private String pricePaid;
 
   @Setter
