@@ -1,11 +1,14 @@
 package no.ntnu.rentalroulette.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
 import no.ntnu.rentalroulette.entity.User;
+import no.ntnu.rentalroulette.enums.UserType;
 import no.ntnu.rentalroulette.repository.UserRepository;
 
+import no.ntnu.rentalroulette.security.JwtUtil;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +19,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-public class UserController {
+public class UserController extends ControllerUtil {
+
+  @Autowired
+  public UserController(JwtUtil jwtUtil, UserRepository userRepository) {
+    super(jwtUtil, userRepository);
+  }
 
   @Autowired
   private UserRepository userRepository;
@@ -33,10 +41,22 @@ public class UserController {
   public ResponseEntity<User> getUser(@PathVariable(value = "username") String username) {
     Optional<User> user = userRepository.findByUsername(username);
     if (user.isPresent()) {
-        return new ResponseEntity<>(user.get(), HttpStatus.OK);
+      return new ResponseEntity<>(user.get(), HttpStatus.OK);
+    } else {
+      throw new UsernameNotFoundException("Username: " + username + " not found");
     }
-    else {
-        throw new UsernameNotFoundException("Username: " + username + " not found");
-    }
+  }
+
+  @GetMapping("/userType")
+  public ResponseEntity<UserType> getUserType(HttpServletRequest request) {
+    return new ResponseEntity<>(handleJwtAndReturnUser(request).getUserType(), HttpStatus.OK);
+  }
+
+  @GetMapping("/become-provider")
+  public ResponseEntity<User> becomeProvider(HttpServletRequest request) {
+    User user = handleJwtAndReturnUser(request);
+    user.setUserType(UserType.PROVIDER);
+    userRepository.save(user);
+    return new ResponseEntity<>(user, HttpStatus.OK);
   }
 }

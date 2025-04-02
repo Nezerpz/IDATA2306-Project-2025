@@ -1,5 +1,6 @@
 package no.ntnu.rentalroulette.entity;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -51,19 +52,19 @@ public class Order {
   @Getter
   private boolean orderStatus;
 
-  @Getter
   @ManyToOne
   @JoinColumn(name = "customer_id")
+  @JsonProperty("customerId")
   private User customer;
 
-  @Getter
   @ManyToOne
   @JoinColumn(name = "provider_id")
+  @JsonProperty("providerId")
   private User provider;
 
-  @Getter
   @ManyToOne
   @JoinColumn(name = "car_id")
+  @JsonProperty("carId")
   private Car car;
 
   public Order(User customer, User provider, LocalDate startDate, LocalDate endDate,
@@ -75,5 +76,20 @@ public class Order {
     this.pricePaid = pricePaid;
     this.car = car;
     this.orderStatus = orderStatus;
+  }
+
+  @JsonProperty("customerId")
+  public int getCustomerId() {
+    return customer.getId();
+  }
+
+  @JsonProperty("providerId")
+  public int getProviderId() {
+    return provider.getId();
+  }
+
+  @JsonProperty("carId")
+  public int getCarId() {
+    return car.getId();
   }
 }
