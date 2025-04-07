@@ -19,16 +19,14 @@ import org.springframework.web.bind.annotation.RestController;
 import no.ntnu.rentalroulette.entity.User;
 
 @RestController
-public class OrderController extends ControllerUtil {
+public class OrderController {
 
   @Autowired
   private OrderRepository orderRepository;
 
   @Autowired
-  public OrderController(JwtUtil jwtUtil, UserRepository userRepository) {
-    super(jwtUtil, userRepository);
-  }
-
+  private ControllerUtil controllerUtil;
+  
   //TODO: Remove this endpoint, it is only for testing purposes
   @GetMapping("/orders")
   @PreAuthorize("hasRole('ADMIN')")
@@ -60,7 +58,7 @@ public class OrderController extends ControllerUtil {
   })
   public ResponseEntity<List<Order>> getOrdersByCustomer(HttpServletRequest request) {
     List<Order> orders =
-        orderRepository.findAllByCustomerId(getUserBasedOnJWT(request).getId());
+        orderRepository.findAllByCustomerId(controllerUtil.getUserBasedOnJWT(request).getId());
     return ResponseEntity.ok(orders);
   }
 
@@ -77,7 +75,7 @@ public class OrderController extends ControllerUtil {
   })
   public ResponseEntity<List<Order>> getOrdersForProvider(HttpServletRequest request) {
     List<Order> orders =
-        orderRepository.findAllByProviderId(getUserBasedOnJWT(request).getId());
+        orderRepository.findAllByProviderId(controllerUtil.getUserBasedOnJWT(request).getId());
     return ResponseEntity.ok(orders);
   }
 

@@ -20,15 +20,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-public class UserController extends ControllerUtil {
-
-  @Autowired
-  public UserController(JwtUtil jwtUtil, UserRepository userRepository) {
-    super(jwtUtil, userRepository);
-  }
+public class UserController {
 
   @Autowired
   private UserRepository userRepository;
+
+  @Autowired
+  private ControllerUtil controllerUtil;
 
   @GetMapping("/users")
   @PreAuthorize("hasRole('ADMIN')")
@@ -50,13 +48,14 @@ public class UserController extends ControllerUtil {
 
   @GetMapping("/userType")
   public ResponseEntity<UserType> getUserType(HttpServletRequest request) {
-    return new ResponseEntity<>(getUserBasedOnJWT(request).getUserType(), HttpStatus.OK);
+    return new ResponseEntity<>(controllerUtil.getUserBasedOnJWT(request).getUserType(),
+        HttpStatus.OK);
   }
 
   @PostMapping("/become-provider")
   @PreAuthorize("hasRole('CUSTOMER')")
   public ResponseEntity<User> becomeProvider(HttpServletRequest request) {
-    User user = getUserBasedOnJWT(request);
+    User user = controllerUtil.getUserBasedOnJWT(request);
     user.setUserType(UserType.PROVIDER);
     userRepository.save(user);
     return new ResponseEntity<>(user, HttpStatus.OK);
