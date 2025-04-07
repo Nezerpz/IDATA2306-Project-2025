@@ -9,6 +9,7 @@ import no.ntnu.rentalroulette.entity.Car;
 import java.util.Set;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -47,23 +48,5 @@ public interface CarRepository extends JpaRepository<Car, Integer> {
 
   @Query("SELECT c FROM Car c WHERE c.user.id = :providerId")
   List<Car> findAllByProviderId(@Param("providerId") int providerId);
-
-
-  //TODO: Slim down query by excluding User as default when updating.
-  @Query("""
-            UPDATE Car c 
-            SET c.imagePath = :#{#car.imagePath}, 
-            c.manufacturer = :#{#car.manufacturer}, 
-            c.carModel = :#{#car.carModel}, 
-            c.price = :#{#car.price}, 
-            c.numberOfSeats = :#{#car.numberOfSeats}, 
-            c.transmissionType = :#{#car.transmissionType}, 
-            c.fuelType = :#{#car.fuelType}, 
-            c.productionYear = :#{#car.productionYear}, 
-            c.carStatus = :#{#car.carStatus}, 
-            c.features = :#{#car.features} 
-            WHERE c.id = :id
-      """)
-  void updateCarById(@Param("id") int id, @Param("car") Car car);
 
 }
