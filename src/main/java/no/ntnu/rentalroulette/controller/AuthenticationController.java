@@ -17,6 +17,8 @@ import no.ntnu.rentalroulette.security.AuthenticationResponse;
 import no.ntnu.rentalroulette.security.JwtUtil;
 import no.ntnu.rentalroulette.security.AccessUserService;
 
+
+//TODO: Look into this https://stackoverflow.com/questions/27726066/jwt-refresh-token-flow
 @RestController
 public class AuthenticationController {
   @Autowired
@@ -46,7 +48,7 @@ public class AuthenticationController {
 
     final UserDetails userDetails =
         userDetailsService.loadUserByUsername(authenticationRequest.getUsername());
-    final String jwt = jwtUtil.generateToken(userDetails);
-    return ResponseEntity.ok(new AuthenticationResponse(jwt));
+    final String jwtAccessToken = jwtUtil.generateToken(userDetails);
+    return ResponseEntity.ok(new AuthenticationResponse(jwtAccessToken));
   }
 }

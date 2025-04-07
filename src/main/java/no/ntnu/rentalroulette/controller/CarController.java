@@ -18,6 +18,7 @@ import no.ntnu.rentalroulette.security.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -122,6 +123,20 @@ public class CarController {
     carRepository.save(car);
 
 
+    return new ResponseEntity<>(HttpStatus.OK);
+  }
+
+  @DeleteMapping("/cars/{id}")
+  public ResponseEntity<String> deleteCar(HttpServletRequest request, @PathVariable int id) {
+    Car car = carRepository.findById(id);
+    User user = controllerUtil.getUserBasedOnJWT(request);
+    if (car == null) {
+      return new ResponseEntity<>("Car not found", HttpStatus.NOT_FOUND);
+    }
+    if (car.getUser().getId() != user.getId()) {
+      return new ResponseEntity<>("Unauthorized", HttpStatus.UNAUTHORIZED);
+    }
+    carRepository.delete(car);
     return new ResponseEntity<>(HttpStatus.OK);
   }
 
