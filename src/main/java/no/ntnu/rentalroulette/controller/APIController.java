@@ -2,6 +2,7 @@ package no.ntnu.rentalroulette.controller;
 
 import java.util.List;
 import no.ntnu.rentalroulette.entity.Order;
+import no.ntnu.rentalroulette.enums.CarStatus;
 import no.ntnu.rentalroulette.enums.FuelType;
 import no.ntnu.rentalroulette.enums.Manufacturer;
 import no.ntnu.rentalroulette.enums.TransmissionType;
@@ -51,5 +52,11 @@ public class APIController {
   public ResponseEntity<List<FuelType>> getFuelTypes() {
     return ResponseEntity.ok(List.of(FuelType.values()));
   }
+
+  @GetMapping("/car-status")
+  public ResponseEntity<List<CarStatus>> getCarStatuses() {
+    return ResponseEntity.ok(List.of(CarStatus.values()));
+  }
+
 
 }

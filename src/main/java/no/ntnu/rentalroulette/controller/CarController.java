@@ -12,6 +12,7 @@ import no.ntnu.rentalroulette.enums.FuelType;
 import no.ntnu.rentalroulette.enums.Manufacturer;
 import no.ntnu.rentalroulette.enums.TransmissionType;
 import no.ntnu.rentalroulette.repository.CarRepository;
+import no.ntnu.rentalroulette.repository.FeatureRepository;
 import no.ntnu.rentalroulette.repository.UserRepository;
 import no.ntnu.rentalroulette.security.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +31,9 @@ public class CarController {
 
   @Autowired
   private CarRepository carRepository;
+
+  @Autowired
+  private FeatureRepository featureRepository;
 
   @Autowired
   private ControllerUtil controllerUtil;
@@ -64,6 +68,7 @@ public class CarController {
     return new ResponseEntity<>(cars, HttpStatus.OK);
   }
 
+  //TODO: Refactor code. Was made when sick and tired.
   @PutMapping("/cars/{id}")
   public ResponseEntity<String> updateCar(HttpServletRequest request, @PathVariable int id) {
 
@@ -102,8 +107,20 @@ public class CarController {
     car.setPrice(price);
     car.setProductionYear(productionYear);
     car.setCarStatus(carStatus);
-    car.setFeatures(features);
+    car.getFeatures().clear();
+    if (features != null) {
+      for (Feature feature : features) {
+        Feature existingFeature = featureRepository.findByFeatureName(feature.getFeatureName());
+        if (existingFeature == null) {
+          featureRepository.save(feature);
+          car.getFeatures().add(feature);
+        } else {
+          car.getFeatures().add(existingFeature);
+        }
+      }
+    }
     carRepository.save(car);
+
 
     return new ResponseEntity<>(HttpStatus.OK);
   }

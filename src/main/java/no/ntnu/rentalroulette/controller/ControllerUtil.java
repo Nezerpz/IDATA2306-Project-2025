@@ -7,7 +7,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import no.ntnu.rentalroulette.entity.Feature;
 import no.ntnu.rentalroulette.entity.User;
@@ -97,11 +99,12 @@ public class ControllerUtil {
    */
   public List<Feature> getFeaturesFromRequestBody(JsonNode features) {
     List<Feature> featureList = new ArrayList<>();
-    for (JsonNode feature : features) {
-      Feature featureObj = new Feature();
-      featureObj.setFeatureName(feature.get("featureName").asText());
-      featureObj.setDescription(feature.get("description").asText());
-      featureList.add(featureObj);
+    if (features.isArray()) {
+      for (JsonNode featureNode : features) {
+        Feature featureObj = new Feature();
+        featureObj.setFeatureName(featureNode.asText());
+        featureList.add(featureObj);
+      }
     }
     return featureList;
   }
