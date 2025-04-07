@@ -26,7 +26,7 @@ public class OrderController {
 
   @Autowired
   private ControllerUtil controllerUtil;
-  
+
   //TODO: Remove this endpoint, it is only for testing purposes
   @GetMapping("/orders")
   @PreAuthorize("hasRole('ADMIN')")
@@ -81,10 +81,10 @@ public class OrderController {
 
   @PostMapping("/order")
   public ResponseEntity<String> orderCar(
-          @RequestParam(value = "car_id", required = true) 
-          String carID, HttpServletRequest request
+      @RequestParam(value = "car_id", required = true)
+      String carID, HttpServletRequest request
   ) {
-    User user = super.getUserBasedOnJWT(request);
+    User user = controllerUtil.getUserBasedOnJWT(request);
     System.out.println("car_id = " + carID + " user = " + user);
     return ResponseEntity.ok(carID);
   }
