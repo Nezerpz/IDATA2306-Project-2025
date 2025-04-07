@@ -5,6 +5,12 @@ import jakarta.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import no.ntnu.rentalroulette.entity.Car;
+import no.ntnu.rentalroulette.entity.Feature;
+import no.ntnu.rentalroulette.entity.User;
+import no.ntnu.rentalroulette.enums.CarStatus;
+import no.ntnu.rentalroulette.enums.FuelType;
+import no.ntnu.rentalroulette.enums.Manufacturer;
+import no.ntnu.rentalroulette.enums.TransmissionType;
 import no.ntnu.rentalroulette.repository.CarRepository;
 import no.ntnu.rentalroulette.repository.UserRepository;
 import no.ntnu.rentalroulette.security.JwtUtil;
@@ -58,29 +64,46 @@ public class CarController {
     return new ResponseEntity<>(cars, HttpStatus.OK);
   }
 
-  //TODO: Fix the put, problem in requestbody. Json from frontend is fine.
-  /*
   @PutMapping("/cars/{id}")
-  public ResponseEntity<String> updateCar(HttpServletRequest request,
-                                          @RequestBody Car car) {
-    System.out.println("Request Body: " + car.toString());
-    Car carCheck = carRepository.findById(car.getId());
-    User user = handleJwtAndReturnUser(request);
-    if (carCheck.getUser().getId() != user.getId()) {
-      return new ResponseEntity<>("Unauthorized", HttpStatus.UNAUTHORIZED);
-    }
-    carRepository.updateCarById(car.getId(), car);
-    return new ResponseEntity<>(HttpStatus.OK);
-  }
-*/
-
-  @PutMapping("/cars/{id}")
-  public ResponseEntity<String> updateCar(HttpServletRequest request) {
+  public ResponseEntity<String> updateCar(HttpServletRequest request, @PathVariable int id) {
 
     ObjectNode requestBody = controllerUtil.getRequestBody(request);
-    System.out.println("Request Body: " + requestBody.toString());
-    int id = requestBody.get("id").asInt();
-    System.out.println("ID: " + id);
+    Car car = carRepository.findById(id);
+    User user = controllerUtil.getUserBasedOnJWT(request);
+    if (car == null) {
+      return new ResponseEntity<>("Car not found", HttpStatus.NOT_FOUND);
+    }
+    if (car.getUser().getId() != user.getId()) {
+      return new ResponseEntity<>("Unauthorized", HttpStatus.UNAUTHORIZED);
+    }
+    String imagePath = requestBody.has("imagePath") ? requestBody.get("imagePath").asText() : null;
+    String model = requestBody.has("carModel") ? requestBody.get("carModel").asText() : null;
+    Manufacturer manufacturer = requestBody.has("manufacturer") ?
+        Manufacturer.valueOf(requestBody.get("manufacturer").asText()) : null;
+    int seats = requestBody.has("numberOfSeats") ? requestBody.get("numberOfSeats").asInt() : 0;
+    TransmissionType transmissionType = requestBody.has("transmissionType") ?
+        TransmissionType.valueOf(requestBody.get("transmissionType").asText()) : null;
+    FuelType fuelType =
+        requestBody.has("fuelType") ? FuelType.valueOf(requestBody.get("fuelType").asText()) : null;
+    int price = requestBody.has("price") ? requestBody.get("price").asInt() : 0;
+    int productionYear =
+        requestBody.has("productionYear") ? requestBody.get("productionYear").asInt() : 0;
+    CarStatus carStatus =
+        requestBody.has("carStatus") ? CarStatus.valueOf(requestBody.get("carStatus").asText()) :
+            null;
+    List<Feature> features = requestBody.has("features") ?
+        controllerUtil.getFeaturesFromRequestBody(requestBody.get("features")) : null;
+    car.setImagePath(imagePath);
+    car.setCarModel(model);
+    car.setManufacturer(manufacturer);
+    car.setNumberOfSeats(seats);
+    car.setTransmissionType(transmissionType);
+    car.setFuelType(fuelType);
+    car.setPrice(price);
+    car.setProductionYear(productionYear);
+    car.setCarStatus(carStatus);
+    car.setFeatures(features);
+    carRepository.save(car);
 
     return new ResponseEntity<>(HttpStatus.OK);
   }

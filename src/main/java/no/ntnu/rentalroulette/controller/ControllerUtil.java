@@ -1,11 +1,15 @@
 package no.ntnu.rentalroulette.controller;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import jakarta.servlet.http.HttpServletRequest;
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import no.ntnu.rentalroulette.entity.Feature;
 import no.ntnu.rentalroulette.entity.User;
 import no.ntnu.rentalroulette.repository.UserRepository;
 import no.ntnu.rentalroulette.security.JwtUtil;
@@ -83,5 +87,22 @@ public class ControllerUtil {
       e.printStackTrace();
     }
     return jsonNodes;
+  }
+
+  /**
+   * Extracts a list of features from the request body.
+   *
+   * @param features The request body.
+   * @return The list of features.
+   */
+  public List<Feature> getFeaturesFromRequestBody(JsonNode features) {
+    List<Feature> featureList = new ArrayList<>();
+    for (JsonNode feature : features) {
+      Feature featureObj = new Feature();
+      featureObj.setFeatureName(feature.get("featureName").asText());
+      featureObj.setDescription(feature.get("description").asText());
+      featureList.add(featureObj);
+    }
+    return featureList;
   }
 }

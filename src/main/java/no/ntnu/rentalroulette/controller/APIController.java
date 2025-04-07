@@ -2,7 +2,9 @@ package no.ntnu.rentalroulette.controller;
 
 import java.util.List;
 import no.ntnu.rentalroulette.entity.Order;
+import no.ntnu.rentalroulette.enums.FuelType;
 import no.ntnu.rentalroulette.enums.Manufacturer;
+import no.ntnu.rentalroulette.enums.TransmissionType;
 import no.ntnu.rentalroulette.repository.OrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -34,10 +36,20 @@ public class APIController {
     return "Sjalabais";
   }
 
-  //TODO: Find a better controller for this endpoint
+  //TODO: Find a better controller for enum endpoints endpoint
   @GetMapping("/manufacturers")
   public ResponseEntity<List<Manufacturer>> getManufacturers() {
     return ResponseEntity.ok(List.of(Manufacturer.values()));
+  }
+
+  @GetMapping("/transmission-types")
+  public ResponseEntity<List<TransmissionType>> getTransmissionTypes() {
+    return ResponseEntity.ok(List.of(TransmissionType.values()));
+  }
+
+  @GetMapping("/fuel-types")
+  public ResponseEntity<List<FuelType>> getFuelTypes() {
+    return ResponseEntity.ok(List.of(FuelType.values()));
   }
 
 }
