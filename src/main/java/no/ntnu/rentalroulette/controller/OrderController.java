@@ -13,7 +13,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import no.ntnu.rentalroulette.entity.User;
 
 @RestController
 public class OrderController extends ControllerUtil {
@@ -76,5 +79,15 @@ public class OrderController extends ControllerUtil {
     List<Order> orders =
         orderRepository.findAllByProviderId(getUserBasedOnJWT(request).getId());
     return ResponseEntity.ok(orders);
+  }
+
+  @PostMapping("/order")
+  public ResponseEntity<String> orderCar(
+          @RequestParam(value = "car_id", required = true) 
+          String carID, HttpServletRequest request
+  ) {
+    User user = super.getUserBasedOnJWT(request);
+    System.out.println("car_id = " + carID + " user = " + user);
+    return ResponseEntity.ok(carID);
   }
 }
