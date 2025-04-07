@@ -1,5 +1,7 @@
 package no.ntnu.rentalroulette.controller;
 
+import java.lang.Integer;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -81,11 +83,12 @@ public class OrderController {
 
   @PostMapping("/order")
   public ResponseEntity<String> orderCar(
-      @RequestParam(value = "car_id", required = true)
-      String carID, HttpServletRequest request
+      HttpServletRequest request
   ) {
     User user = controllerUtil.getUserBasedOnJWT(request);
-    System.out.println("car_id = " + carID + " user = " + user);
-    return ResponseEntity.ok(carID);
+    ObjectNode body = controllerUtil.getRequestBody(request);
+    Integer carID = 1;
+    System.out.println("car_id = " + carID + " user = " + user + " body = " + body);
+    return ResponseEntity.ok("hei");
   }
 }
