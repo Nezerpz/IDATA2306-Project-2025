@@ -19,16 +19,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-public class CarController extends ControllerUtil {
+public class CarController {
 
 
   @Autowired
   private CarRepository carRepository;
 
   @Autowired
-  public CarController(JwtUtil jwtUtil, UserRepository userRepository) {
-    super(jwtUtil, userRepository);
-  }
+  private ControllerUtil controllerUtil;
 
   @GetMapping("/cars")
   public ResponseEntity<List<Car>> getCars() {
@@ -56,7 +54,7 @@ public class CarController extends ControllerUtil {
   @GetMapping("/cars/provider")
   public ResponseEntity<List<Car>> getCarsByProvider(HttpServletRequest request) {
     List<Car> cars = new CopyOnWriteArrayList<>(
-        carRepository.findAllByProviderId(getUserBasedOnJWT(request).getId()));
+        carRepository.findAllByProviderId(controllerUtil.getUserBasedOnJWT(request).getId()));
     return new ResponseEntity<>(cars, HttpStatus.OK);
   }
 
@@ -79,7 +77,7 @@ public class CarController extends ControllerUtil {
   @PutMapping("/cars/{id}")
   public ResponseEntity<String> updateCar(HttpServletRequest request) {
 
-    ObjectNode requestBody = getRequestBody(request);
+    ObjectNode requestBody = controllerUtil.getRequestBody(request);
     System.out.println("Request Body: " + requestBody.toString());
     int id = requestBody.get("id").asInt();
     System.out.println("ID: " + id);
