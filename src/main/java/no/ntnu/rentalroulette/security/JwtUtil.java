@@ -31,18 +31,25 @@ public class JwtUtil {
    * @param userDetails Object containing user details
    * @return JWT token string
    */
-  public String generateToken(UserDetails userDetails) {
+  public String generateToken(UserDetails userDetails, long expirationTime) {
     final long timeNow = System.currentTimeMillis();
-    final long millisecondsInHour = 60 * 60 * 1000;
-    final long timeAfterOneHour = timeNow + millisecondsInHour;
+    final long timeEnd = timeNow + expirationTime;
 
     return Jwts.builder()
         .subject(userDetails.getUsername())
         .claim(ROLE_KEY, userDetails.getAuthorities())
         .issuedAt(new Date(timeNow))
-        .expiration(new Date(timeAfterOneHour))
+        .expiration(new Date(timeEnd))
         .signWith(getSigningKey())
         .compact();
+  }
+
+  public String generateAccessToken(UserDetails userDetails) {
+    return generateToken(userDetails, 60 * 60 * 1000);
+  }
+
+  public String generateRefreshToken(UserDetails userDetails) {
+    return generateToken(userDetails, 60 * 60 * 1000 * 24 * 7);
   }
 
   private SecretKey getSigningKey() {

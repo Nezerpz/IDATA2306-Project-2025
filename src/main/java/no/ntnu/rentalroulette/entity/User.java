@@ -1,5 +1,6 @@
 package no.ntnu.rentalroulette.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
@@ -87,6 +88,7 @@ public class User {
   @Setter
   @Getter
   @Column(name = "\"password\"")
+  @JsonIgnore
   private String password;
 
   /**

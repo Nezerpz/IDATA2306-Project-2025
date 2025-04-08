@@ -28,15 +28,16 @@ public class UserController {
   @Autowired
   private ControllerUtil controllerUtil;
 
-  @GetMapping("/users")
-  @PreAuthorize("hasRole('ADMIN')")
-  public ResponseEntity<List<User>> getUsers() {
-    List<User> cars = new CopyOnWriteArrayList<User>(userRepository.findAll());
-    return new ResponseEntity<>(cars, HttpStatus.OK);
+  @PostMapping("/users")
+  public ResponseEntity<List<User>> getUsers(HttpServletRequest request) {
+    if (controllerUtil.checkIfAdmin(request)) {
+      List<User> users = new CopyOnWriteArrayList<>(userRepository.findAll());
+      return new ResponseEntity<>(users, HttpStatus.OK);
+    }
+    return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
   }
 
-  @GetMapping("/user/{username}")
-  @PreAuthorize("hasRole('ADMIN')")
+  @GetMapping("/users/{username}")
   public ResponseEntity<User> getUser(@PathVariable(value = "username") String username) {
     Optional<User> user = userRepository.findByUsername(username);
     if (user.isPresent()) {
@@ -53,8 +54,10 @@ public class UserController {
   }
 
   @PostMapping("/become-provider")
-  @PreAuthorize("hasRole('CUSTOMER')")
   public ResponseEntity<User> becomeProvider(HttpServletRequest request) {
+    if (!controllerUtil.checkIfCustomer(request)) {
+      return new ResponseEntity<>(HttpStatus.CONFLICT);
+    }
     User user = controllerUtil.getUserBasedOnJWT(request);
     user.setUserType(UserType.PROVIDER);
     userRepository.save(user);

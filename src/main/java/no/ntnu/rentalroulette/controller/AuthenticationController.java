@@ -1,5 +1,9 @@
 package no.ntnu.rentalroulette.controller;
 
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -7,13 +11,11 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import org.springframework.web.bind.annotation.RequestBody;
 import no.ntnu.rentalroulette.security.AuthenticationRequest;
-import no.ntnu.rentalroulette.security.AuthenticationResponse;
 import no.ntnu.rentalroulette.security.JwtUtil;
 import no.ntnu.rentalroulette.security.AccessUserService;
 
@@ -30,10 +32,10 @@ public class AuthenticationController {
   @Autowired
   JwtUtil jwtUtil;
 
-  @CrossOrigin("http://localhost:5173")
   @PostMapping("/authenticate")
   public ResponseEntity<?> createAuthenticationToken(
-      @RequestBody AuthenticationRequest authenticationRequest) throws BadCredentialsException {
+      @RequestBody AuthenticationRequest authenticationRequest,
+      HttpServletResponse response) throws BadCredentialsException {
     System.out.println(authenticationRequest.toString());
     try {
       authenticationManager.authenticate(
@@ -48,7 +50,48 @@ public class AuthenticationController {
 
     final UserDetails userDetails =
         userDetailsService.loadUserByUsername(authenticationRequest.getUsername());
-    final String jwtAccessToken = jwtUtil.generateToken(userDetails);
-    return ResponseEntity.ok(new AuthenticationResponse(jwtAccessToken));
+    final String jwtAccessToken = jwtUtil.generateAccessToken(userDetails);
+    final String jwtRefreshToken = jwtUtil.generateRefreshToken(userDetails);
+
+    // Set the refresh token as a cookie in the response
+    Cookie refreshTokenCookie = new Cookie("refreshToken", jwtRefreshToken);
+    refreshTokenCookie.setHttpOnly(true);
+    refreshTokenCookie.setSecure(true); // Set to true in production
+    refreshTokenCookie.setPath("/");
+    refreshTokenCookie.setMaxAge(7 * 24 * 60 * 60); // 7 days
+    response.addCookie(refreshTokenCookie);
+
+    // Return only the access token in the response body
+    return ResponseEntity.ok(Map.of("accessToken", jwtAccessToken));
+  }
+
+  @PostMapping("/refresh-token")
+  public ResponseEntity<?> refreshAccessToken(HttpServletRequest request) {
+    Cookie[] cookies = request.getCookies();
+    if (cookies == null) {
+      return new ResponseEntity<>("No cookies found", HttpStatus.UNAUTHORIZED);
+    }
+
+    String refreshToken = null;
+    for (Cookie cookie : cookies) {
+      if ("refreshToken".equals(cookie.getName())) {
+        refreshToken = cookie.getValue();
+        break;
+      }
+    }
+
+    if (refreshToken == null) {
+      return new ResponseEntity<>("Refresh token not found", HttpStatus.UNAUTHORIZED);
+    }
+
+    String username = jwtUtil.extractUsername(refreshToken);
+    UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+    if (!jwtUtil.validateToken(refreshToken, userDetails)) {
+      return new ResponseEntity<>("Invalid refresh token", HttpStatus.FORBIDDEN);
+    }
+
+    String newAccessToken = jwtUtil.generateAccessToken(userDetails);
+
+    return ResponseEntity.ok(Map.of("accessToken", newAccessToken));
   }
 }

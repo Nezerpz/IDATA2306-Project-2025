@@ -41,7 +41,8 @@ public class BackendApplication {
         registry.addMapping("/**")
             .allowedOrigins(System.getenv("FRONTEND_URL"))
             .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
-            .allowedHeaders("*");
+            .allowedHeaders("*")
+            .allowCredentials(true);
       }
     };
   }

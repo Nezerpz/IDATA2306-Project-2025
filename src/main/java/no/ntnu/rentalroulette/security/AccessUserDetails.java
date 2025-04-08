@@ -3,11 +3,12 @@ package no.ntnu.rentalroulette.security;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
-import no.ntnu.rentalroulette.entity.Role;
 import no.ntnu.rentalroulette.entity.User;
+import no.ntnu.rentalroulette.enums.UserType;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 
 
@@ -30,14 +31,13 @@ public class AccessUserDetails implements UserDetails {
     this.password = user.getPassword();
     System.out.println("User from database " + this.username + " " + this.password);
     this.isActive = user.isActive();
-    this.convertRoles(user.getRoles());
+    this.addUserTypeAuthority(user.getUserType());
   }
 
-  private void convertRoles(Set<Role> roles) {
-    authorities.clear();
-    for (Role role : roles) {
-      authorities.add(new SimpleGrantedAuthority(role.getName()));
-    }
+  private void addUserTypeAuthority(UserType userType) {
+    authorities.add(new SimpleGrantedAuthority("ROLE_" + userType.name()));
+    SecurityContextHolder.getContext().setAuthentication(
+        new UsernamePasswordAuthenticationToken(this, this.password, authorities));
   }
 
   @Override
