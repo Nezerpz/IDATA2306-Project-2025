@@ -19,12 +19,22 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import no.ntnu.rentalroulette.entity.User;
+import java.time.temporal.ChronoUnit;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import no.ntnu.rentalroulette.enums.CarStatus;
+import no.ntnu.rentalroulette.enums.UserType;
+import no.ntnu.rentalroulette.entity.Car;
+import no.ntnu.rentalroulette.repository.CarRepository;
 
 @RestController
 public class OrderController {
 
   @Autowired
   private OrderRepository orderRepository;
+
+  @Autowired
+  private CarRepository carRepository;
 
   @Autowired
   private ControllerUtil controllerUtil;
@@ -81,14 +91,68 @@ public class OrderController {
     return ResponseEntity.ok(orders);
   }
 
+  private LocalDate stringToDate(String string) {
+    String[] dates = string.split("-");
+    LocalDate date = LocalDate.of(
+        Integer.parseInt(dates[0]), 
+        Integer.parseInt(dates[1]), 
+        Integer.parseInt(dates[2])
+    );
+    return date;
+  }
+
+  private LocalTime stringToTime(String string) {
+    String[] hourMinutes = string.split(":");
+    LocalTime time = LocalTime.of(
+        Integer.parseInt(hourMinutes[0]),
+        Integer.parseInt(hourMinutes[1])
+    );
+    return time;
+  }
+
   @PostMapping("/order")
   public ResponseEntity<String> orderCar(
       HttpServletRequest request
   ) {
     User user = controllerUtil.getUserBasedOnJWT(request);
     ObjectNode body = controllerUtil.getRequestBody(request);
-    Integer carID = 1;
-    System.out.println("car_id = " + carID + " user = " + user + " body = " + body);
-    return ResponseEntity.ok("hei");
+    Car car = carRepository.findById(Integer.parseInt(body.get("id").asText()));
+    System.out.println("car_id = " + car.getId() + " user = " + user + " body = " + body);
+
+    LocalDate startDate = stringToDate(body.get("dateFrom").asText());
+    LocalDate endDate = stringToDate(body.get("dateTo").asText());
+    LocalTime startTime = stringToTime(body.get("timeFrom").asText());
+    LocalTime endTime = stringToTime(body.get("timeTo").asText());
+
+    float totalPrice = car.getPrice() * ChronoUnit.DAYS.between(startDate, endDate);
+
+
+    // TODO: Fetch provider from database
+    User provider = new User(
+        UserType.CUSTOMER, 
+        "Not", "FromDB", 
+        "not.fromdb", 
+        "nosql",
+        "not.fromdb@nosql.no", 
+        "+00 00000000"
+    );
+
+    Order order = new Order(
+        user, 
+        provider, 
+        startDate, 
+        endDate, 
+        startTime,
+        endTime,
+        ""+totalPrice, 
+        car, 
+        true
+    );
+
+    orderRepository.save(order);
+    System.out.println("order saved");
+
+    car.setCarStatus(CarStatus.INUSE);
+    return ResponseEntity.ok("{\"response\": \"available\"}");
   }
 }
