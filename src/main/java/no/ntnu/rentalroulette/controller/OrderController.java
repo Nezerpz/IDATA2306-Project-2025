@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.Optional;
 import no.ntnu.rentalroulette.entity.Order;
 import no.ntnu.rentalroulette.repository.OrderRepository;
 import no.ntnu.rentalroulette.repository.UserRepository;
@@ -35,6 +36,9 @@ public class OrderController {
 
   @Autowired
   private CarRepository carRepository;
+
+  @Autowired
+  private UserRepository userRepository;
 
   @Autowired
   private ControllerUtil controllerUtil;
@@ -94,8 +98,8 @@ public class OrderController {
   private LocalDate stringToDate(String string) {
     String[] dates = string.split("-");
     LocalDate date = LocalDate.of(
-        Integer.parseInt(dates[0]), 
-        Integer.parseInt(dates[1]), 
+        Integer.parseInt(dates[0]),
+        Integer.parseInt(dates[1]),
         Integer.parseInt(dates[2])
     );
     return date;
@@ -126,26 +130,21 @@ public class OrderController {
 
     float totalPrice = car.getPrice() * ChronoUnit.DAYS.between(startDate, endDate);
 
+    Optional<User> provider =
+        userRepository.findById(body.get("providerId").asInt());
 
-    // TODO: Fetch provider from database
-    User provider = new User(
-        UserType.CUSTOMER, 
-        "Not", "FromDB", 
-        "not.fromdb", 
-        "nosql",
-        "not.fromdb@nosql.no", 
-        "+00 00000000"
-    );
-
+    if (provider.isEmpty()) {
+      return ResponseEntity.badRequest().body("{\"response\": \"provider not found\"}");
+    }
     Order order = new Order(
-        user, 
-        provider, 
-        startDate, 
-        endDate, 
+        user,
+        provider.get(),
+        startDate,
+        endDate,
         startTime,
         endTime,
-        ""+totalPrice, 
-        car, 
+        "" + totalPrice,
+        car,
         true
     );
 
