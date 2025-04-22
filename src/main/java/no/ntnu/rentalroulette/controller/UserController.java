@@ -14,6 +14,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -45,6 +46,21 @@ public class UserController {
     } else {
       throw new UsernameNotFoundException("Username: " + username + " not found");
     }
+  }
+
+  @DeleteMapping("/users/{id}")
+  public ResponseEntity<String> deleteCar(HttpServletRequest request, @PathVariable int id) {
+    if (!controllerUtil.checkIfAdmin(request)) {
+      return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+    }
+    Optional<User> userToDelete = userRepository.findById(id);
+    if (userToDelete.isPresent()) {
+      userRepository.delete(userToDelete.get());
+      return new ResponseEntity<>("User deleted", HttpStatus.OK);
+    } else {
+      return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
+    }
+
   }
 
   @GetMapping("/userType")
