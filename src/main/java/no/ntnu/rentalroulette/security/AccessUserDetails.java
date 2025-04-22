@@ -29,7 +29,6 @@ public class AccessUserDetails implements UserDetails {
   public AccessUserDetails(User user) {
     this.username = user.getUsername();
     this.password = user.getPassword();
-    System.out.println("User from database " + this.username + " " + this.password);
     this.isActive = user.isActive();
     this.addUserTypeAuthority(user.getUserType());
   }

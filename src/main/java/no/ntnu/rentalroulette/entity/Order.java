@@ -64,19 +64,18 @@ public class Order {
 
   @ManyToOne
   @JoinColumn(name = "car_id")
-  @JsonProperty("carId")
   private Car car;
 
   public Order(
-          User customer, 
-          User provider, 
-          LocalDate startDate, 
-          LocalDate endDate,
-          LocalTime startTime,
-          LocalTime endTime,
-          String pricePaid, 
-          Car car, 
-          boolean orderStatus
+      User customer,
+      User provider,
+      LocalDate startDate,
+      LocalDate endDate,
+      LocalTime startTime,
+      LocalTime endTime,
+      String pricePaid,
+      Car car,
+      boolean orderStatus
   ) {
     this.customer = customer;
     this.provider = provider;
@@ -99,8 +98,4 @@ public class Order {
     return provider.getId();
   }
 
-  @JsonProperty("carId")
-  public int getCarId() {
-    return car.getId();
-  }
 }

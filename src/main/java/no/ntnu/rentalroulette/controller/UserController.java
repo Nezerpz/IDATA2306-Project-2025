@@ -38,14 +38,22 @@ public class UserController {
     return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
   }
 
-  @GetMapping("/users/{username}")
-  public ResponseEntity<User> getUser(@PathVariable(value = "username") String username) {
-    Optional<User> user = userRepository.findByUsername(username);
+  @GetMapping("/users/{id}")
+  public ResponseEntity<User> getUser(@PathVariable int id) {
+    Optional<User> user = userRepository.findById(id);
     if (user.isPresent()) {
       return new ResponseEntity<>(user.get(), HttpStatus.OK);
     } else {
-      throw new UsernameNotFoundException("Username: " + username + " not found");
+      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
+  }
+
+  @GetMapping("users/self")
+  public ResponseEntity<User> getSelf(HttpServletRequest request) {
+    User user = controllerUtil.getUserBasedOnJWT(request);
+    User userToReturn = userRepository.findById(user.getId()).orElseThrow(
+        () -> new UsernameNotFoundException("User not found"));
+    return new ResponseEntity<>(userToReturn, HttpStatus.OK);
   }
 
   @DeleteMapping("/users/{id}")
