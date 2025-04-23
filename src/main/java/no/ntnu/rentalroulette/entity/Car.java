@@ -176,4 +176,8 @@ public class Car {
     String providerName = sb.toString();
     return providerName;
   }
+
+  public int getProviderId() {
+    return user.getId();
+  }
 }
