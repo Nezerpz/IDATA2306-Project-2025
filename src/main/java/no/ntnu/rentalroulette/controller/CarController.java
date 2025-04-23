@@ -40,9 +40,12 @@ public class CarController {
   private ControllerUtil controllerUtil;
 
   @GetMapping("/cars")
-  public ResponseEntity<List<Car>> getCars() {
-    List<Car> cars = new CopyOnWriteArrayList<>(carRepository.findAll());
-    return new ResponseEntity<>(cars, HttpStatus.OK);
+  public ResponseEntity<List<Car>> getCars(HttpServletRequest request) {
+    if (controllerUtil.checkIfAdmin(request)) {
+      List<Car> cars = new CopyOnWriteArrayList<>(carRepository.findAll());
+      return new ResponseEntity<>(cars, HttpStatus.OK);
+    }
+    return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
   }
 
   @GetMapping("/cars/{id}")
@@ -79,7 +82,7 @@ public class CarController {
     if (car == null) {
       return new ResponseEntity<>("Car not found", HttpStatus.NOT_FOUND);
     }
-    if (car.getUser().getId() != user.getId()) {
+    if (car.getUser().getId() != user.getId() && !controllerUtil.checkIfAdmin(request)) {
       return new ResponseEntity<>("Unauthorized", HttpStatus.UNAUTHORIZED);
     }
     String imagePath = requestBody.has("imagePath") ? requestBody.get("imagePath").asText() : null;
@@ -133,9 +136,11 @@ public class CarController {
     if (car == null) {
       return new ResponseEntity<>("Car not found", HttpStatus.NOT_FOUND);
     }
-    if (car.getUser().getId() != user.getId()) {
+    if (car.getUser().getId() != user.getId() && !controllerUtil.checkIfAdmin(request)) {
       return new ResponseEntity<>("Unauthorized", HttpStatus.UNAUTHORIZED);
     }
+    System.out.println("Deleting car with id: " + id
+        + " and user id: " + user.getId());
     carRepository.delete(car);
     return new ResponseEntity<>(HttpStatus.OK);
   }

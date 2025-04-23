@@ -13,9 +13,11 @@ import no.ntnu.rentalroulette.repository.OrderRepository;
 import no.ntnu.rentalroulette.repository.UserRepository;
 import no.ntnu.rentalroulette.security.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -56,9 +58,32 @@ public class OrderController {
           description = "The list of orders returned in response body"
       )
   })
-  public ResponseEntity<List<Order>> orders() {
-    List<Order> orders = orderRepository.findAll();
-    return ResponseEntity.ok(orders);
+  public ResponseEntity<List<Order>> orders(HttpServletRequest request) {
+    if (controllerUtil.checkIfAdmin(request)) {
+      List<Order> orders = orderRepository.findAll();
+      return ResponseEntity.ok(orders);
+    }
+    return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+  }
+
+  @GetMapping("/orders/{id}")
+  @Operation(
+      summary = "Order by ID endpoint",
+      description = "Returns a specific order by ID"
+  )
+  @ApiResponses(value = {
+      @ApiResponse(
+          responseCode = "200",
+          description = "The order returned in response body"
+      )
+  })
+  public ResponseEntity<Order> getOrderById(@PathVariable int id) {
+    Optional<Order> order = orderRepository.findById(id);
+    if (order.isPresent()) {
+      return ResponseEntity.ok(order.get());
+    } else {
+      return ResponseEntity.notFound().build();
+    }
   }
 
   @GetMapping("/orders/customer")
