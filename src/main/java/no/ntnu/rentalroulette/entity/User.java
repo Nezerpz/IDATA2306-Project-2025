@@ -1,6 +1,7 @@
 package no.ntnu.rentalroulette.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
@@ -123,6 +124,18 @@ public class User {
       inverseJoinColumns = @JoinColumn(name = "role_id")
   )
   private Set<Role> roles = new LinkedHashSet<Role>();
+
+  @OneToMany(mappedBy = "reviewed_user_id", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+  @JsonIgnore
+  private List<UserReview> userReviews;
+
+  @OneToMany(mappedBy = "reviewing_user_id", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+  @JsonIgnore
+  private List<UserReview> userReviewsReviewed;
+
+  @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+  @JsonIgnore
+  private List<CarReview> carReviews;
 
 
   public User(UserType userType, String firstName, String lastName, String username,

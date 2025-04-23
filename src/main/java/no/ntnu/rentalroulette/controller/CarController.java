@@ -5,6 +5,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import no.ntnu.rentalroulette.entity.Car;
+import no.ntnu.rentalroulette.entity.CarReview;
 import no.ntnu.rentalroulette.entity.Feature;
 import no.ntnu.rentalroulette.entity.User;
 import no.ntnu.rentalroulette.enums.CarStatus;
@@ -12,6 +13,7 @@ import no.ntnu.rentalroulette.enums.FuelType;
 import no.ntnu.rentalroulette.enums.Manufacturer;
 import no.ntnu.rentalroulette.enums.TransmissionType;
 import no.ntnu.rentalroulette.repository.CarRepository;
+import no.ntnu.rentalroulette.repository.CarReviewRepository;
 import no.ntnu.rentalroulette.repository.FeatureRepository;
 import no.ntnu.rentalroulette.repository.UserRepository;
 import no.ntnu.rentalroulette.security.JwtUtil;
@@ -35,6 +37,9 @@ public class CarController {
 
   @Autowired
   private FeatureRepository featureRepository;
+
+  @Autowired
+  private CarReviewRepository carReviewRepository;
 
   @Autowired
   private ControllerUtil controllerUtil;
@@ -129,6 +134,7 @@ public class CarController {
     return new ResponseEntity<>(HttpStatus.OK);
   }
 
+
   @DeleteMapping("/cars/{id}")
   public ResponseEntity<String> deleteCar(HttpServletRequest request, @PathVariable int id) {
     Car car = carRepository.findById(id);
@@ -139,8 +145,7 @@ public class CarController {
     if (car.getUser().getId() != user.getId() && !controllerUtil.checkIfAdmin(request)) {
       return new ResponseEntity<>("Unauthorized", HttpStatus.UNAUTHORIZED);
     }
-    System.out.println("Deleting car with id: " + id
-        + " and user id: " + user.getId());
+    carReviewRepository.deleteAllByCarId(id);
     carRepository.delete(car);
     return new ResponseEntity<>(HttpStatus.OK);
   }
