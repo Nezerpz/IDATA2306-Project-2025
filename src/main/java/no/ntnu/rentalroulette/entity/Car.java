@@ -146,7 +146,7 @@ public class Car {
   @JsonProperty("features")
   private List<Feature> features = new ArrayList<>();
 
-  @OneToMany(mappedBy = "car", cascade = CascadeType.ALL, orphanRemoval = true)
+  @OneToMany(mappedBy = "car", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
   @JsonIgnore
   private List<CarReview> reviews;
 
