@@ -134,7 +134,7 @@ public class CarController {
     return new ResponseEntity<>(HttpStatus.OK);
   }
 
-
+  //TODO: Fix deletion of car when there are other entries in database that uses it as a foreign key.
   @DeleteMapping("/cars/{id}")
   public ResponseEntity<String> deleteCar(HttpServletRequest request, @PathVariable int id) {
     Car car = carRepository.findById(id);
