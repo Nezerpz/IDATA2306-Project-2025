@@ -126,12 +126,15 @@ public class User {
   private Set<Role> roles = new LinkedHashSet<Role>();
 
   @OneToMany(mappedBy = "reviewed_user_id", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+  @JsonIgnore
   private List<UserReview> userReviews;
 
   @OneToMany(mappedBy = "reviewing_user_id", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+  @JsonIgnore
   private List<UserReview> userReviewsReviewed;
 
   @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+  @JsonIgnore
   private List<CarReview> carReviews;
 
 

@@ -1,5 +1,6 @@
 package no.ntnu.rentalroulette.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -146,6 +147,7 @@ public class Car {
   private List<Feature> features = new ArrayList<>();
 
   @OneToMany(mappedBy = "car", cascade = CascadeType.ALL, orphanRemoval = true)
+  @JsonIgnore
   private List<CarReview> reviews;
 
   public Car(
