@@ -526,11 +526,16 @@ public class SampleDataGenerator {
     Car model3_1 = carRepository.findById(3);
     Car model3_2 = carRepository.findById(4);
 
+    CarReview golf1Review = new CarReview(olaNordmann, golf1, 5, "Great car!");
+    CarReview golf2Review = new CarReview(kariNordmann, golf2, 4, "Good car!");
+    CarReview model3_1Review = new CarReview(olaNordmann, model3_1, 5, "Great car!");
+    CarReview model3_2Review = new CarReview(kariNordmann, model3_2, 4, "Good car!");
+
     carReviewRepository.saveAll(List.of(
-        new CarReview(olaNordmann, golf1, 5, "Great car!"),
-        new CarReview(kariNordmann, golf2, 4, "Good car!"),
-        new CarReview(olaNordmann, model3_1, 5, "Great car!"),
-        new CarReview(kariNordmann, model3_2, 4, "Good car!")
+        golf1Review,
+        golf2Review,
+        model3_1Review,
+        model3_2Review
     ));
 
     userReviewRepository.saveAll(List.of(

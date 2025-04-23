@@ -17,6 +17,7 @@ import no.ntnu.rentalroulette.repository.CarReviewRepository;
 import no.ntnu.rentalroulette.repository.FeatureRepository;
 import no.ntnu.rentalroulette.repository.UserRepository;
 import no.ntnu.rentalroulette.security.JwtUtil;
+import no.ntnu.rentalroulette.service.CarService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,9 +29,12 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+//TODO: Use services instead of making the rest controller do everything.
 @RestController
 public class CarController {
 
+  @Autowired
+  private CarService carService;
 
   @Autowired
   private CarRepository carRepository;
@@ -145,8 +149,7 @@ public class CarController {
     if (car.getUser().getId() != user.getId() && !controllerUtil.checkIfAdmin(request)) {
       return new ResponseEntity<>("Unauthorized", HttpStatus.UNAUTHORIZED);
     }
-    carReviewRepository.deleteAllByCarId(id);
-    carRepository.delete(car);
+    carService.deleteCar(id);
     return new ResponseEntity<>(HttpStatus.OK);
   }
 
