@@ -46,6 +46,12 @@ public class ReviewController {
     if (reviewedUser.get().getId() == reviewingUser.get().getId()) {
       return new ResponseEntity<>("You cannot review yourself", HttpStatus.BAD_REQUEST);
     }
+    boolean reviewExists = userReviewRepository.existsByReviewedUserAndReviewingUser(
+        reviewedUser.get(), reviewingUser.get()
+    );
+    if (reviewExists) {
+      return new ResponseEntity<>("Review already exists", HttpStatus.CONFLICT);
+    }
     UserReview review = new UserReview(
         reviewedUser.get(),
         reviewingUser.get(),
@@ -64,13 +70,17 @@ public class ReviewController {
     Optional<User> user = userRepository.findById(body.get("user_id").asInt());
     Car car = carRepository.findById(body.get("car_id").asInt());
     if (user.isEmpty()) {
-      return new ResponseEntity<>("User or car not found", HttpStatus.NOT_FOUND);
+      return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
     }
     if (car == null) {
-      return new ResponseEntity<>("User or car not found", HttpStatus.NOT_FOUND);
+      return new ResponseEntity<>("Car not found", HttpStatus.NOT_FOUND);
     }
     if (user.get().getId() == car.getProviderId()) {
       return new ResponseEntity<>("You cannot review your own car", HttpStatus.BAD_REQUEST);
+    }
+    boolean reviewExists = carReviewRepository.existsByCarAndUser(car, user.get());
+    if (reviewExists) {
+      return new ResponseEntity<>("Review already exists", HttpStatus.CONFLICT);
     }
     CarReview review = new CarReview(
         user.get(),

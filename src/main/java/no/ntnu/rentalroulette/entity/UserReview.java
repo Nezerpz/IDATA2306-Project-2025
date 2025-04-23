@@ -27,12 +27,12 @@ public class UserReview {
   @Setter
   @Getter
   @ManyToOne
-  private User reviewed_user_id;
+  private User reviewedUser;
 
   @Setter
   @Getter
   @ManyToOne
-  private User reviewing_user_id;
+  private User reviewingUser;
 
   @Setter
   @Getter
@@ -42,9 +42,9 @@ public class UserReview {
   @Getter
   private String review;
 
-  public UserReview(User reviewed_user_id, User reviewing_user_id, int rating, String review) {
-    this.reviewed_user_id = reviewed_user_id;
-    this.reviewing_user_id = reviewing_user_id;
+  public UserReview(User reviewedUser, User reviewingUser, int rating, String review) {
+    this.reviewedUser = reviewedUser;
+    this.reviewingUser = reviewingUser;
     this.rating = rating;
     this.review = review;
   }
