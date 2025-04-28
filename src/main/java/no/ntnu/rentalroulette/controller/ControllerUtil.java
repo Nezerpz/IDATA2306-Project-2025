@@ -1,0 +1,147 @@
+package no.ntnu.rentalroulette.controller;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import jakarta.servlet.http.HttpServletRequest;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import no.ntnu.rentalroulette.entity.Feature;
+import no.ntnu.rentalroulette.entity.User;
+import no.ntnu.rentalroulette.repository.UserRepository;
+import no.ntnu.rentalroulette.security.JwtUtil;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Service;
+
+@Service
+public class ControllerUtil {
+
+  private final JwtUtil jwtUtil;
+  private final UserRepository userRepository;
+
+  /**
+   * Constructor for the ControllerUtil class.
+   *
+   * @param jwtUtil        The JWT utility class.
+   * @param userRepository The user repository.
+   */
+  @Autowired
+  public ControllerUtil(JwtUtil jwtUtil, UserRepository userRepository) {
+    this.jwtUtil = jwtUtil;
+    this.userRepository = userRepository;
+  }
+
+  /**
+   * Extracts the JWT token from the request object.
+   *
+   * @param request The request object.
+   * @return The JWT.
+   */
+  public String extractJwtToken(HttpServletRequest request) {
+    return request.getHeader("Authorization").substring(7);
+  }
+
+  /**
+   * Handles the JWT token to find the username registered in the token.
+   *
+   * @param request The request object.
+   * @return The user of the JWT.
+   */
+  public User getUserBasedOnJWT(HttpServletRequest request) {
+    String jwtToken = extractJwtToken(request);
+    String username = jwtUtil.extractUsername(jwtToken);
+    Optional<User> user = userRepository.findByUsername(username);
+    if (user.isPresent()) {
+      return user.get();
+    } else {
+      throw new UsernameNotFoundException("Username: " + username + " not found");
+    }
+  }
+
+  /**
+   * Extracts the request body from the request object.
+   *
+   * @param request The request object.
+   * @return The request body as a string.
+   */
+  public ObjectNode getRequestBody(HttpServletRequest request) {
+    StringBuilder stringBuilder = new StringBuilder();
+    try (BufferedReader reader = request.getReader()) {
+      String line;
+      while ((line = reader.readLine()) != null) {
+        stringBuilder.append(line);
+      }
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    String requestBody = stringBuilder.toString();
+    ObjectMapper objectMapper = new ObjectMapper();
+    ObjectNode jsonNodes = null;
+    try {
+      jsonNodes = objectMapper.readValue(requestBody, ObjectNode.class);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    return jsonNodes;
+  }
+
+  /**
+   * Extracts a list of features from the request body.
+   *
+   * @param features The request body.
+   * @return The list of features.
+   */
+  public List<Feature> getFeaturesFromRequestBody(JsonNode features) {
+    List<Feature> featureList = new ArrayList<>();
+    if (features.isArray()) {
+      for (JsonNode featureNode : features) {
+        Feature featureObj = new Feature();
+        featureObj.setFeatureName(featureNode.asText());
+        featureList.add(featureObj);
+      }
+    }
+    return featureList;
+  }
+
+  public boolean checkIfAdmin(HttpServletRequest request) {
+    boolean isAdmin = false;
+    String jwtToken = extractJwtToken(request);
+    String username = jwtUtil.extractUsername(jwtToken);
+    Optional<User> user = userRepository.findByUsername(username);
+    if (user.isPresent() && user.get().getUserType().name().equals("ADMIN")) {
+      isAdmin = true;
+    }
+
+    return isAdmin;
+  }
+
+  public boolean checkIfProvider(HttpServletRequest request) {
+    boolean isProvider = false;
+    String jwtToken = extractJwtToken(request);
+    String username = jwtUtil.extractUsername(jwtToken);
+    Optional<User> user = userRepository.findByUsername(username);
+    if (user.isPresent() && user.get().getUserType().name().equals("PROVIDER")) {
+      isProvider = true;
+    }
+
+    return isProvider;
+  }
+
+  public boolean checkIfCustomer(HttpServletRequest request) {
+    boolean isCustomer = false;
+    String jwtToken = extractJwtToken(request);
+    String username = jwtUtil.extractUsername(jwtToken);
+    Optional<User> user = userRepository.findByUsername(username);
+    if (user.isPresent() && user.get().getUserType().name().equals("CUSTOMER")) {
+      isCustomer = true;
+    }
+
+    return isCustomer;
+  }
+}
