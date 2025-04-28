@@ -48,7 +48,7 @@ public class UserController {
     }
   }
 
-  @GetMapping("users/self")
+  @GetMapping("/users/self")
   public ResponseEntity<User> getSelf(HttpServletRequest request) {
     User user = controllerUtil.getUserBasedOnJWT(request);
     User userToReturn = userRepository.findById(user.getId()).orElseThrow(
