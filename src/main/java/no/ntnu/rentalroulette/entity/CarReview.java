@@ -1,16 +1,23 @@
 package no.ntnu.rentalroulette.entity;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
+import org.hibernate.annotations.Fetch;
 
 @Entity
 @Data
@@ -25,13 +32,13 @@ public class CarReview {
   private int id;
 
   @Setter
-  @Getter
-  @ManyToOne
+  @ManyToOne(fetch = FetchType.EAGER)
+  @JsonProperty("userId")
   private User user;
 
   @Setter
-  @Getter
-  @ManyToOne
+  @ManyToOne(fetch = FetchType.EAGER)
+  @JsonProperty("carId")
   private Car car;
 
   @Setter
@@ -47,5 +54,15 @@ public class CarReview {
     this.car = car;
     this.rating = rating;
     this.review = review;
+  }
+
+  @JsonProperty("userId")
+  public int getUser() {
+    return user.getId();
+  }
+
+  @JsonProperty("carId")
+  public int getCar() {
+    return car.getId();
   }
 }

@@ -2,6 +2,7 @@ package no.ntnu.rentalroulette;
 
 import jakarta.transaction.Transactional;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
@@ -46,6 +47,7 @@ public class SampleDataGenerator {
     // Cars
     CarRepository carRepository = this.context.getBean(CarRepository.class);
     List<Car> cars = createDefaultCars(userRepository);
+    updateCarStatus(cars, CarStatus.AVAILABLE);
     carRepository.saveAll(cars);
 
     // Features
@@ -60,6 +62,12 @@ public class SampleDataGenerator {
     UserReviewRepository userReviewRepository = this.context.getBean(UserReviewRepository.class);
     CarReviewRepository carReviewRepository = this.context.getBean(CarReviewRepository.class);
     createDefaultReviews(userRepository, carRepository, carReviewRepository, userReviewRepository);
+  }
+
+  public static void updateCarStatus(List<Car> cars, CarStatus status) {
+    for (Car car : cars) {
+      car.setCarStatus(status);
+    }
   }
 
 
@@ -128,23 +136,23 @@ public class SampleDataGenerator {
     FuelType petrol = FuelType.PETROL;
     FuelType diesel = FuelType.DIESEL;
     FuelType electric = FuelType.ELECTRIC;
-    User millerBil = userRepository.findByUsername("miller.bil");
-    User billerBil = userRepository.findByUsername("biller.bil");
-    User biggernesTesla = userRepository.findByUsername("biggernes.tesla");
-    User teslaTom = userRepository.findByUsername("tesla.tom");
-    User auto99 = userRepository.findByUsername("auto.9-9");
-    User auto1010 = userRepository.findByUsername("auto.10-10");
-    User bilikist = userRepository.findByUsername("bilikist");
-    User orstaKommune = userRepository.findByUsername("orsta.kommune");
-    User sirkelsliper = userRepository.findByUsername("sirkelsliper");
-    User peacePer = userRepository.findByUsername("peace.per");
-    User bilverksted = userRepository.findByUsername("bilverksted");
-    User grabes = userRepository.findByUsername("grabes");
-    User djarney = userRepository.findByUsername("djarney");
-    User sprekksaver = userRepository.findByUsername("sprekksaver");
-    User smidigBilforhandler = userRepository.findByUsername("smidig.bilforhandler");
-    User fossefallBilforhandler = userRepository.findByUsername("fossefall.bilforhandler");
-    User betrelOstein = userRepository.findByUsername("betrel.ostein");
+    User millerBil = userRepository.findByUsername("miller.bil").get();
+    User billerBil = userRepository.findByUsername("biller.bil").get();
+    User biggernesTesla = userRepository.findByUsername("biggernes.tesla").get();
+    User teslaTom = userRepository.findByUsername("tesla.tom").get();
+    User auto99 = userRepository.findByUsername("auto.9-9").get();
+    User auto1010 = userRepository.findByUsername("auto.10-10").get();
+    User bilikist = userRepository.findByUsername("bilikist").get();
+    User orstaKommune = userRepository.findByUsername("orsta.kommune").get();
+    User sirkelsliper = userRepository.findByUsername("sirkelsliper").get();
+    User peacePer = userRepository.findByUsername("peace.per").get();
+    User bilverksted = userRepository.findByUsername("bilverksted").get();
+    User grabes = userRepository.findByUsername("grabes").get();
+    User djarney = userRepository.findByUsername("djarney").get();
+    User sprekksaver = userRepository.findByUsername("sprekksaver").get();
+    User smidigBilforhandler = userRepository.findByUsername("smidig.bilforhandler").get();
+    User fossefallBilforhandler = userRepository.findByUsername("fossefall.bilforhandler").get();
+    User betrelOstein = userRepository.findByUsername("betrel.ostein").get();
 
     Car golf1 = new Car("/Images/Golf", "Golf", volkswagen, 5, manual, diesel, 600, 2007);
     cars.add(golf1);
@@ -264,6 +272,8 @@ public class SampleDataGenerator {
     Car iOn5 = new Car("/Images/iOn", "iOn", peugeot, 4, automatic, electric, 201, 2015);
     cars.add(iOn5);
     iOn5.setUser(auto1010);
+
+
     return cars;
   }
 
@@ -271,18 +281,21 @@ public class SampleDataGenerator {
   private void createDefaultOrders(CarRepository carRepository,
                                    UserRepository userRepository, OrderRepository orderRepository) {
     List<Order> orders = new ArrayList<>();
-    User customer1 = userRepository.findByUsername("ola.nordmann");
-    User customer2 = userRepository.findByUsername("kari.nordmann");
+    User customer1 = userRepository.findByUsername("ola.nordmann").get();
+    User customer2 = userRepository.findByUsername("kari.nordmann").get();
 
     // Some cars may be busy in some periods for one provider, but always available from another supplier
 
     LocalDate startDateOneProvider = LocalDate.of(2025, 1, 1);
     LocalDate endDateOneProvider = LocalDate.of(2025, 6, 10);
+    LocalTime startTime = LocalTime.of(8, 0);
+    LocalTime endTime = LocalTime.of(17, 0);
     Car golf1 = carRepository.findById(1);
     User golf1Provider = userRepository.findById(golf1.getUser().getId()).orElse(null);
 
     orders.add(
-        new Order(customer1, golf1Provider, startDateOneProvider, endDateOneProvider,
+        new Order(customer1, golf1Provider, startDateOneProvider, endDateOneProvider, startTime,
+            endTime,
             String.valueOf(golf1.getPrice() *
                 ChronoUnit.DAYS.between(startDateOneProvider, endDateOneProvider)), golf1, true));
     golf1.setCarStatus(CarStatus.INUSE);
@@ -303,19 +316,22 @@ public class SampleDataGenerator {
         userRepository.findById(transporter3.getUser().getId()).orElse(null);
 
     orders.add(
-        new Order(customer1, transporter1Provider, startDateSomeWeeks, endDateSomeWeeks,
+        new Order(customer1, transporter1Provider, startDateSomeWeeks, endDateSomeWeeks, startTime,
+            endTime,
             String.valueOf(transporter1.getPrice() *
                 ChronoUnit.DAYS.between(startDateSomeWeeks, endDateSomeWeeks)), transporter1,
             true));
     transporter1.setCarStatus(CarStatus.INUSE);
     orders.add(
-        new Order(customer2, transporter2Provider, startDateSomeWeeks, endDateSomeWeeks,
+        new Order(customer2, transporter2Provider, startDateSomeWeeks, endDateSomeWeeks, startTime,
+            endTime,
             String.valueOf(transporter2.getPrice() *
                 ChronoUnit.DAYS.between(startDateSomeWeeks, endDateSomeWeeks)), transporter2,
             true));
     transporter2.setCarStatus(CarStatus.INUSE);
     orders.add(
-        new Order(customer2, transporter3Provider, startDateSomeWeeks, endDateSomeWeeks,
+        new Order(customer2, transporter3Provider, startDateSomeWeeks, endDateSomeWeeks, startTime,
+            endTime,
             String.valueOf(transporter3.getPrice() *
                 ChronoUnit.DAYS.between(startDateSomeWeeks, endDateSomeWeeks)), transporter3,
             true));
@@ -338,27 +354,32 @@ public class SampleDataGenerator {
     User iOn5Provider = userRepository.findById(iOn5.getUser().getId()).orElse(null);
 
     orders.add(
-        new Order(customer1, iOn1Provider, startDateFullyBooked, endDateFullyBooked,
+        new Order(customer1, iOn1Provider, startDateFullyBooked, endDateFullyBooked, startTime,
+            endTime,
             String.valueOf(iOn1.getPrice() *
                 ChronoUnit.DAYS.between(startDateFullyBooked, endDateFullyBooked)), iOn1, true));
     iOn1.setCarStatus(CarStatus.INUSE);
     orders.add(
-        new Order(customer1, iOn2Provider, startDateFullyBooked, endDateFullyBooked,
+        new Order(customer1, iOn2Provider, startDateFullyBooked, endDateFullyBooked, startTime,
+            endTime,
             String.valueOf(iOn2.getPrice() *
                 ChronoUnit.DAYS.between(startDateFullyBooked, endDateFullyBooked)), iOn2, true));
     iOn2.setCarStatus(CarStatus.INUSE);
     orders.add(
-        new Order(customer1, iOn3Provider, startDateFullyBooked, endDateFullyBooked,
+        new Order(customer1, iOn3Provider, startDateFullyBooked, endDateFullyBooked, startTime,
+            endTime,
             String.valueOf(iOn3.getPrice() *
                 ChronoUnit.DAYS.between(startDateFullyBooked, endDateFullyBooked)), iOn3, true));
     iOn3.setCarStatus(CarStatus.INUSE);
     orders.add(
-        new Order(customer2, iOn4Provider, startDateFullyBooked, endDateFullyBooked,
+        new Order(customer2, iOn4Provider, startDateFullyBooked, endDateFullyBooked, startTime,
+            endTime,
             String.valueOf(iOn4.getPrice() *
                 ChronoUnit.DAYS.between(startDateFullyBooked, endDateFullyBooked)), iOn4, true));
     iOn4.setCarStatus(CarStatus.INUSE);
     orders.add(
-        new Order(customer2, iOn5Provider, startDateFullyBooked, endDateFullyBooked,
+        new Order(customer2, iOn5Provider, startDateFullyBooked, endDateFullyBooked, startTime,
+            endTime,
             String.valueOf(iOn5.getPrice() *
                 ChronoUnit.DAYS.between(startDateFullyBooked, endDateFullyBooked)), iOn5, true));
     iOn5.setCarStatus(CarStatus.INUSE);
@@ -495,21 +516,26 @@ public class SampleDataGenerator {
   private void createDefaultReviews(UserRepository userRepository, CarRepository carRepository,
                                     CarReviewRepository carReviewRepository,
                                     UserReviewRepository userReviewRepository) {
-    User olaNordmann = userRepository.findByUsername("ola.nordmann");
-    User kariNordmann = userRepository.findByUsername("kari.nordmann");
-    User millerBil = userRepository.findByUsername("miller.bil");
-    User billerBil = userRepository.findByUsername("biller.bil");
+    User olaNordmann = userRepository.findByUsername("ola.nordmann").get();
+    User kariNordmann = userRepository.findByUsername("kari.nordmann").get();
+    User millerBil = userRepository.findByUsername("miller.bil").get();
+    User billerBil = userRepository.findByUsername("biller.bil").get();
 
     Car golf1 = carRepository.findById(1);
     Car golf2 = carRepository.findById(2);
     Car model3_1 = carRepository.findById(3);
     Car model3_2 = carRepository.findById(4);
 
+    CarReview golf1Review = new CarReview(olaNordmann, golf1, 5, "Great car!");
+    CarReview golf2Review = new CarReview(kariNordmann, golf2, 4, "Good car!");
+    CarReview model3_1Review = new CarReview(olaNordmann, model3_1, 5, "Great car!");
+    CarReview model3_2Review = new CarReview(kariNordmann, model3_2, 4, "Good car!");
+
     carReviewRepository.saveAll(List.of(
-        new CarReview(olaNordmann, golf1, 5, "Great car!"),
-        new CarReview(kariNordmann, golf2, 4, "Good car!"),
-        new CarReview(olaNordmann, model3_1, 5, "Great car!"),
-        new CarReview(kariNordmann, model3_2, 4, "Good car!")
+        golf1Review,
+        golf2Review,
+        model3_1Review,
+        model3_2Review
     ));
 
     userReviewRepository.saveAll(List.of(
