@@ -1,24 +1,23 @@
 package no.ntnu.rentalroulette.controller;
 
-import jakarta.servlet.http.HttpServletRequest;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
 import no.ntnu.rentalroulette.entity.User;
 import no.ntnu.rentalroulette.enums.UserType;
 import no.ntnu.rentalroulette.repository.UserRepository;
-
-import no.ntnu.rentalroulette.security.JwtUtil;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
+import jakarta.servlet.http.HttpServletRequest;
+
 
 @RestController
 public class UserController {
@@ -47,6 +46,15 @@ public class UserController {
       return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
   }
+
+  /* TODO: make signup work
+  @PostMapping("/users/new")
+  public ResponseEntity<String> createUser(HttpServletRequest request) {
+      ObjectNode object = controllerUtil.getRequestBody(request);
+      System.out.println(object);
+      return new ResponseEntity<>("hei", HttpStatus.OK);
+  }
+  */
 
   @GetMapping("users/self")
   public ResponseEntity<User> getSelf(HttpServletRequest request) {
