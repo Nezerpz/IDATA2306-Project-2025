@@ -154,125 +154,130 @@ public class SampleDataGenerator {
     User fossefallBilforhandler = userRepository.findByUsername("fossefall.bilforhandler").get();
     User betrelOstein = userRepository.findByUsername("betrel.ostein").get();
 
-    Car golf1 = new Car("/Images/Golf", "Golf", volkswagen, 5, manual, diesel, 600, 2007);
+    Car golf1 = new Car("/images/Golf.jpg", "Golf", volkswagen, 5, manual, diesel, 600, 2007);
     cars.add(golf1);
     golf1.setUser(millerBil);
 
-    Car golf2 = new Car("/Images/Golf", "Golf", volkswagen, 5, manual, diesel, 550, 2007);
+    Car golf2 = new Car("/images/Golf.jpg", "Golf", volkswagen, 5, manual, diesel, 550, 2007);
     cars.add(golf2);
     golf2.setUser(billerBil);
 
-    Car model3_1 = new Car("/Images/Model3", "Model 3", tesla, 5, automatic, electric, 700, 2019);
+    Car model3_1 =
+        new Car("/images/Model3.jpg", "Model 3", tesla, 5, automatic, electric, 700, 2019);
     cars.add(model3_1);
     model3_1.setUser(biggernesTesla);
 
-    Car model3_2 = new Car("/Images/Model3", "Model 3", tesla, 5, automatic, electric, 500, 2019);
+    Car model3_2 =
+        new Car("/images/Model3.jpg", "Model 3", tesla, 5, automatic, electric, 500, 2019);
     cars.add(model3_2);
     model3_2.setUser(teslaTom);
 
-    Car modelY_1 = new Car("/Images/ModelY", "Model Y", tesla, 5, automatic, electric, 900, 2022);
+    Car modelY_1 =
+        new Car("/images/ModelY.jpg", "Model Y", tesla, 5, automatic, electric, 900, 2022);
     cars.add(modelY_1);
     modelY_1.setUser(biggernesTesla);
 
-    Car modelY_2 = new Car("/Images/ModelY", "Model Y", tesla, 5, automatic, electric, 700, 2022);
+    Car modelY_2 =
+        new Car("/images/ModelY.jpg", "Model Y", tesla, 5, automatic, electric, 700, 2022);
     cars.add(modelY_2);
     modelY_2.setUser(teslaTom);
 
-    Car leaf1 = new Car("/Images/Leaf", "Leaf", nissan, 5, automatic, electric, 500, 2016);
+    Car leaf1 = new Car("/images/Leaf.jpg", "Leaf", nissan, 5, automatic, electric, 500, 2016);
     cars.add(leaf1);
     leaf1.setUser(auto99);
 
-    Car leaf2 = new Car("/Images/Leaf", "Leaf", nissan, 5, automatic, electric, 500, 2016);
+    Car leaf2 = new Car("/images/Leaf.jpg", "Leaf", nissan, 5, automatic, electric, 500, 2016);
     cars.add(leaf2);
     leaf2.setUser(auto1010);
 
-    Car mazda2 = new Car("/Images/Mazda2", "2", mazda, 5, automatic, petrol, 400, 2017);
+    Car mazda2 = new Car("/images/Mazda2.jpg", "2", mazda, 5, automatic, petrol, 400, 2017);
     cars.add(mazda2);
     mazda2.setUser(bilikist);
 
     Car transporter1 =
-        new Car("/Images/Transporter", "Transporter", volkswagen, 8, manual, petrol, 200, 1978);
+        new Car("/images/Transporter.jpg", "Transporter", volkswagen, 8, manual, petrol, 200, 1978);
     cars.add(transporter1);
     transporter1.setUser(orstaKommune);
 
     Car transporter2 =
-        new Car("/Images/Transporter", "Transporter", volkswagen, 8, manual, petrol, 70, 1978);
+        new Car("/images/Transporter.jpg", "Transporter", volkswagen, 8, manual, petrol, 70, 1978);
     cars.add(transporter2);
     transporter2.setUser(sirkelsliper);
 
     Car transporter3 =
-        new Car("/Images/Transporter", "Transporter", volkswagen, 8, manual, petrol, 180, 1978);
+        new Car("/images/Transporter.jpg", "Transporter", volkswagen, 8, manual, petrol, 180, 1978);
     cars.add(transporter3);
     transporter3.setUser(peacePer);
 
-    Car m3_1 = new Car("/Images/M3Evo", "M3 Evo", bmw, 4, manual, petrol, 400, 1988);
+    Car m3_1 = new Car("/images/M3Evo.jpg", "M3 Evo", bmw, 4, manual, petrol, 400, 1988);
     cars.add(m3_1);
     m3_1.setUser(bilverksted);
 
-    Car m3_2 = new Car("/Images/M3Evo", "M3 Evo", bmw, 4, manual, petrol, 450, 1988);
+    Car m3_2 = new Car("/images/M3Evo.jpg", "M3 Evo", bmw, 4, manual, petrol, 450, 1988);
     cars.add(m3_2);
     m3_2.setUser(grabes);
 
-    Car m3_3 = new Car("/Images/M3Evo", "M3 Evo", bmw, 4, manual, petrol, 449, 1988);
+    Car m3_3 = new Car("/images/M3Evo.jpg", "M3 Evo", bmw, 4, manual, petrol, 449, 1988);
     cars.add(m3_3);
     m3_3.setUser(djarney);
 
-    Car fabia1 = new Car("/Images/Fabia", "Fabia", skoda, 5, automatic, diesel, 300, 2011);
+    Car fabia1 = new Car("/images/Fabia.jpg", "Fabia", skoda, 5, automatic, diesel, 300, 2011);
     cars.add(fabia1);
     fabia1.setUser(sprekksaver);
 
-    Car fabia2 = new Car("/Images/Fabia", "Fabia", skoda, 5, automatic, diesel, 299, 2011);
+    Car fabia2 = new Car("/images/Fabia.jpg", "Fabia", skoda, 5, automatic, diesel, 299, 2011);
     cars.add(fabia2);
     fabia2.setUser(smidigBilforhandler);
 
-    Car fabia3 = new Car("/Images/Fabia", "Fabia", skoda, 5, automatic, diesel, 700, 2011);
+    Car fabia3 = new Car("/images/Fabia.jpg", "Fabia", skoda, 5, automatic, diesel, 700, 2011);
     cars.add(fabia3);
     fabia3.setUser(fossefallBilforhandler);
 
-    Car peugeot307_1 = new Car("/Images/307SW", "307 SW", peugeot, 7, manual, diesel, 600, 2008);
+    Car peugeot307_1 =
+        new Car("/images/307SW.jpg", "307 SW", peugeot, 7, manual, diesel, 600, 2008);
     cars.add(peugeot307_1);
     peugeot307_1.setUser(betrelOstein);
 
-    Car peugeot307_2 = new Car("/Images/307SW", "307 SW", peugeot, 7, manual, diesel, 550, 2008);
+    Car peugeot307_2 =
+        new Car("/images/307SW.jpg", "307 SW", peugeot, 7, manual, diesel, 550, 2008);
     cars.add(peugeot307_2);
     peugeot307_2.setUser(auto1010);
 
-    Car peugeot207_1 = new Car("/Images/207", "207", peugeot, 5, manual, diesel, 500, 2007);
+    Car peugeot207_1 = new Car("/images/207.jpg", "207", peugeot, 5, manual, diesel, 500, 2007);
     cars.add(peugeot207_1);
     peugeot207_1.setUser(betrelOstein);
 
-    Car peugeot207_2 = new Car("/Images/207", "207", peugeot, 5, manual, diesel, 550, 2007);
+    Car peugeot207_2 = new Car("/images/207.jpg", "207", peugeot, 5, manual, diesel, 550, 2007);
     cars.add(peugeot207_2);
     peugeot207_2.setUser(auto1010);
 
-    Car peugeot3008_1 = new Car("/Images/3008", "3008", peugeot, 5, manual, diesel, 600, 2010);
+    Car peugeot3008_1 = new Car("/images/3008.jpg", "3008", peugeot, 5, manual, diesel, 600, 2010);
     cars.add(peugeot3008_1);
     peugeot3008_1.setUser(betrelOstein);
 
-    Car peugeot3008_2 = new Car("/Images/3008", "3008", peugeot, 5, manual, diesel, 600, 2010);
+    Car peugeot3008_2 = new Car("/images/3008.jpg", "3008", peugeot, 5, manual, diesel, 600, 2010);
     cars.add(peugeot3008_2);
     peugeot3008_2.setUser(auto1010);
 
-    Car iOn1 = new Car("/Images/iOn", "iOn", peugeot, 4, automatic, electric, 200, 2015);
+    Car iOn1 = new Car("/images/iOn.jpg", "iOn", peugeot, 4, automatic, electric, 200, 2015);
     cars.add(iOn1);
     iOn1.setUser(betrelOstein);
 
-    Car iOn2 = new Car("/Images/iOn", "iOn", peugeot, 4, automatic, electric, 201, 2015);
+    Car iOn2 = new Car("/images/iOn.jpg", "iOn", peugeot, 4, automatic, electric, 201, 2015);
     cars.add(iOn2);
     iOn2.setUser(auto1010);
 
-    Car iOn3 = new Car("/Images/iOn", "iOn", peugeot, 4, automatic, electric, 200, 2015);
+    Car iOn3 = new Car("/images/iOn.jpg", "iOn", peugeot, 4, automatic, electric, 200, 2015);
     cars.add(iOn3);
     iOn3.setUser(betrelOstein);
 
-    Car iOn4 = new Car("/Images/iOn", "iOn", peugeot, 4, automatic, electric, 201, 2015);
+    Car iOn4 = new Car("/images/iOn.jpg", "iOn", peugeot, 4, automatic, electric, 201, 2015);
     cars.add(iOn4);
     iOn4.setUser(auto1010);
 
-    Car iOn5 = new Car("/Images/iOn", "iOn", peugeot, 4, automatic, electric, 201, 2015);
+    Car iOn5 = new Car("/images/iOn.jpg", "iOn", peugeot, 4, automatic, electric, 201, 2015);
     cars.add(iOn5);
     iOn5.setUser(auto1010);
-
 
     return cars;
   }
