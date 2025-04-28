@@ -145,8 +145,8 @@ public class OrderController {
   ) {
     User user = controllerUtil.getUserBasedOnJWT(request);
     ObjectNode body = controllerUtil.getRequestBody(request);
+    System.out.println("body = " + body);
     Car car = carRepository.findById(Integer.parseInt(body.get("id").asText()));
-    System.out.println("car_id = " + car.getId() + " user = " + user + " body = " + body);
 
     LocalDate startDate = stringToDate(body.get("dateFrom").asText());
     LocalDate endDate = stringToDate(body.get("dateTo").asText());
@@ -155,12 +155,8 @@ public class OrderController {
 
     float totalPrice = car.getPrice() * ChronoUnit.DAYS.between(startDate, endDate);
 
-    Optional<User> provider =
-        userRepository.findById(body.get("providerId").asInt());
-
-    if (provider.isEmpty()) {
-      return ResponseEntity.badRequest().body("{\"response\": \"provider not found\"}");
-    }
+    int providerID = car.getProviderId();
+    Optional<User> provider = userRepository.findById(providerID);
     Order order = new Order(
         user,
         provider.get(),
