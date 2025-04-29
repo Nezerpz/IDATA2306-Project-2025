@@ -1,15 +1,12 @@
 package no.ntnu.rentalroulette.service;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
-import no.ntnu.rentalroulette.controller.ControllerUtil;
 import no.ntnu.rentalroulette.entity.Car;
 import no.ntnu.rentalroulette.entity.Feature;
-import no.ntnu.rentalroulette.entity.User;
 import no.ntnu.rentalroulette.enums.CarStatus;
 import no.ntnu.rentalroulette.enums.FuelType;
 import no.ntnu.rentalroulette.enums.Manufacturer;
@@ -31,9 +28,6 @@ public class CarService {
   @Autowired
   private FeatureRepository featureRepository;
 
-  @Autowired
-  private ControllerUtil controllerUtil;
-
   public Car getCarById(int carId) {
     return carRepository.findById(carId);
   }
@@ -52,8 +46,7 @@ public class CarService {
   }
 
   @Transactional
-  public void addCar(HttpServletRequest request) {
-    ObjectNode requestBody = controllerUtil.getRequestBody(request);
+  public void addCar(ObjectNode requestBody, List<Feature> features) {
     String imagePath = requestBody.get("imagePath").asText();
     String model = requestBody.get("carModel").asText();
     Manufacturer manufacturer = Manufacturer.valueOf(requestBody.get("manufacturer").asText());
@@ -63,15 +56,13 @@ public class CarService {
     FuelType fuelType = FuelType.valueOf(requestBody.get("fuelType").asText());
     int price = requestBody.get("price").asInt();
     int productionYear = requestBody.get("productionYear").asInt();
-    List<Feature> features = controllerUtil.getFeaturesFromRequestBody(requestBody.get("features"));
     Car car = new Car(imagePath, model, manufacturer, seats, transmissionType,
         fuelType, price, productionYear, features);
     carRepository.save(car);
   }
 
   @Transactional
-  public void updateCar(HttpServletRequest request, int carId) throws IllegalAccessException {
-    ObjectNode requestBody = controllerUtil.getRequestBody(request);
+  public void updateCar(ObjectNode requestBody, int carId, List<Feature> features) {
     String imagePath = requestBody.get("imagePath").asText();
     String model = requestBody.get("carModel").asText();
     Manufacturer manufacturer = Manufacturer.valueOf(requestBody.get("manufacturer").asText());
@@ -82,8 +73,7 @@ public class CarService {
     int price = requestBody.get("price").asInt();
     int productionYear = requestBody.get("productionYear").asInt();
     CarStatus carStatus = CarStatus.valueOf(requestBody.get("carStatus").asText());
-    List<Feature> features = controllerUtil.getFeaturesFromRequestBody(requestBody.get("features"));
-    Car car = validateCar(request, carId);
+    Car car = carRepository.findById(carId);
     car.setImagePath(imagePath);
     car.setCarModel(model);
     car.setManufacturer(manufacturer);
@@ -110,21 +100,10 @@ public class CarService {
 
 
   @Transactional
-  public void deleteCar(HttpServletRequest request, int carId) throws IllegalAccessException {
-    Car car = validateCar(request, carId);
+  public void deleteCar(int carId) {
+    Car car = carRepository.findById(carId);
     reviewService.deleteCarReviewsByCarId(car.getId());
     carRepository.deleteById(car.getId());
   }
 
-  private Car validateCar(HttpServletRequest request, int carId) throws IllegalAccessException {
-    Car car = carRepository.findById(carId);
-    User user = controllerUtil.getUserBasedOnJWT(request);
-    if (car == null) {
-      throw new IllegalArgumentException("Car with id " + carId + " does not exist");
-    }
-    if (car.getProviderId() != user.getId() && !controllerUtil.checkIfAdmin(request)) {
-      throw new IllegalAccessException("You are not allowed to delete this car");
-    }
-    return car;
-  }
 }

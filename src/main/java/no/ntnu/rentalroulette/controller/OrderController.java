@@ -1,17 +1,12 @@
 package no.ntnu.rentalroulette.controller;
 
-import java.lang.Integer;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.List;
-import java.util.Optional;
 import no.ntnu.rentalroulette.entity.Order;
-import no.ntnu.rentalroulette.repository.OrderRepository;
-import no.ntnu.rentalroulette.repository.UserRepository;
-import no.ntnu.rentalroulette.security.JwtUtil;
 import no.ntnu.rentalroulette.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,11 +17,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 import no.ntnu.rentalroulette.entity.User;
-import java.time.temporal.ChronoUnit;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import no.ntnu.rentalroulette.entity.Car;
-import no.ntnu.rentalroulette.repository.CarRepository;
 
 @RestController
 public class OrderController {
@@ -50,11 +40,8 @@ public class OrderController {
           description = "The list of orders returned in response body"
       )
   })
-  public ResponseEntity<List<Order>> orders(HttpServletRequest request) {
-    if (controllerUtil.checkIfAdmin(request)) {
-      return new ResponseEntity<>(orderService.getAllOrders(), HttpStatus.OK);
-    }
-    return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+  public ResponseEntity<List<Order>> orders() {
+    return new ResponseEntity<>(orderService.getAllOrders(), HttpStatus.OK);
   }
 
   @GetMapping("/orders/{id}")
@@ -95,6 +82,7 @@ public class OrderController {
   }
 
   @GetMapping("/orders/provider")
+  @PreAuthorize("hasRole('PROVIDER')")
   @Operation(
       summary = "Orders by provider endpoint",
       description = "Returns a list of all orders for a specific provider"

@@ -26,15 +26,14 @@ public class UserController {
   private UserService userService;
 
   @PostMapping("/users")
-  public ResponseEntity<List<User>> getUsers(HttpServletRequest request) {
-    if (controllerUtil.checkIfAdmin(request)) {
-      List<User> users = userService.getAllUsers();
-      return new ResponseEntity<>(users, HttpStatus.OK);
-    }
-    return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+  @PreAuthorize("hasRole('ADMIN')")
+  public ResponseEntity<List<User>> getUsers() {
+    List<User> users = userService.getAllUsers();
+    return new ResponseEntity<>(users, HttpStatus.OK);
   }
 
   @GetMapping("/users/{id}")
+  @PreAuthorize("hasRole('ADMIN')")
   public ResponseEntity<User> getUser(@PathVariable int id) {
     User user = userService.getUserById(id);
     return new ResponseEntity<>(user, HttpStatus.OK);
@@ -57,10 +56,8 @@ public class UserController {
   }
 
   @DeleteMapping("/users/{id}")
-  public ResponseEntity<String> deleteUser(HttpServletRequest request, @PathVariable int id) {
-    if (!controllerUtil.checkIfAdmin(request)) {
-      return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-    }
+  @PreAuthorize("hasRole('ADMIN')")
+  public ResponseEntity<String> deleteUser(@PathVariable int id) {
     userService.deleteUserById(id);
     return new ResponseEntity<>("User deleted", HttpStatus.OK);
 
@@ -74,10 +71,8 @@ public class UserController {
 
   //TODO: Test this function. Removed a return of user which might be important.
   @PostMapping("/become-provider")
+  @PreAuthorize("hasRole('CUSTOMER')")
   public ResponseEntity<User> becomeProvider(HttpServletRequest request) {
-    if (!controllerUtil.checkIfCustomer(request)) {
-      return new ResponseEntity<>(HttpStatus.CONFLICT);
-    }
     userService.updateUserType(
         controllerUtil.getUserBasedOnJWT(request).getId(),
         UserType.PROVIDER
