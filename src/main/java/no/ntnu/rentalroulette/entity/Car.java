@@ -154,7 +154,8 @@ public class Car {
       TransmissionType transmissionType,
       FuelType fuelType,
       int price,
-      int productionYear) {
+      int productionYear,
+      List<Feature> features) {
     this.imagePath = imagePath;
     this.carModel = model;
     this.manufacturer = manufacturer;
@@ -163,6 +164,8 @@ public class Car {
     this.fuelType = fuelType;
     this.price = price;
     this.productionYear = productionYear;
+    this.carStatus = CarStatus.AVAILABLE;
+    this.features = features;
   }
 
   @JsonProperty("features")
