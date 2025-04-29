@@ -1,20 +1,16 @@
 package no.ntnu.rentalroulette.controller;
 
 import java.util.List;
-import no.ntnu.rentalroulette.entity.Order;
 import no.ntnu.rentalroulette.enums.CarStatus;
 import no.ntnu.rentalroulette.enums.FuelType;
 import no.ntnu.rentalroulette.enums.Manufacturer;
 import no.ntnu.rentalroulette.enums.TransmissionType;
-import no.ntnu.rentalroulette.repository.OrderRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import java.util.Arrays;
 
 /**
  * Simple example controller

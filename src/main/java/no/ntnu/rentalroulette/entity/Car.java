@@ -154,6 +154,26 @@ public class Car {
       TransmissionType transmissionType,
       FuelType fuelType,
       int price,
+      int productionYear) {
+    this.imagePath = imagePath;
+    this.carModel = model;
+    this.manufacturer = manufacturer;
+    this.numberOfSeats = seats;
+    this.transmissionType = transmissionType;
+    this.fuelType = fuelType;
+    this.price = price;
+    this.productionYear = productionYear;
+    this.carStatus = CarStatus.AVAILABLE;
+  }
+
+  public Car(
+      String imagePath,
+      String model,
+      Manufacturer manufacturer,
+      int seats,
+      TransmissionType transmissionType,
+      FuelType fuelType,
+      int price,
       int productionYear,
       List<Feature> features) {
     this.imagePath = imagePath;
