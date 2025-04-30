@@ -41,19 +41,8 @@ public class UserController {
 
   @PostMapping("/users/new")
   public ResponseEntity<User> createUser(HttpServletRequest request) {
-      ObjectNode object = controllerUtil.getRequestBody(request);
-      System.out.println(object);
-      User newUser = new User(
-          UserType.CUSTOMER,
-          object.get("firstName").asText(),
-          object.get("lastName").asText(),
-          object.get("username").asText(),
-          object.get("password").asText(),
-          object.get("email").asText(),
-          object.get("phone").asText()
-        );
-      userRepository.save(newUser);
-      return new ResponseEntity<>(newUser, HttpStatus.OK);
+    return new ResponseEntity<>(userService.createUser(controllerUtil.getRequestBody(request)),
+        HttpStatus.OK);
   }
 
   @GetMapping("/users/self")

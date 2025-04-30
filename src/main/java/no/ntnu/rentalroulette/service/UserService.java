@@ -1,5 +1,6 @@
 package no.ntnu.rentalroulette.service;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import jakarta.transaction.Transactional;
 import java.util.List;
 import no.ntnu.rentalroulette.entity.User;
@@ -20,6 +21,21 @@ public class UserService {
 
   public User getUserById(int id) {
     return userRepository.findById(id).orElse(null);
+  }
+
+  @Transactional
+  public User createUser(ObjectNode requestBody) {
+    User newUser = new User(
+        UserType.CUSTOMER,
+        requestBody.get("firstName").asText(),
+        requestBody.get("lastName").asText(),
+        requestBody.get("username").asText(),
+        requestBody.get("password").asText(),
+        requestBody.get("email").asText(),
+        requestBody.get("phone").asText()
+    );
+    userRepository.save(newUser);
+    return newUser;
   }
 
   @Transactional
