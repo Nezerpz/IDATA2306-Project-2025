@@ -39,14 +39,22 @@ public class UserController {
     return new ResponseEntity<>(user, HttpStatus.OK);
   }
 
-  /* TODO: make signup work
   @PostMapping("/users/new")
-  public ResponseEntity<String> createUser(HttpServletRequest request) {
+  public ResponseEntity<User> createUser(HttpServletRequest request) {
       ObjectNode object = controllerUtil.getRequestBody(request);
       System.out.println(object);
-      return new ResponseEntity<>("hei", HttpStatus.OK);
+      User newUser = new User(
+          UserType.CUSTOMER,
+          object.get("firstName").asText(),
+          object.get("lastName").asText(),
+          object.get("username").asText(),
+          object.get("password").asText(),
+          object.get("email").asText(),
+          object.get("phone").asText()
+        );
+      userRepository.save(newUser);
+      return new ResponseEntity<>(newUser, HttpStatus.OK);
   }
-  */
 
   @GetMapping("/users/self")
   public ResponseEntity<User> getSelf(HttpServletRequest request) {
