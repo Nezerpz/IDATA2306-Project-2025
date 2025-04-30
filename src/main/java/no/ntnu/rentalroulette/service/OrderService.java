@@ -11,6 +11,7 @@ import no.ntnu.rentalroulette.entity.Car;
 import no.ntnu.rentalroulette.entity.Order;
 import no.ntnu.rentalroulette.entity.User;
 import no.ntnu.rentalroulette.enums.CarStatus;
+import no.ntnu.rentalroulette.enums.OrderStatus;
 import no.ntnu.rentalroulette.repository.CarRepository;
 import no.ntnu.rentalroulette.repository.OrderRepository;
 import no.ntnu.rentalroulette.repository.UserRepository;
@@ -78,12 +79,11 @@ public class OrderService {
 
     float totalPrice = car.getPrice() * ChronoUnit.DAYS.between(startDate, endDate);
 
-    Optional<User> provider =
-        userRepository.findById(requestBody.get("providerId").asInt());
-
+    Optional<User> provider = userRepository.findById(car.getUser().getId());
     if (provider.isEmpty()) {
       throw new IllegalArgumentException("Provider not found");
     }
+
     Order order = new Order(
         user,
         provider.get(),
@@ -93,7 +93,7 @@ public class OrderService {
         endTime,
         "" + totalPrice,
         car,
-        true
+        OrderStatus.PENDING
     );
 
     car.setCarStatus(CarStatus.INUSE);

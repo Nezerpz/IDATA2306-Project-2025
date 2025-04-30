@@ -15,6 +15,7 @@ import no.ntnu.rentalroulette.entity.UserReview;
 import no.ntnu.rentalroulette.enums.CarStatus;
 import no.ntnu.rentalroulette.enums.FuelType;
 import no.ntnu.rentalroulette.enums.Manufacturer;
+import no.ntnu.rentalroulette.enums.OrderStatus;
 import no.ntnu.rentalroulette.enums.TransmissionType;
 import no.ntnu.rentalroulette.enums.UserType;
 import no.ntnu.rentalroulette.repository.CarRepository;
@@ -302,7 +303,8 @@ public class SampleDataGenerator {
         new Order(customer1, golf1Provider, startDateOneProvider, endDateOneProvider, startTime,
             endTime,
             String.valueOf(golf1.getPrice() *
-                ChronoUnit.DAYS.between(startDateOneProvider, endDateOneProvider)), golf1, true));
+                ChronoUnit.DAYS.between(startDateOneProvider, endDateOneProvider)), golf1,
+            OrderStatus.ONGOING));
     golf1.setCarStatus(CarStatus.INUSE);
 
 // Some cars may be busy from all providers for some weeks
@@ -325,21 +327,21 @@ public class SampleDataGenerator {
             endTime,
             String.valueOf(transporter1.getPrice() *
                 ChronoUnit.DAYS.between(startDateSomeWeeks, endDateSomeWeeks)), transporter1,
-            true));
+            OrderStatus.ONGOING));
     transporter1.setCarStatus(CarStatus.INUSE);
     orders.add(
         new Order(customer2, transporter2Provider, startDateSomeWeeks, endDateSomeWeeks, startTime,
             endTime,
             String.valueOf(transporter2.getPrice() *
                 ChronoUnit.DAYS.between(startDateSomeWeeks, endDateSomeWeeks)), transporter2,
-            true));
+            OrderStatus.ONGOING));
     transporter2.setCarStatus(CarStatus.INUSE);
     orders.add(
         new Order(customer2, transporter3Provider, startDateSomeWeeks, endDateSomeWeeks, startTime,
             endTime,
             String.valueOf(transporter3.getPrice() *
                 ChronoUnit.DAYS.between(startDateSomeWeeks, endDateSomeWeeks)), transporter3,
-            true));
+            OrderStatus.ONGOING));
     transporter3.setCarStatus(CarStatus.INUSE);
 
 // Some cars may be “fully booked” out of 2025
@@ -362,31 +364,36 @@ public class SampleDataGenerator {
         new Order(customer1, iOn1Provider, startDateFullyBooked, endDateFullyBooked, startTime,
             endTime,
             String.valueOf(iOn1.getPrice() *
-                ChronoUnit.DAYS.between(startDateFullyBooked, endDateFullyBooked)), iOn1, true));
+                ChronoUnit.DAYS.between(startDateFullyBooked, endDateFullyBooked)), iOn1,
+            OrderStatus.ONGOING));
     iOn1.setCarStatus(CarStatus.INUSE);
     orders.add(
         new Order(customer1, iOn2Provider, startDateFullyBooked, endDateFullyBooked, startTime,
             endTime,
             String.valueOf(iOn2.getPrice() *
-                ChronoUnit.DAYS.between(startDateFullyBooked, endDateFullyBooked)), iOn2, true));
+                ChronoUnit.DAYS.between(startDateFullyBooked, endDateFullyBooked)), iOn2,
+            OrderStatus.ONGOING));
     iOn2.setCarStatus(CarStatus.INUSE);
     orders.add(
         new Order(customer1, iOn3Provider, startDateFullyBooked, endDateFullyBooked, startTime,
             endTime,
             String.valueOf(iOn3.getPrice() *
-                ChronoUnit.DAYS.between(startDateFullyBooked, endDateFullyBooked)), iOn3, true));
+                ChronoUnit.DAYS.between(startDateFullyBooked, endDateFullyBooked)), iOn3,
+            OrderStatus.ONGOING));
     iOn3.setCarStatus(CarStatus.INUSE);
     orders.add(
         new Order(customer2, iOn4Provider, startDateFullyBooked, endDateFullyBooked, startTime,
             endTime,
             String.valueOf(iOn4.getPrice() *
-                ChronoUnit.DAYS.between(startDateFullyBooked, endDateFullyBooked)), iOn4, true));
+                ChronoUnit.DAYS.between(startDateFullyBooked, endDateFullyBooked)), iOn4,
+            OrderStatus.ONGOING));
     iOn4.setCarStatus(CarStatus.INUSE);
     orders.add(
         new Order(customer2, iOn5Provider, startDateFullyBooked, endDateFullyBooked, startTime,
             endTime,
             String.valueOf(iOn5.getPrice() *
-                ChronoUnit.DAYS.between(startDateFullyBooked, endDateFullyBooked)), iOn5, true));
+                ChronoUnit.DAYS.between(startDateFullyBooked, endDateFullyBooked)), iOn5,
+            OrderStatus.ONGOING));
     iOn5.setCarStatus(CarStatus.INUSE);
     carRepository.saveAll(List.of(golf1, transporter1, transporter2, transporter3, iOn1, iOn2, iOn3,
         iOn4, iOn5));
