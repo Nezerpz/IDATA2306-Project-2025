@@ -15,6 +15,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RestController;
 import no.ntnu.rentalroulette.entity.User;
 
@@ -97,6 +98,18 @@ public class OrderController {
     List<Order> orders =
         orderService.getOrdersByProviderId(controllerUtil.getUserBasedOnJWT(request).getId());
     return ResponseEntity.ok(orders);
+  }
+
+  @PutMapping("/orders/{id}")
+  @PreAuthorize("hasRole('PROVIDER') or hasRole('ADMIN')")
+  public ResponseEntity<String> updateOrder(HttpServletRequest request, @PathVariable int id) {
+    ObjectNode requestBody = controllerUtil.getRequestBody(request);
+    try {
+      orderService.updateOrder(requestBody, id);
+    } catch (NoSuchFieldException e) {
+      return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+    }
+    return new ResponseEntity<>(HttpStatus.OK);
   }
 
   @PostMapping("/order")

@@ -27,12 +27,10 @@ public class CarController {
   private ControllerUtil controllerUtil;
 
   @GetMapping("/cars")
-  public ResponseEntity<List<Car>> getCars(HttpServletRequest request) {
-    if (controllerUtil.checkIfAdmin(request)) {
-      List<Car> cars = carService.getAllCars();
-      return new ResponseEntity<>(cars, HttpStatus.OK);
-    }
-    return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+  @PreAuthorize("hasRole('ADMIN')")
+  public ResponseEntity<List<Car>> getCars() {
+    List<Car> cars = carService.getAllCars();
+    return new ResponseEntity<>(cars, HttpStatus.OK);
   }
 
   @GetMapping("/cars/{id}")

@@ -103,13 +103,17 @@ public class OrderService {
   }
 
   @Transactional
-  public void updateOrder(Order order) throws NoSuchFieldException {
-    Order existingOrder = getOrderById(order.getId());
+  public void updateOrder(ObjectNode requestBody, int id) throws NoSuchFieldException {
+    Order existingOrder = getOrderById(id);
 
-    assert existingOrder != null;
-    Car car = existingOrder.getCar();
-    car.setCarStatus(CarStatus.AVAILABLE);
-    carRepository.save(car);
+    OrderStatus orderStatus = OrderStatus.valueOf(requestBody.get("orderStatus").asText());
+    if (orderStatus == OrderStatus.COMPLETED
+        || orderStatus == OrderStatus.CANCELLED) {
+      existingOrder.setOrderStatus(orderStatus);
+      Car car = existingOrder.getCar();
+      car.setCarStatus(CarStatus.AVAILABLE);
+      carRepository.save(car);
+    }
 
     orderRepository.save(existingOrder);
   }

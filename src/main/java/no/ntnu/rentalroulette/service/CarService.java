@@ -42,7 +42,10 @@ public class CarService {
 
   public List<Car> getAllCarsByDate(LocalDate startDate, LocalDate endDate, LocalTime startTime,
                                     LocalTime endTime) {
-    return carRepository.findAvailableCars(startDate, endDate, startTime, endTime);
+
+    return carRepository.findAvailableCars(startDate, endDate, startTime, endTime).stream().filter(
+        car -> car.getCarStatus() != CarStatus.UNAVAILABLE
+    ).toList();
   }
 
   @Transactional
