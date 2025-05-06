@@ -11,4 +11,8 @@ public interface UserReviewRepository extends JpaRepository<UserReview, Integer>
   boolean existsByReviewedUserAndReviewingUser(User reviewedUser,
                                                User reviewingUser);
 
+  void deleteAllByReviewedUserId(int userId);
+
+  void deleteAllByReviewingUserId(int userId);
+
 }
