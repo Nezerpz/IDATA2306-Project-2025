@@ -3,6 +3,7 @@ package no.ntnu.rentalroulette.service;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import jakarta.transaction.Transactional;
 import java.util.List;
+import java.util.Optional;
 import no.ntnu.rentalroulette.entity.User;
 import no.ntnu.rentalroulette.enums.UserType;
 import no.ntnu.rentalroulette.repository.UserRepository;
@@ -21,6 +22,15 @@ public class UserService {
 
   public User getUserById(int id) {
     return userRepository.findById(id).orElse(null);
+  }
+
+  public String getUsernameById(int id) {
+    Optional<User> user = userRepository.findById(id);
+    if (user.isPresent()) {
+      String fullName = user.get().getFirstName() + " " + user.get().getLastName();
+      return "{\"name\": \"" + fullName + "\"}";
+    }
+    return null;
   }
 
   @Transactional

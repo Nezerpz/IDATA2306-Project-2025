@@ -39,6 +39,15 @@ public class UserController {
     return new ResponseEntity<>(user, HttpStatus.OK);
   }
 
+  @GetMapping("/users/name/{id}")
+  public ResponseEntity<String> getUserName(@PathVariable int id) {
+    String userName = userService.getUsernameById(id);
+    if (userName == null) {
+      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+    return new ResponseEntity<>(userName, HttpStatus.OK);
+  }
+
   @PostMapping("/users/new")
   public ResponseEntity<User> createUser(HttpServletRequest request) {
     return new ResponseEntity<>(userService.createUser(controllerUtil.getRequestBody(request)),
