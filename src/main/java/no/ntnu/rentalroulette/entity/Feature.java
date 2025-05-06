@@ -12,6 +12,8 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 
 @Entity
 @Data
@@ -48,6 +50,7 @@ public class Feature {
   @Getter
   private String description;
 
+  @JsonIgnore
   @ManyToMany(mappedBy = "features")
   private List<Car> cars;
 
