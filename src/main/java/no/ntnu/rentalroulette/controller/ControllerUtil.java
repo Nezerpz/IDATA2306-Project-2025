@@ -120,28 +120,4 @@ public class ControllerUtil {
 
     return isAdmin;
   }
-
-  public boolean checkIfProvider(HttpServletRequest request) {
-    boolean isProvider = false;
-    String jwtToken = extractJwtToken(request);
-    String username = jwtUtil.extractUsername(jwtToken);
-    Optional<User> user = userRepository.findByUsername(username);
-    if (user.isPresent() && user.get().getUserType().name().equals("PROVIDER")) {
-      isProvider = true;
-    }
-
-    return isProvider;
-  }
-
-  public boolean checkIfCustomer(HttpServletRequest request) {
-    boolean isCustomer = false;
-    String jwtToken = extractJwtToken(request);
-    String username = jwtUtil.extractUsername(jwtToken);
-    Optional<User> user = userRepository.findByUsername(username);
-    if (user.isPresent() && user.get().getUserType().name().equals("CUSTOMER")) {
-      isCustomer = true;
-    }
-
-    return isCustomer;
-  }
 }
