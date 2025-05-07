@@ -64,6 +64,12 @@ public class UserController {
     return new ResponseEntity<>(userToReturn, HttpStatus.OK);
   }
 
+  @DeleteMapping("/users/self")
+  public ResponseEntity<String> deleteSelf(HttpServletRequest request) {
+    userService.deleteUserById(controllerUtil.getUserBasedOnJWT(request).getId());
+    return new ResponseEntity<>("User deleted", HttpStatus.OK);
+  }
+
   @DeleteMapping("/users/{id}")
   @PreAuthorize("hasRole('ADMIN')")
   public ResponseEntity<String> deleteUser(@PathVariable int id) {
