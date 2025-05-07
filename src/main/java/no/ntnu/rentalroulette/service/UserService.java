@@ -4,8 +4,11 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import jakarta.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
+import no.ntnu.rentalroulette.entity.Car;
+import no.ntnu.rentalroulette.entity.Order;
 import no.ntnu.rentalroulette.entity.User;
 import no.ntnu.rentalroulette.enums.UserType;
+import no.ntnu.rentalroulette.repository.OrderRepository;
 import no.ntnu.rentalroulette.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,6 +18,12 @@ public class UserService {
 
   @Autowired
   private UserRepository userRepository;
+
+  @Autowired
+  private OrderRepository orderRepository;
+
+  @Autowired
+  private CarService carService;
 
   public List<User> getAllUsers() {
     return userRepository.findAll();
@@ -50,7 +59,25 @@ public class UserService {
 
   @Transactional
   public void deleteUserById(int id) {
-    userRepository.deleteById(id);
+    User user = userRepository.findById(id).orElse(null);
+    if (user != null) {
+      List<Order> customerOrders = orderRepository.findAllByCustomerId(id);
+      List<Order> providerOrders = orderRepository.findAllByProviderId(id);
+      for (Order order : customerOrders) {
+        order.setCustomer(null);
+      }
+      for (Order order : providerOrders) {
+        order.setProvider(null);
+      }
+      for (Car car : user.getCars()) {
+        carService.deleteCar(car.getId());
+      }
+      System.out.println("Deleting user: " + user.getFirstName() + " " + user.getLastName());
+      user.getCars().clear();
+      orderRepository.saveAll(customerOrders);
+      orderRepository.saveAll(providerOrders);
+      userRepository.delete(user);
+    }
   }
 
   @Transactional
