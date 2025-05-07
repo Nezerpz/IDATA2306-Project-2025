@@ -50,16 +50,6 @@ public class UserController {
     return new ResponseEntity<>(userName, HttpStatus.OK);
   }
 
-  @PutMapping("/users/{id}/password")
-  public ResponseEntity<String> changePassword(HttpServletRequest request, @PathVariable int id) {
-    ObjectNode requestBody = controllerUtil.getRequestBody(request);
-    if (userService.changePassword(requestBody, id)) {
-      return new ResponseEntity<>(HttpStatus.OK);
-    } else {
-      return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-    }
-  }
-
   @PostMapping("/users/new")
   public ResponseEntity<User> createUser(HttpServletRequest request) {
     return new ResponseEntity<>(userService.createUser(controllerUtil.getRequestBody(request)),
@@ -80,6 +70,17 @@ public class UserController {
   public ResponseEntity<String> deleteSelf(HttpServletRequest request) {
     userService.deleteUserById(controllerUtil.getUserBasedOnJWT(request).getId());
     return new ResponseEntity<>("User deleted", HttpStatus.OK);
+  }
+
+  @PutMapping("/users/self/password")
+  public ResponseEntity<String> changePassword(HttpServletRequest request) {
+    ObjectNode requestBody = controllerUtil.getRequestBody(request);
+    if (userService.changePassword(requestBody,
+        controllerUtil.getUserBasedOnJWT(request).getId())) {
+      return new ResponseEntity<>(HttpStatus.OK);
+    } else {
+      return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
   }
 
   @DeleteMapping("/users/{id}")
