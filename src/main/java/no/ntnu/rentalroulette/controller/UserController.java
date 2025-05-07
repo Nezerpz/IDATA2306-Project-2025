@@ -1,5 +1,6 @@
 package no.ntnu.rentalroulette.controller;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.List;
 import no.ntnu.rentalroulette.entity.User;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 
@@ -46,6 +48,16 @@ public class UserController {
       return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
     return new ResponseEntity<>(userName, HttpStatus.OK);
+  }
+
+  @PutMapping("/users/{id}/password")
+  public ResponseEntity<String> changePassword(HttpServletRequest request, @PathVariable int id) {
+    ObjectNode requestBody = controllerUtil.getRequestBody(request);
+    if (userService.changePassword(requestBody, id)) {
+      return new ResponseEntity<>(HttpStatus.OK);
+    } else {
+      return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
   }
 
   @PostMapping("/users/new")

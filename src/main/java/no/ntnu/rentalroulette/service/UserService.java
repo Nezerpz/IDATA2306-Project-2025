@@ -61,4 +61,15 @@ public class UserService {
       userRepository.save(user);
     }
   }
+
+  @Transactional
+  public boolean changePassword(ObjectNode requestBody, int id) {
+    User user = userRepository.findById(id).orElse(null);
+    if (user != null) {
+      user.setPassword(requestBody.get("password").asText());
+      userRepository.save(user);
+      return true;
+    }
+    return false;
+  }
 }
