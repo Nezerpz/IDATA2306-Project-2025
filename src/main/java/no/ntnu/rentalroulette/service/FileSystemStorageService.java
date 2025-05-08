@@ -15,6 +15,11 @@ import org.springframework.util.FileSystemUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import no.ntnu.rentalroulette.service.StorageService;
+import no.ntnu.rentalroulette.exception.StorageException;
+import no.ntnu.rentalroulette.exception.StorageFileNotFoundException;
+import no.ntnu.rentalroulette.StorageProperties;
+
 @Service
 public class FileSystemStorageService implements StorageService {
 
