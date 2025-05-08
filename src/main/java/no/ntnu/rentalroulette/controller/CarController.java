@@ -58,9 +58,10 @@ public class CarController {
     return new ResponseEntity<>(cars, HttpStatus.OK);
   }
 
-  @PostMapping("cars/add")
+  @PostMapping("/cars/add")
   @PreAuthorize("hasRole('PROVIDER')")
   public ResponseEntity<String> addCar(HttpServletRequest request) {
+    System.out.println(request);
     ObjectNode requestBody = controllerUtil.getRequestBody(request);
     carService.addCar(requestBody,
         controllerUtil.getFeaturesFromRequestBody(requestBody.get("features")));
