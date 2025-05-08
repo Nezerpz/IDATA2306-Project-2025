@@ -1,3 +1,5 @@
+package no.ntnu.rentalroulette.service;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;

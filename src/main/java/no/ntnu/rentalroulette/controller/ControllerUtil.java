@@ -81,7 +81,6 @@ public class ControllerUtil {
       e.printStackTrace();
     }
     String requestBody = stringBuilder.toString();
-    System.out.println(requestBody);
     ObjectMapper objectMapper = new ObjectMapper();
     ObjectNode jsonNodes = null;
     try {
