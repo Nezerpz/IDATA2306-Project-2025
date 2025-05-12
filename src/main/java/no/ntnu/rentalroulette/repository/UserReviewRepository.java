@@ -1,5 +1,6 @@
 package no.ntnu.rentalroulette.repository;
 
+import java.util.List;
 import no.ntnu.rentalroulette.entity.User;
 import no.ntnu.rentalroulette.entity.UserReview;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -15,4 +16,5 @@ public interface UserReviewRepository extends JpaRepository<UserReview, Integer>
 
   void deleteAllByReviewingUserId(int userId);
 
+  List<UserReview> findAllByReviewedUser(User reviewedUser);
 }

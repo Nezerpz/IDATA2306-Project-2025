@@ -29,12 +29,12 @@ public class CarReview {
   private int id;
 
   @Setter
-  @ManyToOne()
+  @ManyToOne(fetch = FetchType.EAGER)
   @JsonProperty("userId")
   private User user;
 
   @Setter
-  @ManyToOne()
+  @ManyToOne(fetch = FetchType.EAGER)
   @JsonProperty("carId")
   private Car car;
 
