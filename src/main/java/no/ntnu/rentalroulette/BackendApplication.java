@@ -9,8 +9,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.core.env.Environment;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootApplication()
+@ComponentScan
 public class BackendApplication {
 
   @Autowired
