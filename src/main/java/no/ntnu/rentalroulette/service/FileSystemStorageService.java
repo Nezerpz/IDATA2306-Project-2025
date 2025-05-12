@@ -20,22 +20,25 @@ import org.springframework.web.multipart.MultipartFile;
 import no.ntnu.rentalroulette.service.StorageService;
 import no.ntnu.rentalroulette.exception.StorageException;
 import no.ntnu.rentalroulette.exception.StorageFileNotFoundException;
-import no.ntnu.rentalroulette.StorageProperties;
 
 @Service
 public class FileSystemStorageService implements StorageService {
 
-	private final Path rootLocation;
+    private Path rootLocation;
 
-	@Autowired
-	public FileSystemStorageService(StorageProperties properties) {
-        
-        if(properties.getLocation().trim().length() == 0){
-            throw new StorageException("File upload location can not be Empty."); 
+    public FileSystemStorageService() throws StorageException {
+        Path uploadFolder = Paths.get(Paths.get("").toAbsolutePath() + "/user-uploads");
+        if (!Files.exists(uploadFolder)) {
+            try {
+                Files.createDirectories(uploadFolder);
+            }
+            catch (IOException exception) {
+                System.out.println(exception.getMessage());
+                throw new StorageException("Failed to create root dir");
+            }
         }
-
-		this.rootLocation = Paths.get(properties.getLocation());
-	}
+        rootLocation = uploadFolder;
+    }
 
 	@Override
 	public void store(MultipartFile file) {
@@ -46,6 +49,8 @@ public class FileSystemStorageService implements StorageService {
 			Path destinationFile = this.rootLocation.resolve(
 					Paths.get(file.getOriginalFilename()))
 					.normalize().toAbsolutePath();
+            System.out.println(rootLocation);
+            System.out.println(destinationFile);
 			if (!destinationFile.getParent().equals(this.rootLocation.toAbsolutePath())) {
 				// This is a security check
 				throw new StorageException(

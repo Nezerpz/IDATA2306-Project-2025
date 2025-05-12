@@ -25,9 +25,8 @@ public class UploadController {
     ) {
 
 		storageService.store(file);
-		redirectAttributes.addFlashAttribute("message",
-				"You successfully uploaded " + file.getOriginalFilename() + "!");
+        String filePath = "/user-upload/" + file.getName();
 
-		return "redirect:/";
+		return filePath;
 	}
 }

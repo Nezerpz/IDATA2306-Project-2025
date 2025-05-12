@@ -50,7 +50,9 @@ public class CarService {
 
   @Transactional
   public void addCar(ObjectNode requestBody, List<Feature> features) {
-    String imagePath = requestBody.get("imagePath").asText();
+    String imagePath = requestBody.has("imagePath") 
+        ? requestBody.get("imagePath").asText()
+        : "";
     String model = requestBody.get("carModel").asText();
     Manufacturer manufacturer = Manufacturer.valueOf(requestBody.get("manufacturer").asText());
     int seats = requestBody.get("numberOfSeats").asInt();
