@@ -6,8 +6,10 @@ import jakarta.transaction.Transactional;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
+import java.lang.Integer;
 import java.util.ArrayList;
 import no.ntnu.rentalroulette.entity.Car;
+import no.ntnu.rentalroulette.entity.User;
 import no.ntnu.rentalroulette.entity.Feature;
 import no.ntnu.rentalroulette.enums.CarStatus;
 import no.ntnu.rentalroulette.enums.FuelType;
@@ -61,16 +63,22 @@ public class CarService {
     List<Feature> featureList = new ArrayList<>();
     if (features.isArray()) {
       for (JsonNode featureNode : features) {
-        Feature featureObj = new Feature();
-        featureObj.setFeatureName(featureNode.asText());
-        featureList.add(featureObj);
+        int featureName = Integer.parseInt(featureNode.asText());
+        Feature feature = featureRepository.findById(featureName);
+        if (feature == null) {
+            Feature newFeature = new Feature(featureName);
+            featureRepository.save(newFeature);
+        }
+        featureList.add(featureRepository.findById(featureName));
       }
     }
+
     return featureList;
   }
 
+
   @Transactional
-  public void addCar(ObjectNode requestBody) {
+  public void addCar(ObjectNode requestBody, User user) {
     String imagePath = requestBody.has("imagePath") 
         ? requestBody.get("imagePath").asText()
         : "";
@@ -82,9 +90,10 @@ public class CarService {
     FuelType fuelType = FuelType.valueOf(requestBody.get("fuelType").asText());
     int price = requestBody.get("price").asInt();
     int productionYear = requestBody.get("productionYear").asInt();
-    List<Feature> features = getFeaturesFromRequestBody(requestBody.get("features"));
+    List<Feature> features = getFeaturesFromRequestBody(requestBody.get("features")); 
     Car car = new Car(imagePath, model, manufacturer, seats, transmissionType,
         fuelType, price, productionYear, features);
+    car.setUser(user);
     carRepository.save(car);
   }
 
@@ -112,18 +121,8 @@ public class CarService {
     car.setProductionYear(productionYear);
     car.setCarStatus(carStatus);
     car.getFeatures().clear();
-    if (features != null) {
-      for (Feature feature : features) {
-        Feature existingFeature = featureRepository.findByFeatureName(feature.getFeatureName());
-        if (existingFeature == null) {
-          featureRepository.save(feature);
-          car.getFeatures().add(feature);
-        } else {
-          car.getFeatures().add(existingFeature);
-        }
-      }
-      carRepository.save(car);
-    }
+    car.setFeatures(features);
+    carRepository.save(car);
   }
 
 

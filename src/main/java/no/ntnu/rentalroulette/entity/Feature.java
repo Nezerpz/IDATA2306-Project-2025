@@ -54,6 +54,11 @@ public class Feature {
   @ManyToMany(mappedBy = "features")
   private List<Car> cars;
 
+  public Feature(String featureName) {
+    this.featureName = featureName;
+    this.description = null;
+  }
+
   public Feature(String featureName, String description) {
     this.featureName = featureName;
     this.description = description;

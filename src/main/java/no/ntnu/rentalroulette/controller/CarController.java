@@ -5,6 +5,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import java.util.List;
 import no.ntnu.rentalroulette.entity.Car;
 import no.ntnu.rentalroulette.service.CarService;
+import no.ntnu.rentalroulette.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -63,7 +64,8 @@ public class CarController {
   public ResponseEntity<String> addCar(HttpServletRequest request) {
     System.out.println(request);
     ObjectNode requestBody = controllerUtil.getRequestBody(request);
-    carService.addCar(requestBody);
+    User user = controllerUtil.getUserBasedOnJWT(request);
+    carService.addCar(requestBody, user);
     return new ResponseEntity<>(HttpStatus.OK);
   }
 
