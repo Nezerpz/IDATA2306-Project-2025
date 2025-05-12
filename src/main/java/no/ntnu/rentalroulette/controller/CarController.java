@@ -63,17 +63,16 @@ public class CarController {
   public ResponseEntity<String> addCar(HttpServletRequest request) {
     System.out.println(request);
     ObjectNode requestBody = controllerUtil.getRequestBody(request);
-    carService.addCar(requestBody,
-        controllerUtil.getFeaturesFromRequestBody(requestBody.get("features")));
+    carService.addCar(requestBody);
     return new ResponseEntity<>(HttpStatus.OK);
   }
+
 
   @PutMapping("/cars/{id}")
   @PreAuthorize("hasRole('PROVIDER') or hasRole('ADMIN')")
   public ResponseEntity<String> updateCar(HttpServletRequest request, @PathVariable int id) {
     ObjectNode requestBody = controllerUtil.getRequestBody(request);
-    carService.updateCar(requestBody, id,
-        controllerUtil.getFeaturesFromRequestBody(requestBody.get("features")));
+    carService.updateCar(requestBody, id);
     return new ResponseEntity<>(HttpStatus.OK);
   }
 

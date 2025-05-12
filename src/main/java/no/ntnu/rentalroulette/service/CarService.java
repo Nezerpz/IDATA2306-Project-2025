@@ -1,10 +1,12 @@
 package no.ntnu.rentalroulette.service;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fasterxml.jackson.databind.JsonNode;
 import jakarta.transaction.Transactional;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.ArrayList;
 import no.ntnu.rentalroulette.entity.Car;
 import no.ntnu.rentalroulette.entity.Feature;
 import no.ntnu.rentalroulette.enums.CarStatus;
@@ -48,8 +50,27 @@ public class CarService {
     ).toList();
   }
 
+
+  /**
+   * Extracts a list of features from the request body.
+   *
+   * @param features The request body.
+   * @return The list of features.
+   */
+  public List<Feature> getFeaturesFromRequestBody(JsonNode features) {
+    List<Feature> featureList = new ArrayList<>();
+    if (features.isArray()) {
+      for (JsonNode featureNode : features) {
+        Feature featureObj = new Feature();
+        featureObj.setFeatureName(featureNode.asText());
+        featureList.add(featureObj);
+      }
+    }
+    return featureList;
+  }
+
   @Transactional
-  public void addCar(ObjectNode requestBody, List<Feature> features) {
+  public void addCar(ObjectNode requestBody) {
     String imagePath = requestBody.has("imagePath") 
         ? requestBody.get("imagePath").asText()
         : "";
@@ -61,13 +82,14 @@ public class CarService {
     FuelType fuelType = FuelType.valueOf(requestBody.get("fuelType").asText());
     int price = requestBody.get("price").asInt();
     int productionYear = requestBody.get("productionYear").asInt();
+    List<Feature> features = getFeaturesFromRequestBody(requestBody.get("features"));
     Car car = new Car(imagePath, model, manufacturer, seats, transmissionType,
         fuelType, price, productionYear, features);
     carRepository.save(car);
   }
 
   @Transactional
-  public void updateCar(ObjectNode requestBody, int carId, List<Feature> features) {
+  public void updateCar(ObjectNode requestBody, int carId) {
     String imagePath = requestBody.get("imagePath").asText();
     String model = requestBody.get("carModel").asText();
     Manufacturer manufacturer = Manufacturer.valueOf(requestBody.get("manufacturer").asText());
@@ -78,6 +100,7 @@ public class CarService {
     int price = requestBody.get("price").asInt();
     int productionYear = requestBody.get("productionYear").asInt();
     CarStatus carStatus = CarStatus.valueOf(requestBody.get("carStatus").asText());
+    List<Feature> features = getFeaturesFromRequestBody(requestBody.get("features"));
     Car car = carRepository.findById(carId);
     car.setImagePath(imagePath);
     car.setCarModel(model);
