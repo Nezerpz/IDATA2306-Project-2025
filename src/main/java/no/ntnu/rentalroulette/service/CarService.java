@@ -63,13 +63,13 @@ public class CarService {
     List<Feature> featureList = new ArrayList<>();
     if (features.isArray()) {
       for (JsonNode featureNode : features) {
-        int featureName = Integer.parseInt(featureNode.asText());
-        Feature feature = featureRepository.findById(featureName);
+        int featureId = Integer.parseInt(featureNode.asText());
+        Feature feature = featureRepository.findById(featureId);
         if (feature == null) {
-            Feature newFeature = new Feature(featureName);
+            Feature newFeature = new Feature(featureId);
             featureRepository.save(newFeature);
         }
-        featureList.add(featureRepository.findById(featureName));
+        featureList.add(featureRepository.findById(featureId));
       }
     }
 
