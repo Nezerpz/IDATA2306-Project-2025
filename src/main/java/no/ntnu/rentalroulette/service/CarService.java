@@ -8,6 +8,7 @@ import java.time.LocalTime;
 import java.util.List;
 import java.lang.Integer;
 import java.util.ArrayList;
+import java.util.Optional;
 import no.ntnu.rentalroulette.entity.Car;
 import no.ntnu.rentalroulette.entity.User;
 import no.ntnu.rentalroulette.entity.Feature;
@@ -64,12 +65,7 @@ public class CarService {
     if (features.isArray()) {
       for (JsonNode featureNode : features) {
         int featureId = Integer.parseInt(featureNode.asText());
-        Feature feature = featureRepository.findById(featureId);
-        if (feature == null) {
-            Feature newFeature = new Feature(featureId);
-            featureRepository.save(newFeature);
-        }
-        featureList.add(featureRepository.findById(featureId));
+        featureList.add(featureRepository.findById(featureId).get());
       }
     }
 
