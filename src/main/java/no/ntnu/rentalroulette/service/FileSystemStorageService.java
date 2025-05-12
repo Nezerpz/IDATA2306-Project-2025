@@ -40,13 +40,18 @@ public class FileSystemStorageService implements StorageService {
         rootLocation = uploadFolder;
     }
 
+    public Path getRootLocation() {
+        return this.rootLocation;
+    }
+
 	@Override
-	public void store(MultipartFile file) {
+	public Path store(MultipartFile file) {
+        Path destinationFile = null;
 		try {
 			if (file.isEmpty()) {
 				throw new StorageException("Failed to store empty file.");
 			}
-			Path destinationFile = this.rootLocation.resolve(
+			destinationFile = this.rootLocation.resolve(
 					Paths.get(file.getOriginalFilename()))
 					.normalize().toAbsolutePath();
             System.out.println(rootLocation);
@@ -64,6 +69,8 @@ public class FileSystemStorageService implements StorageService {
 		catch (IOException e) {
 			throw new StorageException("Failed to store file.", e);
 		}
+
+        return destinationFile;
 	}
 
 	@Override
