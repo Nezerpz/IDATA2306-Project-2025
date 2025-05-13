@@ -99,6 +99,13 @@ public class UserService {
   }
 
   @Transactional
+  public void suspendUserById(int id) {
+    User user = userRepository.findById(id);
+    user.setActive(false);
+    userRepository.save(user);
+  }
+
+  @Transactional
   public boolean changePassword(ObjectNode requestBody, int id) {
     User user = userRepository.findById(id).orElse(null);
     if (user != null) {
