@@ -91,24 +91,6 @@ public class ControllerUtil {
     return jsonNodes;
   }
 
-  /**
-   * Extracts a list of features from the request body.
-   *
-   * @param features The request body.
-   * @return The list of features.
-   */
-  public List<Feature> getFeaturesFromRequestBody(JsonNode features) {
-    List<Feature> featureList = new ArrayList<>();
-    if (features.isArray()) {
-      for (JsonNode featureNode : features) {
-        Feature featureObj = new Feature();
-        featureObj.setFeatureName(featureNode.asText());
-        featureList.add(featureObj);
-      }
-    }
-    return featureList;
-  }
-
   public boolean checkIfAdmin(HttpServletRequest request) {
     boolean isAdmin = false;
     String jwtToken = extractJwtToken(request);
