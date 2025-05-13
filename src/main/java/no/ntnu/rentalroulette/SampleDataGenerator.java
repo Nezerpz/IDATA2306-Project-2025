@@ -569,19 +569,19 @@ public class SampleDataGenerator {
     // Provider reviews
     List<UserReview> providerReviews = new ArrayList<>();
     providerReviews.add(
-        new UserReview(olaNordmann, millerBil, 5, "Ola: Great service and friendly staff!"));
-    providerReviews.add(new UserReview(kariNordmann, millerBil, 4, "Kari: Reliable provider."));
-    providerReviews.add(new UserReview(olaNordmann, billerBil, 3, "Ola: Average experience."));
+        new UserReview(millerBil, olaNordmann, 5, "Ola: Great service and friendly staff!"));
+    providerReviews.add(new UserReview(millerBil, kariNordmann, 4, "Kari: Reliable provider."));
+    providerReviews.add(new UserReview(billerBil, olaNordmann, 3, "Ola: Average experience."));
     providerReviews.add(
-        new UserReview(kariNordmann, biggernesTesla, 5, "Kari: Excellent Tesla provider!"));
+        new UserReview(biggernesTesla, kariNordmann, 5, "Kari: Excellent Tesla provider!"));
     providerReviews.add(
-        new UserReview(olaNordmann, teslaTom, 4, "Ola: Good selection of electric cars."));
-    providerReviews.add(new UserReview(kariNordmann, auto99, 5, "Kari: Affordable and efficient!"));
-    providerReviews.add(new UserReview(olaNordmann, auto1010, 4, "Ola: Decent service."));
+        new UserReview(teslaTom, olaNordmann, 4, "Ola: Good selection of electric cars."));
+    providerReviews.add(new UserReview(auto99, kariNordmann, 5, "Kari: Affordable and efficient!"));
+    providerReviews.add(new UserReview(auto1010, olaNordmann, 4, "Ola: Decent service."));
     providerReviews.add(
-        new UserReview(kariNordmann, bilikist, 3, "Kari: Could improve customer support."));
+        new UserReview(bilikist, kariNordmann, 3, "Kari: Could improve customer support."));
     providerReviews.add(
-        new UserReview(olaNordmann, orstaKommune, 5, "Ola: Excellent municipal provider!"));
+        new UserReview(orstaKommune, olaNordmann, 5, "Ola: Excellent municipal provider!"));
 
     userReviewRepository.saveAll(providerReviews);
   }
