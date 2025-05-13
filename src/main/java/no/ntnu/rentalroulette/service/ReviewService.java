@@ -3,6 +3,7 @@ package no.ntnu.rentalroulette.service;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
+import java.util.List;
 import java.util.Optional;
 import no.ntnu.rentalroulette.controller.ControllerUtil;
 import no.ntnu.rentalroulette.entity.Car;
@@ -95,5 +96,21 @@ public class ReviewService {
   public void deleteCarReviewsByUserId(int userId) {
     userReviewRepository.deleteAllByReviewedUserId(userId);
     userReviewRepository.deleteAllByReviewingUserId(userId);
+  }
+
+  public List<UserReview> getUserReviews(int userId) throws NoSuchFieldException {
+    Optional<User> user = userRepository.findById(userId);
+    if (user.isEmpty()) {
+      throw new NoSuchFieldException("User not found");
+    }
+    return userReviewRepository.findAllByReviewedUser(user.get());
+  }
+
+  public List<CarReview> getCarReviews(int carId) throws NoSuchFieldException {
+    Car car = carRepository.findById(carId);
+    if (car == null) {
+      throw new NoSuchFieldException("Car not found");
+    }
+    return carReviewRepository.findAllByCar(car);
   }
 }

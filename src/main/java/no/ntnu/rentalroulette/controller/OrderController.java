@@ -54,8 +54,13 @@ public class OrderController {
       @ApiResponse(
           responseCode = "200",
           description = "The order returned in response body"
+      ),
+      @ApiResponse(
+          responseCode = "404",
+          description = "Order not found"
       )
   })
+  @PreAuthorize("hasRole('ADMIN') or hasRole('PROVIDER')")
   public ResponseEntity<Order> getOrderById(@PathVariable int id) {
     try {
       Order order = orderService.getOrderById(id);

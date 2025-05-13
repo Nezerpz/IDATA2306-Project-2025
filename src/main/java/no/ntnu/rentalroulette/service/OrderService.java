@@ -111,7 +111,9 @@ public class OrderService {
         || orderStatus == OrderStatus.CANCELLED) {
       existingOrder.setOrderStatus(orderStatus);
       Car car = existingOrder.getCar();
-      car.setCarStatus(CarStatus.AVAILABLE);
+      if (car.getCarStatus() == CarStatus.INUSE) {
+        car.setCarStatus(CarStatus.AVAILABLE);
+      }
       carRepository.save(car);
     }
 

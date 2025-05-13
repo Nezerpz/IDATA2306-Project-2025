@@ -12,12 +12,14 @@ import java.util.Optional;
 import no.ntnu.rentalroulette.entity.Car;
 import no.ntnu.rentalroulette.entity.User;
 import no.ntnu.rentalroulette.entity.Feature;
+import no.ntnu.rentalroulette.entity.Order;
 import no.ntnu.rentalroulette.enums.CarStatus;
 import no.ntnu.rentalroulette.enums.FuelType;
 import no.ntnu.rentalroulette.enums.Manufacturer;
 import no.ntnu.rentalroulette.enums.TransmissionType;
 import no.ntnu.rentalroulette.repository.CarRepository;
 import no.ntnu.rentalroulette.repository.FeatureRepository;
+import no.ntnu.rentalroulette.repository.OrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -32,6 +34,9 @@ public class CarService {
 
   @Autowired
   private FeatureRepository featureRepository;
+
+  @Autowired
+  private OrderRepository orderRepository;
 
   public Car getCarById(int carId) {
     return carRepository.findById(carId);
@@ -121,12 +126,28 @@ public class CarService {
     carRepository.save(car);
   }
 
+  //TODO: Delete the fact that the car is connected to features
+
 
   @Transactional
   public void deleteCar(int carId) {
     Car car = carRepository.findById(carId);
+
+    List<Order> orders = orderRepository.findAllByCarId(car.getId());
+    for (Order order : orders) {
+      order.setCar(null);
+    }
+    orderRepository.saveAll(orders);
+
+    for (Feature feature : car.getFeatures()) {
+      feature.getCars().remove(car);
+    }
+    featureRepository.saveAll(car.getFeatures());
+
     reviewService.deleteCarReviewsByCarId(car.getId());
+
+    carRepository.save(car);
+
     carRepository.deleteById(car.getId());
   }
-
 }

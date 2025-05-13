@@ -1,5 +1,6 @@
 package no.ntnu.rentalroulette.controller;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.List;
 import no.ntnu.rentalroulette.entity.User;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 
@@ -39,6 +41,15 @@ public class UserController {
     return new ResponseEntity<>(user, HttpStatus.OK);
   }
 
+  @GetMapping("/users/name/{id}")
+  public ResponseEntity<String> getUserName(@PathVariable int id) {
+    String userName = userService.getUsernameById(id);
+    if (userName == null) {
+      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+    return new ResponseEntity<>(userName, HttpStatus.OK);
+  }
+
   @PostMapping("/users/new")
   public ResponseEntity<User> createUser(HttpServletRequest request) {
     return new ResponseEntity<>(userService.createUser(controllerUtil.getRequestBody(request)),
@@ -55,6 +66,23 @@ public class UserController {
     return new ResponseEntity<>(userToReturn, HttpStatus.OK);
   }
 
+  @DeleteMapping("/users/self")
+  public ResponseEntity<String> deleteSelf(HttpServletRequest request) {
+    userService.deleteUserById(controllerUtil.getUserBasedOnJWT(request).getId());
+    return new ResponseEntity<>("User deleted", HttpStatus.OK);
+  }
+
+  @PutMapping("/users/self/password")
+  public ResponseEntity<String> changePassword(HttpServletRequest request) {
+    ObjectNode requestBody = controllerUtil.getRequestBody(request);
+    if (userService.changePassword(requestBody,
+        controllerUtil.getUserBasedOnJWT(request).getId())) {
+      return new ResponseEntity<>(HttpStatus.OK);
+    } else {
+      return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
+  }
+
   @DeleteMapping("/users/{id}")
   @PreAuthorize("hasRole('ADMIN')")
   public ResponseEntity<String> deleteUser(@PathVariable int id) {
@@ -67,6 +95,15 @@ public class UserController {
   public ResponseEntity<UserType> getUserType(HttpServletRequest request) {
     return new ResponseEntity<>(controllerUtil.getUserBasedOnJWT(request).getUserType(),
         HttpStatus.OK);
+  }
+
+  @GetMapping("users/owner/{id}")
+  public ResponseEntity<User> getOwnerOfCar(@PathVariable int id) {
+    User user = userService.getOwnerOfCar(id);
+    if (user == null) {
+      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+    return new ResponseEntity<>(user, HttpStatus.OK);
   }
 
   //TODO: Test this function. Removed a return of user which might be important.
