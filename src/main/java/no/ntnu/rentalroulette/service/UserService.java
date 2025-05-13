@@ -100,7 +100,7 @@ public class UserService {
 
   @Transactional
   public void suspendUserById(int id) {
-    User user = userRepository.findById(id);
+    User user = userRepository.findById(id).get();
     user.setActive(false);
     userRepository.save(user);
   }
