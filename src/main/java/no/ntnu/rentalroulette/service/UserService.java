@@ -42,6 +42,15 @@ public class UserService {
     return null;
   }
 
+  public User getOwnerOfCar(int carId) {
+    Car car = carService.getCarById(carId);
+    if (car != null) {
+      return car.getUser();
+    }
+    return null;
+
+  }
+
   @Transactional
   public User createUser(ObjectNode requestBody) {
     User newUser = new User(

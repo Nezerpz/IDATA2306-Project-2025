@@ -97,6 +97,15 @@ public class UserController {
         HttpStatus.OK);
   }
 
+  @GetMapping("users/owner/{id}")
+  public ResponseEntity<User> getOwnerOfCar(@PathVariable int id) {
+    User user = userService.getOwnerOfCar(id);
+    if (user == null) {
+      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+    return new ResponseEntity<>(user, HttpStatus.OK);
+  }
+
   //TODO: Test this function. Removed a return of user which might be important.
   @PostMapping("/become-provider")
   @PreAuthorize("hasRole('CUSTOMER')")

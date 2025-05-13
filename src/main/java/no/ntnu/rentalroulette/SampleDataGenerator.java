@@ -530,31 +530,59 @@ public class SampleDataGenerator {
                                     UserReviewRepository userReviewRepository) {
     User olaNordmann = userRepository.findByUsername("ola.nordmann").get();
     User kariNordmann = userRepository.findByUsername("kari.nordmann").get();
+
+    // Fetch specific cars
+    Car golf1 = carRepository.findById(1);
+    Car model3_1 = carRepository.findById(3);
+    Car transporter1 = carRepository.findById(10);
+    Car peugeot207_1 = carRepository.findById(20);
+
+    // Car reviews
+    List<CarReview> carReviews = new ArrayList<>();
+    if (golf1 != null) {
+      carReviews.add(new CarReview(olaNordmann, golf1, 5, "Ola: Excellent car for long trips!"));
+      carReviews.add(new CarReview(kariNordmann, golf1, 4, "Kari: Comfortable and reliable."));
+    }
+    if (model3_1 != null) {
+      carReviews.add(new CarReview(olaNordmann, model3_1, 5, "Ola: Amazing electric car!"));
+    }
+    if (transporter1 != null) {
+      carReviews.add(new CarReview(kariNordmann, transporter1, 3, "Kari: Decent but old."));
+    }
+    if (peugeot207_1 != null) {
+      carReviews.add(new CarReview(olaNordmann, peugeot207_1, 4, "Ola: Good for city driving."));
+      carReviews.add(
+          new CarReview(kariNordmann, peugeot207_1, 5, "Kari: Perfect for small families."));
+    }
+    carReviewRepository.saveAll(carReviews);
+
+    // Fetch specific providers
     User millerBil = userRepository.findByUsername("miller.bil").get();
     User billerBil = userRepository.findByUsername("biller.bil").get();
+    User biggernesTesla = userRepository.findByUsername("biggernes.tesla").get();
+    User teslaTom = userRepository.findByUsername("tesla.tom").get();
+    User auto99 = userRepository.findByUsername("auto.9-9").get();
+    User auto1010 = userRepository.findByUsername("auto.10-10").get();
+    User bilikist = userRepository.findByUsername("bilikist").get();
+    User orstaKommune = userRepository.findByUsername("orsta.kommune").get();
 
-    Car golf1 = carRepository.findById(1);
-    Car golf2 = carRepository.findById(2);
-    Car model3_1 = carRepository.findById(3);
-    Car model3_2 = carRepository.findById(4);
+    // Provider reviews
+    List<UserReview> providerReviews = new ArrayList<>();
+    providerReviews.add(
+        new UserReview(olaNordmann, millerBil, 5, "Ola: Great service and friendly staff!"));
+    providerReviews.add(new UserReview(kariNordmann, millerBil, 4, "Kari: Reliable provider."));
+    providerReviews.add(new UserReview(olaNordmann, billerBil, 3, "Ola: Average experience."));
+    providerReviews.add(
+        new UserReview(kariNordmann, biggernesTesla, 5, "Kari: Excellent Tesla provider!"));
+    providerReviews.add(
+        new UserReview(olaNordmann, teslaTom, 4, "Ola: Good selection of electric cars."));
+    providerReviews.add(new UserReview(kariNordmann, auto99, 5, "Kari: Affordable and efficient!"));
+    providerReviews.add(new UserReview(olaNordmann, auto1010, 4, "Ola: Decent service."));
+    providerReviews.add(
+        new UserReview(kariNordmann, bilikist, 3, "Kari: Could improve customer support."));
+    providerReviews.add(
+        new UserReview(olaNordmann, orstaKommune, 5, "Ola: Excellent municipal provider!"));
 
-    CarReview golf1Review = new CarReview(olaNordmann, golf1, 5, "Great car!");
-    CarReview golf2Review = new CarReview(kariNordmann, golf2, 4, "Good car!");
-    CarReview model3_1Review = new CarReview(olaNordmann, model3_1, 5, "Great car!");
-    CarReview model3_2Review = new CarReview(kariNordmann, model3_2, 4, "Good car!");
-
-    carReviewRepository.saveAll(List.of(
-        golf1Review,
-        golf2Review,
-        model3_1Review,
-        model3_2Review
-    ));
-
-    userReviewRepository.saveAll(List.of(
-        new UserReview(millerBil, olaNordmann, 5, "Great provider!"),
-        new UserReview(billerBil, kariNordmann, 4, "Good provider!"),
-        new UserReview(kariNordmann, billerBil, 5, "Great customer!"),
-        new UserReview(olaNordmann, millerBil, 4, "Good customer!")
-    ));
+    userReviewRepository.saveAll(providerReviews);
   }
 }
