@@ -10,12 +10,12 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.time.LocalDate;
 import java.time.LocalTime;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import no.ntnu.rentalroulette.enums.OrderStatus;
 
 @Entity
 @Data
@@ -50,7 +50,7 @@ public class Order {
 
   @Setter
   @Getter
-  private boolean orderStatus;
+  private OrderStatus orderStatus;
 
   @ManyToOne
   @JoinColumn(name = "customer_id")
@@ -75,7 +75,7 @@ public class Order {
       LocalTime endTime,
       String pricePaid,
       Car car,
-      boolean orderStatus
+      OrderStatus orderStatus
   ) {
     this.customer = customer;
     this.provider = provider;

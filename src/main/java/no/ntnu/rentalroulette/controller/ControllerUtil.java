@@ -91,24 +91,6 @@ public class ControllerUtil {
     return jsonNodes;
   }
 
-  /**
-   * Extracts a list of features from the request body.
-   *
-   * @param features The request body.
-   * @return The list of features.
-   */
-  public List<Feature> getFeaturesFromRequestBody(JsonNode features) {
-    List<Feature> featureList = new ArrayList<>();
-    if (features.isArray()) {
-      for (JsonNode featureNode : features) {
-        Feature featureObj = new Feature();
-        featureObj.setFeatureName(featureNode.asText());
-        featureList.add(featureObj);
-      }
-    }
-    return featureList;
-  }
-
   public boolean checkIfAdmin(HttpServletRequest request) {
     boolean isAdmin = false;
     String jwtToken = extractJwtToken(request);
@@ -119,29 +101,5 @@ public class ControllerUtil {
     }
 
     return isAdmin;
-  }
-
-  public boolean checkIfProvider(HttpServletRequest request) {
-    boolean isProvider = false;
-    String jwtToken = extractJwtToken(request);
-    String username = jwtUtil.extractUsername(jwtToken);
-    Optional<User> user = userRepository.findByUsername(username);
-    if (user.isPresent() && user.get().getUserType().name().equals("PROVIDER")) {
-      isProvider = true;
-    }
-
-    return isProvider;
-  }
-
-  public boolean checkIfCustomer(HttpServletRequest request) {
-    boolean isCustomer = false;
-    String jwtToken = extractJwtToken(request);
-    String username = jwtUtil.extractUsername(jwtToken);
-    Optional<User> user = userRepository.findByUsername(username);
-    if (user.isPresent() && user.get().getUserType().name().equals("CUSTOMER")) {
-      isCustomer = true;
-    }
-
-    return isCustomer;
   }
 }

@@ -1,17 +1,13 @@
 package no.ntnu.rentalroulette.controller;
 
-import java.lang.Integer;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.List;
-import java.util.Optional;
 import no.ntnu.rentalroulette.entity.Order;
-import no.ntnu.rentalroulette.repository.OrderRepository;
-import no.ntnu.rentalroulette.repository.UserRepository;
-import no.ntnu.rentalroulette.security.JwtUtil;
+import no.ntnu.rentalroulette.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,31 +15,18 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RestController;
 import no.ntnu.rentalroulette.entity.User;
-import java.time.temporal.ChronoUnit;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import no.ntnu.rentalroulette.enums.CarStatus;
-import no.ntnu.rentalroulette.enums.UserType;
-import no.ntnu.rentalroulette.entity.Car;
-import no.ntnu.rentalroulette.repository.CarRepository;
 
 @RestController
 public class OrderController {
 
   @Autowired
-  private OrderRepository orderRepository;
-
-  @Autowired
-  private CarRepository carRepository;
-
-  @Autowired
-  private UserRepository userRepository;
-
-  @Autowired
   private ControllerUtil controllerUtil;
+
+  @Autowired
+  private OrderService orderService;
 
   //TODO: Remove this endpoint, it is only for testing purposes
   @GetMapping("/orders")
@@ -58,12 +41,8 @@ public class OrderController {
           description = "The list of orders returned in response body"
       )
   })
-  public ResponseEntity<List<Order>> orders(HttpServletRequest request) {
-    if (controllerUtil.checkIfAdmin(request)) {
-      List<Order> orders = orderRepository.findAll();
-      return ResponseEntity.ok(orders);
-    }
-    return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+  public ResponseEntity<List<Order>> orders() {
+    return new ResponseEntity<>(orderService.getAllOrders(), HttpStatus.OK);
   }
 
   @GetMapping("/orders/{id}")
@@ -75,14 +54,19 @@ public class OrderController {
       @ApiResponse(
           responseCode = "200",
           description = "The order returned in response body"
+      ),
+      @ApiResponse(
+          responseCode = "404",
+          description = "Order not found"
       )
   })
+  @PreAuthorize("hasRole('ADMIN') or hasRole('PROVIDER')")
   public ResponseEntity<Order> getOrderById(@PathVariable int id) {
-    Optional<Order> order = orderRepository.findById(id);
-    if (order.isPresent()) {
-      return ResponseEntity.ok(order.get());
-    } else {
-      return ResponseEntity.notFound().build();
+    try {
+      Order order = orderService.getOrderById(id);
+      return new ResponseEntity<>(order, HttpStatus.OK);
+    } catch (NoSuchFieldException e) {
+      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
   }
 
@@ -99,11 +83,12 @@ public class OrderController {
   })
   public ResponseEntity<List<Order>> getOrdersByCustomer(HttpServletRequest request) {
     List<Order> orders =
-        orderRepository.findAllByCustomerId(controllerUtil.getUserBasedOnJWT(request).getId());
+        orderService.getOrdersByCustomerId(controllerUtil.getUserBasedOnJWT(request).getId());
     return ResponseEntity.ok(orders);
   }
 
   @GetMapping("/orders/provider")
+  @PreAuthorize("hasRole('PROVIDER')")
   @Operation(
       summary = "Orders by provider endpoint",
       description = "Returns a list of all orders for a specific provider"
@@ -116,27 +101,20 @@ public class OrderController {
   })
   public ResponseEntity<List<Order>> getOrdersForProvider(HttpServletRequest request) {
     List<Order> orders =
-        orderRepository.findAllByProviderId(controllerUtil.getUserBasedOnJWT(request).getId());
+        orderService.getOrdersByProviderId(controllerUtil.getUserBasedOnJWT(request).getId());
     return ResponseEntity.ok(orders);
   }
 
-  private LocalDate stringToDate(String string) {
-    String[] dates = string.split("-");
-    LocalDate date = LocalDate.of(
-        Integer.parseInt(dates[0]),
-        Integer.parseInt(dates[1]),
-        Integer.parseInt(dates[2])
-    );
-    return date;
-  }
-
-  private LocalTime stringToTime(String string) {
-    String[] hourMinutes = string.split(":");
-    LocalTime time = LocalTime.of(
-        Integer.parseInt(hourMinutes[0]),
-        Integer.parseInt(hourMinutes[1])
-    );
-    return time;
+  @PutMapping("/orders/{id}")
+  @PreAuthorize("hasRole('PROVIDER') or hasRole('ADMIN')")
+  public ResponseEntity<String> updateOrder(HttpServletRequest request, @PathVariable int id) {
+    ObjectNode requestBody = controllerUtil.getRequestBody(request);
+    try {
+      orderService.updateOrder(requestBody, id);
+    } catch (NoSuchFieldException e) {
+      return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+    }
+    return new ResponseEntity<>(HttpStatus.OK);
   }
 
   @PostMapping("/order")
@@ -144,39 +122,10 @@ public class OrderController {
       HttpServletRequest request
   ) {
     User user = controllerUtil.getUserBasedOnJWT(request);
-    ObjectNode body = controllerUtil.getRequestBody(request);
-    Car car = carRepository.findById(Integer.parseInt(body.get("id").asText()));
-    System.out.println("car_id = " + car.getId() + " user = " + user + " body = " + body);
+    ObjectNode requestBody = controllerUtil.getRequestBody(request);
 
-    LocalDate startDate = stringToDate(body.get("dateFrom").asText());
-    LocalDate endDate = stringToDate(body.get("dateTo").asText());
-    LocalTime startTime = stringToTime(body.get("timeFrom").asText());
-    LocalTime endTime = stringToTime(body.get("timeTo").asText());
+    orderService.createOrder(user, requestBody);
 
-    float totalPrice = car.getPrice() * ChronoUnit.DAYS.between(startDate, endDate);
-
-    Optional<User> provider =
-        userRepository.findById(body.get("providerId").asInt());
-
-    if (provider.isEmpty()) {
-      return ResponseEntity.badRequest().body("{\"response\": \"provider not found\"}");
-    }
-    Order order = new Order(
-        user,
-        provider.get(),
-        startDate,
-        endDate,
-        startTime,
-        endTime,
-        "" + totalPrice,
-        car,
-        true
-    );
-
-    orderRepository.save(order);
-    System.out.println("order saved");
-
-    car.setCarStatus(CarStatus.INUSE);
     return ResponseEntity.ok("{\"response\": \"available\"}");
   }
 }

@@ -15,6 +15,7 @@ import no.ntnu.rentalroulette.entity.UserReview;
 import no.ntnu.rentalroulette.enums.CarStatus;
 import no.ntnu.rentalroulette.enums.FuelType;
 import no.ntnu.rentalroulette.enums.Manufacturer;
+import no.ntnu.rentalroulette.enums.OrderStatus;
 import no.ntnu.rentalroulette.enums.TransmissionType;
 import no.ntnu.rentalroulette.enums.UserType;
 import no.ntnu.rentalroulette.repository.CarRepository;
@@ -154,125 +155,130 @@ public class SampleDataGenerator {
     User fossefallBilforhandler = userRepository.findByUsername("fossefall.bilforhandler").get();
     User betrelOstein = userRepository.findByUsername("betrel.ostein").get();
 
-    Car golf1 = new Car("/Images/Golf", "Golf", volkswagen, 5, manual, diesel, 600, 2007);
+    Car golf1 = new Car("/images/Golf.jpg", "Golf", volkswagen, 5, manual, diesel, 600, 2007);
     cars.add(golf1);
     golf1.setUser(millerBil);
 
-    Car golf2 = new Car("/Images/Golf", "Golf", volkswagen, 5, manual, diesel, 550, 2007);
+    Car golf2 = new Car("/images/Golf.jpg", "Golf", volkswagen, 5, manual, diesel, 550, 2007);
     cars.add(golf2);
     golf2.setUser(billerBil);
 
-    Car model3_1 = new Car("/Images/Model3", "Model 3", tesla, 5, automatic, electric, 700, 2019);
+    Car model3_1 =
+        new Car("/images/Model3.jpg", "Model 3", tesla, 5, automatic, electric, 700, 2019);
     cars.add(model3_1);
     model3_1.setUser(biggernesTesla);
 
-    Car model3_2 = new Car("/Images/Model3", "Model 3", tesla, 5, automatic, electric, 500, 2019);
+    Car model3_2 =
+        new Car("/images/Model3.jpg", "Model 3", tesla, 5, automatic, electric, 500, 2019);
     cars.add(model3_2);
     model3_2.setUser(teslaTom);
 
-    Car modelY_1 = new Car("/Images/ModelY", "Model Y", tesla, 5, automatic, electric, 900, 2022);
+    Car modelY_1 =
+        new Car("/images/ModelY.jpg", "Model Y", tesla, 5, automatic, electric, 900, 2022);
     cars.add(modelY_1);
     modelY_1.setUser(biggernesTesla);
 
-    Car modelY_2 = new Car("/Images/ModelY", "Model Y", tesla, 5, automatic, electric, 700, 2022);
+    Car modelY_2 =
+        new Car("/images/ModelY.jpg", "Model Y", tesla, 5, automatic, electric, 700, 2022);
     cars.add(modelY_2);
     modelY_2.setUser(teslaTom);
 
-    Car leaf1 = new Car("/Images/Leaf", "Leaf", nissan, 5, automatic, electric, 500, 2016);
+    Car leaf1 = new Car("/images/Leaf.jpg", "Leaf", nissan, 5, automatic, electric, 500, 2016);
     cars.add(leaf1);
     leaf1.setUser(auto99);
 
-    Car leaf2 = new Car("/Images/Leaf", "Leaf", nissan, 5, automatic, electric, 500, 2016);
+    Car leaf2 = new Car("/images/Leaf.jpg", "Leaf", nissan, 5, automatic, electric, 500, 2016);
     cars.add(leaf2);
     leaf2.setUser(auto1010);
 
-    Car mazda2 = new Car("/Images/Mazda2", "2", mazda, 5, automatic, petrol, 400, 2017);
+    Car mazda2 = new Car("/images/Mazda2.jpg", "2", mazda, 5, automatic, petrol, 400, 2017);
     cars.add(mazda2);
     mazda2.setUser(bilikist);
 
     Car transporter1 =
-        new Car("/Images/Transporter", "Transporter", volkswagen, 8, manual, petrol, 200, 1978);
+        new Car("/images/Transporter.jpg", "Transporter", volkswagen, 8, manual, petrol, 200, 1978);
     cars.add(transporter1);
     transporter1.setUser(orstaKommune);
 
     Car transporter2 =
-        new Car("/Images/Transporter", "Transporter", volkswagen, 8, manual, petrol, 70, 1978);
+        new Car("/images/Transporter.jpg", "Transporter", volkswagen, 8, manual, petrol, 70, 1978);
     cars.add(transporter2);
     transporter2.setUser(sirkelsliper);
 
     Car transporter3 =
-        new Car("/Images/Transporter", "Transporter", volkswagen, 8, manual, petrol, 180, 1978);
+        new Car("/images/Transporter.jpg", "Transporter", volkswagen, 8, manual, petrol, 180, 1978);
     cars.add(transporter3);
     transporter3.setUser(peacePer);
 
-    Car m3_1 = new Car("/Images/M3Evo", "M3 Evo", bmw, 4, manual, petrol, 400, 1988);
+    Car m3_1 = new Car("/images/M3Evo.jpg", "M3 Evo", bmw, 4, manual, petrol, 400, 1988);
     cars.add(m3_1);
     m3_1.setUser(bilverksted);
 
-    Car m3_2 = new Car("/Images/M3Evo", "M3 Evo", bmw, 4, manual, petrol, 450, 1988);
+    Car m3_2 = new Car("/images/M3Evo.jpg", "M3 Evo", bmw, 4, manual, petrol, 450, 1988);
     cars.add(m3_2);
     m3_2.setUser(grabes);
 
-    Car m3_3 = new Car("/Images/M3Evo", "M3 Evo", bmw, 4, manual, petrol, 449, 1988);
+    Car m3_3 = new Car("/images/M3Evo.jpg", "M3 Evo", bmw, 4, manual, petrol, 449, 1988);
     cars.add(m3_3);
     m3_3.setUser(djarney);
 
-    Car fabia1 = new Car("/Images/Fabia", "Fabia", skoda, 5, automatic, diesel, 300, 2011);
+    Car fabia1 = new Car("/images/Fabia.jpg", "Fabia", skoda, 5, automatic, diesel, 300, 2011);
     cars.add(fabia1);
     fabia1.setUser(sprekksaver);
 
-    Car fabia2 = new Car("/Images/Fabia", "Fabia", skoda, 5, automatic, diesel, 299, 2011);
+    Car fabia2 = new Car("/images/Fabia.jpg", "Fabia", skoda, 5, automatic, diesel, 299, 2011);
     cars.add(fabia2);
     fabia2.setUser(smidigBilforhandler);
 
-    Car fabia3 = new Car("/Images/Fabia", "Fabia", skoda, 5, automatic, diesel, 700, 2011);
+    Car fabia3 = new Car("/images/Fabia.jpg", "Fabia", skoda, 5, automatic, diesel, 700, 2011);
     cars.add(fabia3);
     fabia3.setUser(fossefallBilforhandler);
 
-    Car peugeot307_1 = new Car("/Images/307SW", "307 SW", peugeot, 7, manual, diesel, 600, 2008);
+    Car peugeot307_1 =
+        new Car("/images/307SW.jpg", "307 SW", peugeot, 7, manual, diesel, 600, 2008);
     cars.add(peugeot307_1);
     peugeot307_1.setUser(betrelOstein);
 
-    Car peugeot307_2 = new Car("/Images/307SW", "307 SW", peugeot, 7, manual, diesel, 550, 2008);
+    Car peugeot307_2 =
+        new Car("/images/307SW.jpg", "307 SW", peugeot, 7, manual, diesel, 550, 2008);
     cars.add(peugeot307_2);
     peugeot307_2.setUser(auto1010);
 
-    Car peugeot207_1 = new Car("/Images/207", "207", peugeot, 5, manual, diesel, 500, 2007);
+    Car peugeot207_1 = new Car("/images/207.jpg", "207", peugeot, 5, manual, diesel, 500, 2007);
     cars.add(peugeot207_1);
     peugeot207_1.setUser(betrelOstein);
 
-    Car peugeot207_2 = new Car("/Images/207", "207", peugeot, 5, manual, diesel, 550, 2007);
+    Car peugeot207_2 = new Car("/images/207.jpg", "207", peugeot, 5, manual, diesel, 550, 2007);
     cars.add(peugeot207_2);
     peugeot207_2.setUser(auto1010);
 
-    Car peugeot3008_1 = new Car("/Images/3008", "3008", peugeot, 5, manual, diesel, 600, 2010);
+    Car peugeot3008_1 = new Car("/images/3008.jpg", "3008", peugeot, 5, manual, diesel, 600, 2010);
     cars.add(peugeot3008_1);
     peugeot3008_1.setUser(betrelOstein);
 
-    Car peugeot3008_2 = new Car("/Images/3008", "3008", peugeot, 5, manual, diesel, 600, 2010);
+    Car peugeot3008_2 = new Car("/images/3008.jpg", "3008", peugeot, 5, manual, diesel, 600, 2010);
     cars.add(peugeot3008_2);
     peugeot3008_2.setUser(auto1010);
 
-    Car iOn1 = new Car("/Images/iOn", "iOn", peugeot, 4, automatic, electric, 200, 2015);
+    Car iOn1 = new Car("/images/iOn.jpg", "iOn", peugeot, 4, automatic, electric, 200, 2015);
     cars.add(iOn1);
     iOn1.setUser(betrelOstein);
 
-    Car iOn2 = new Car("/Images/iOn", "iOn", peugeot, 4, automatic, electric, 201, 2015);
+    Car iOn2 = new Car("/images/iOn.jpg", "iOn", peugeot, 4, automatic, electric, 201, 2015);
     cars.add(iOn2);
     iOn2.setUser(auto1010);
 
-    Car iOn3 = new Car("/Images/iOn", "iOn", peugeot, 4, automatic, electric, 200, 2015);
+    Car iOn3 = new Car("/images/iOn.jpg", "iOn", peugeot, 4, automatic, electric, 200, 2015);
     cars.add(iOn3);
     iOn3.setUser(betrelOstein);
 
-    Car iOn4 = new Car("/Images/iOn", "iOn", peugeot, 4, automatic, electric, 201, 2015);
+    Car iOn4 = new Car("/images/iOn.jpg", "iOn", peugeot, 4, automatic, electric, 201, 2015);
     cars.add(iOn4);
     iOn4.setUser(auto1010);
 
-    Car iOn5 = new Car("/Images/iOn", "iOn", peugeot, 4, automatic, electric, 201, 2015);
+    Car iOn5 = new Car("/images/iOn.jpg", "iOn", peugeot, 4, automatic, electric, 201, 2015);
     cars.add(iOn5);
     iOn5.setUser(auto1010);
-
 
     return cars;
   }
@@ -297,7 +303,8 @@ public class SampleDataGenerator {
         new Order(customer1, golf1Provider, startDateOneProvider, endDateOneProvider, startTime,
             endTime,
             String.valueOf(golf1.getPrice() *
-                ChronoUnit.DAYS.between(startDateOneProvider, endDateOneProvider)), golf1, true));
+                ChronoUnit.DAYS.between(startDateOneProvider, endDateOneProvider)), golf1,
+            OrderStatus.ONGOING));
     golf1.setCarStatus(CarStatus.INUSE);
 
 // Some cars may be busy from all providers for some weeks
@@ -320,21 +327,21 @@ public class SampleDataGenerator {
             endTime,
             String.valueOf(transporter1.getPrice() *
                 ChronoUnit.DAYS.between(startDateSomeWeeks, endDateSomeWeeks)), transporter1,
-            true));
+            OrderStatus.ONGOING));
     transporter1.setCarStatus(CarStatus.INUSE);
     orders.add(
         new Order(customer2, transporter2Provider, startDateSomeWeeks, endDateSomeWeeks, startTime,
             endTime,
             String.valueOf(transporter2.getPrice() *
                 ChronoUnit.DAYS.between(startDateSomeWeeks, endDateSomeWeeks)), transporter2,
-            true));
+            OrderStatus.ONGOING));
     transporter2.setCarStatus(CarStatus.INUSE);
     orders.add(
         new Order(customer2, transporter3Provider, startDateSomeWeeks, endDateSomeWeeks, startTime,
             endTime,
             String.valueOf(transporter3.getPrice() *
                 ChronoUnit.DAYS.between(startDateSomeWeeks, endDateSomeWeeks)), transporter3,
-            true));
+            OrderStatus.ONGOING));
     transporter3.setCarStatus(CarStatus.INUSE);
 
 // Some cars may be “fully booked” out of 2025
@@ -357,31 +364,36 @@ public class SampleDataGenerator {
         new Order(customer1, iOn1Provider, startDateFullyBooked, endDateFullyBooked, startTime,
             endTime,
             String.valueOf(iOn1.getPrice() *
-                ChronoUnit.DAYS.between(startDateFullyBooked, endDateFullyBooked)), iOn1, true));
+                ChronoUnit.DAYS.between(startDateFullyBooked, endDateFullyBooked)), iOn1,
+            OrderStatus.ONGOING));
     iOn1.setCarStatus(CarStatus.INUSE);
     orders.add(
         new Order(customer1, iOn2Provider, startDateFullyBooked, endDateFullyBooked, startTime,
             endTime,
             String.valueOf(iOn2.getPrice() *
-                ChronoUnit.DAYS.between(startDateFullyBooked, endDateFullyBooked)), iOn2, true));
+                ChronoUnit.DAYS.between(startDateFullyBooked, endDateFullyBooked)), iOn2,
+            OrderStatus.ONGOING));
     iOn2.setCarStatus(CarStatus.INUSE);
     orders.add(
         new Order(customer1, iOn3Provider, startDateFullyBooked, endDateFullyBooked, startTime,
             endTime,
             String.valueOf(iOn3.getPrice() *
-                ChronoUnit.DAYS.between(startDateFullyBooked, endDateFullyBooked)), iOn3, true));
+                ChronoUnit.DAYS.between(startDateFullyBooked, endDateFullyBooked)), iOn3,
+            OrderStatus.ONGOING));
     iOn3.setCarStatus(CarStatus.INUSE);
     orders.add(
         new Order(customer2, iOn4Provider, startDateFullyBooked, endDateFullyBooked, startTime,
             endTime,
             String.valueOf(iOn4.getPrice() *
-                ChronoUnit.DAYS.between(startDateFullyBooked, endDateFullyBooked)), iOn4, true));
+                ChronoUnit.DAYS.between(startDateFullyBooked, endDateFullyBooked)), iOn4,
+            OrderStatus.ONGOING));
     iOn4.setCarStatus(CarStatus.INUSE);
     orders.add(
         new Order(customer2, iOn5Provider, startDateFullyBooked, endDateFullyBooked, startTime,
             endTime,
             String.valueOf(iOn5.getPrice() *
-                ChronoUnit.DAYS.between(startDateFullyBooked, endDateFullyBooked)), iOn5, true));
+                ChronoUnit.DAYS.between(startDateFullyBooked, endDateFullyBooked)), iOn5,
+            OrderStatus.ONGOING));
     iOn5.setCarStatus(CarStatus.INUSE);
     carRepository.saveAll(List.of(golf1, transporter1, transporter2, transporter3, iOn1, iOn2, iOn3,
         iOn4, iOn5));
@@ -518,31 +530,70 @@ public class SampleDataGenerator {
                                     UserReviewRepository userReviewRepository) {
     User olaNordmann = userRepository.findByUsername("ola.nordmann").get();
     User kariNordmann = userRepository.findByUsername("kari.nordmann").get();
+
+    // Fetch specific cars
+    Car golf1 = carRepository.findById(1);
+    Car model3_1 = carRepository.findById(3);
+    Car transporter1 = carRepository.findById(10);
+    Car peugeot207_1 = carRepository.findById(20);
+
+    // Car reviews
+    List<CarReview> carReviews = new ArrayList<>();
+    if (golf1 != null) {
+      carReviews.add(new CarReview(olaNordmann, golf1, 5, "Ola: Excellent car for long trips!"));
+      carReviews.add(new CarReview(kariNordmann, golf1, 4, "Kari: Comfortable and reliable."));
+    }
+    if (model3_1 != null) {
+      carReviews.add(new CarReview(olaNordmann, model3_1, 5, "Ola: Amazing electric car!"));
+    }
+    if (transporter1 != null) {
+      carReviews.add(new CarReview(kariNordmann, transporter1, 3, "Kari: Decent but old."));
+    }
+    if (peugeot207_1 != null) {
+      carReviews.add(new CarReview(olaNordmann, peugeot207_1, 4, "Ola: Good for city driving."));
+      carReviews.add(
+          new CarReview(kariNordmann, peugeot207_1, 5, "Kari: Perfect for small families."));
+    }
+    carReviewRepository.saveAll(carReviews);
+
+    // Fetch specific providers
     User millerBil = userRepository.findByUsername("miller.bil").get();
     User billerBil = userRepository.findByUsername("biller.bil").get();
+    User biggernesTesla = userRepository.findByUsername("biggernes.tesla").get();
+    User teslaTom = userRepository.findByUsername("tesla.tom").get();
+    User auto99 = userRepository.findByUsername("auto.9-9").get();
+    User auto1010 = userRepository.findByUsername("auto.10-10").get();
+    User bilikist = userRepository.findByUsername("bilikist").get();
+    User orstaKommune = userRepository.findByUsername("orsta.kommune").get();
 
-    Car golf1 = carRepository.findById(1);
-    Car golf2 = carRepository.findById(2);
-    Car model3_1 = carRepository.findById(3);
-    Car model3_2 = carRepository.findById(4);
+    // Provider reviews
+    List<UserReview> providerReviews = new ArrayList<>();
+    providerReviews.add(
+        new UserReview(millerBil, olaNordmann, 5, "Great service and friendly staff!"));
+    providerReviews.add(new UserReview(millerBil, kariNordmann, 4, "Reliable provider."));
+    providerReviews.add(new UserReview(billerBil, olaNordmann, 3, "Average experience."));
+    providerReviews.add(
+        new UserReview(biggernesTesla, kariNordmann, 5, "Excellent Tesla provider!"));
+    providerReviews.add(
+        new UserReview(teslaTom, olaNordmann, 4, "Good selection of electric cars."));
+    providerReviews.add(new UserReview(auto99, kariNordmann, 5, "Affordable and efficient!"));
+    providerReviews.add(new UserReview(auto1010, olaNordmann, 4, "Decent service."));
+    providerReviews.add(
+        new UserReview(bilikist, kariNordmann, 3, "Could improve customer support."));
+    providerReviews.add(
+        new UserReview(orstaKommune, olaNordmann, 5, "Excellent municipal provider!"));
 
-    CarReview golf1Review = new CarReview(olaNordmann, golf1, 5, "Great car!");
-    CarReview golf2Review = new CarReview(kariNordmann, golf2, 4, "Good car!");
-    CarReview model3_1Review = new CarReview(olaNordmann, model3_1, 5, "Great car!");
-    CarReview model3_2Review = new CarReview(kariNordmann, model3_2, 4, "Good car!");
+    userReviewRepository.saveAll(providerReviews);
 
-    carReviewRepository.saveAll(List.of(
-        golf1Review,
-        golf2Review,
-        model3_1Review,
-        model3_2Review
-    ));
+    //Customer reviews
+    List<UserReview> customerReviews = new ArrayList<>();
+    customerReviews.add(new UserReview(olaNordmann, millerBil, 5, "Great customer!"));
+    customerReviews.add(new UserReview(kariNordmann, millerBil, 4, "Good customer."));
+    customerReviews.add(new UserReview(olaNordmann, billerBil, 3, "Average customer."));
+    customerReviews.add(new UserReview(kariNordmann, billerBil, 5, "Excellent customer!"));
+    customerReviews.add(new UserReview(olaNordmann, biggernesTesla, 4, " Good customer!"));
+    customerReviews.add(new UserReview(kariNordmann, biggernesTesla, 5, "Great customer!"));
 
-    userReviewRepository.saveAll(List.of(
-        new UserReview(millerBil, olaNordmann, 5, "Great provider!"),
-        new UserReview(billerBil, kariNordmann, 4, "Good provider!"),
-        new UserReview(kariNordmann, billerBil, 5, "Great customer!"),
-        new UserReview(olaNordmann, millerBil, 4, "Good customer!")
-    ));
+    userReviewRepository.saveAll(customerReviews);
   }
 }

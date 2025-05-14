@@ -7,5 +7,17 @@ public enum Manufacturer {
   TESLA,
   MAZDA,
   NISSAN,
-  PEUGEOT
+  PEUGEOT,
+  TOYOTA,
+  FORD,
+  SUBARU,
+  HYUNDAI,
+  AUDI,
+  PORSCHE,
+  FORD_MUSTANG,
+  CHEVROLET,
+  VOLVO,
+  MERCEDES_BENZ,
+  MINI,
+  OPEL
 }

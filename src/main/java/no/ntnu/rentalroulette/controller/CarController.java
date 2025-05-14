@@ -3,24 +3,13 @@ package no.ntnu.rentalroulette.controller;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
 import no.ntnu.rentalroulette.entity.Car;
-import no.ntnu.rentalroulette.entity.CarReview;
-import no.ntnu.rentalroulette.entity.Feature;
-import no.ntnu.rentalroulette.entity.User;
-import no.ntnu.rentalroulette.enums.CarStatus;
-import no.ntnu.rentalroulette.enums.FuelType;
-import no.ntnu.rentalroulette.enums.Manufacturer;
-import no.ntnu.rentalroulette.enums.TransmissionType;
-import no.ntnu.rentalroulette.repository.CarRepository;
-import no.ntnu.rentalroulette.repository.CarReviewRepository;
-import no.ntnu.rentalroulette.repository.FeatureRepository;
-import no.ntnu.rentalroulette.repository.UserRepository;
-import no.ntnu.rentalroulette.security.JwtUtil;
 import no.ntnu.rentalroulette.service.CarService;
+import no.ntnu.rentalroulette.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -29,7 +18,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-//TODO: Use services instead of making the rest controller do everything.
 @RestController
 public class CarController {
 
@@ -37,128 +25,63 @@ public class CarController {
   private CarService carService;
 
   @Autowired
-  private CarRepository carRepository;
-
-  @Autowired
-  private FeatureRepository featureRepository;
-
-  @Autowired
-  private CarReviewRepository carReviewRepository;
-
-  @Autowired
   private ControllerUtil controllerUtil;
 
   @GetMapping("/cars")
-  public ResponseEntity<List<Car>> getCars(HttpServletRequest request) {
-    if (controllerUtil.checkIfAdmin(request)) {
-      List<Car> cars = new CopyOnWriteArrayList<>(carRepository.findAll());
-      return new ResponseEntity<>(cars, HttpStatus.OK);
-    }
-    return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+  @PreAuthorize("hasRole('ADMIN')")
+  public ResponseEntity<List<Car>> getCars() {
+    List<Car> cars = carService.getAllCars();
+    return new ResponseEntity<>(cars, HttpStatus.OK);
   }
 
   @GetMapping("/cars/{id}")
   public ResponseEntity<Car> getCar(@PathVariable(value = "id") int id) {
-    Car car = carRepository.findById(id);
+    Car car = carService.getCarById(id);
     return new ResponseEntity<>(car, HttpStatus.OK);
   }
 
   @PostMapping("/cars")
   public ResponseEntity<List<Car>> getCarsByDates(@RequestBody DateRange dateRange) {
-    List<Car> cars = new CopyOnWriteArrayList<>(carRepository.findAvailableCars(
+    List<Car> cars = carService.getAllCarsByDate(
         dateRange.getDateFrom(),
         dateRange.getDateTo(),
         dateRange.getTimeFrom(),
         dateRange.getTimeTo()
-    ));
+    );
     return new ResponseEntity<>(cars, HttpStatus.OK);
   }
 
   @GetMapping("/cars/provider")
+  @PreAuthorize("hasRole('PROVIDER')")
   public ResponseEntity<List<Car>> getCarsByProvider(HttpServletRequest request) {
-    List<Car> cars = new CopyOnWriteArrayList<>(
-        carRepository.findAllByProviderId(controllerUtil.getUserBasedOnJWT(request).getId()));
+    List<Car> cars =
+        carService.getAllCarsByProviderId(controllerUtil.getUserBasedOnJWT(request).getId());
     return new ResponseEntity<>(cars, HttpStatus.OK);
   }
 
-  //TODO: Refactor code. Was made when sick and tired.
-  @PutMapping("/cars/{id}")
-  public ResponseEntity<String> updateCar(HttpServletRequest request, @PathVariable int id) {
-
+  @PostMapping("/cars/add")
+  @PreAuthorize("hasRole('PROVIDER')")
+  public ResponseEntity<String> addCar(HttpServletRequest request) {
+    System.out.println(request);
     ObjectNode requestBody = controllerUtil.getRequestBody(request);
-    Car car = carRepository.findById(id);
     User user = controllerUtil.getUserBasedOnJWT(request);
-    if (car == null) {
-      return new ResponseEntity<>("Car not found", HttpStatus.NOT_FOUND);
-    }
-    if (car.getUser().getId() != user.getId() && !controllerUtil.checkIfAdmin(request)) {
-      return new ResponseEntity<>("Unauthorized", HttpStatus.UNAUTHORIZED);
-    }
-    String imagePath = requestBody.has("imagePath") ? requestBody.get("imagePath").asText() : null;
-    String model = requestBody.has("carModel") ? requestBody.get("carModel").asText() : null;
-    Manufacturer manufacturer = requestBody.has("manufacturer") ?
-        Manufacturer.valueOf(requestBody.get("manufacturer").asText()) : null;
-    int seats = requestBody.has("numberOfSeats") ? requestBody.get("numberOfSeats").asInt() : 0;
-    TransmissionType transmissionType = requestBody.has("transmissionType") ?
-        TransmissionType.valueOf(requestBody.get("transmissionType").asText()) : null;
-    FuelType fuelType =
-        requestBody.has("fuelType") ? FuelType.valueOf(requestBody.get("fuelType").asText()) : null;
-    int price = requestBody.has("price") ? requestBody.get("price").asInt() : 0;
-    int productionYear =
-        requestBody.has("productionYear") ? requestBody.get("productionYear").asInt() : 0;
-    CarStatus carStatus =
-        requestBody.has("carStatus") ? CarStatus.valueOf(requestBody.get("carStatus").asText()) :
-            null;
-    List<Feature> features = requestBody.has("features") ?
-        controllerUtil.getFeaturesFromRequestBody(requestBody.get("features")) : null;
-    car.setImagePath(imagePath);
-    car.setCarModel(model);
-    car.setManufacturer(manufacturer);
-    car.setNumberOfSeats(seats);
-    car.setTransmissionType(transmissionType);
-    car.setFuelType(fuelType);
-    car.setPrice(price);
-    car.setProductionYear(productionYear);
-    car.setCarStatus(carStatus);
-    car.getFeatures().clear();
-    if (features != null) {
-      for (Feature feature : features) {
-        Feature existingFeature = featureRepository.findByFeatureName(feature.getFeatureName());
-        if (existingFeature == null) {
-          featureRepository.save(feature);
-          car.getFeatures().add(feature);
-        } else {
-          car.getFeatures().add(existingFeature);
-        }
-      }
-    }
-    carRepository.save(car);
-
-
+    carService.addCar(requestBody, user);
     return new ResponseEntity<>(HttpStatus.OK);
   }
 
-  //TODO: Fix deletion of car when there are other entries in database that uses it as a foreign key.
+
+  @PutMapping("/cars/{id}")
+  @PreAuthorize("hasRole('PROVIDER') or hasRole('ADMIN')")
+  public ResponseEntity<String> updateCar(HttpServletRequest request, @PathVariable int id) {
+    ObjectNode requestBody = controllerUtil.getRequestBody(request);
+    carService.updateCar(requestBody, id);
+    return new ResponseEntity<>(HttpStatus.OK);
+  }
+
   @DeleteMapping("/cars/{id}")
-  public ResponseEntity<String> deleteCar(HttpServletRequest request, @PathVariable int id) {
-    Car car = carRepository.findById(id);
-    User user = controllerUtil.getUserBasedOnJWT(request);
-    if (car == null) {
-      return new ResponseEntity<>("Car not found", HttpStatus.NOT_FOUND);
-    }
-    if (car.getUser().getId() != user.getId() && !controllerUtil.checkIfAdmin(request)) {
-      return new ResponseEntity<>("Unauthorized", HttpStatus.UNAUTHORIZED);
-    }
+  @PreAuthorize("hasRole('PROVIDER') or hasRole('ADMIN')")
+  public ResponseEntity<String> deleteCar(@PathVariable int id) {
     carService.deleteCar(id);
     return new ResponseEntity<>(HttpStatus.OK);
   }
-
-/*
-  @CrossOrigin(origins = "http://localhost:5173")
-  @GetMapping("/cars/models")
-  public ResponseEntity<List<String>> getCarModels() {
-    List<String> cars = new CopyOnWriteArrayList<String>(carRepository.findDistinctCarModel());
-    return new ResponseEntity<>(cars, HttpStatus.OK);
-  }
- */
 }

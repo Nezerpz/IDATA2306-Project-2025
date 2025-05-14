@@ -13,7 +13,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
@@ -137,7 +136,7 @@ public class Car {
 
 
   @Getter
-  @ManyToMany(fetch = FetchType.EAGER)
+  @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
   @JoinTable(
       name = "car_feature",
       joinColumns = @JoinColumn(name = "car_id"),
@@ -163,6 +162,29 @@ public class Car {
     this.fuelType = fuelType;
     this.price = price;
     this.productionYear = productionYear;
+    this.carStatus = CarStatus.AVAILABLE;
+  }
+
+  public Car(
+      String imagePath,
+      String model,
+      Manufacturer manufacturer,
+      int seats,
+      TransmissionType transmissionType,
+      FuelType fuelType,
+      int price,
+      int productionYear,
+      List<Feature> features) {
+    this.imagePath = imagePath;
+    this.carModel = model;
+    this.manufacturer = manufacturer;
+    this.numberOfSeats = seats;
+    this.transmissionType = transmissionType;
+    this.fuelType = fuelType;
+    this.price = price;
+    this.productionYear = productionYear;
+    this.carStatus = CarStatus.AVAILABLE;
+    this.features = features;
   }
 
   @JsonProperty("features")
