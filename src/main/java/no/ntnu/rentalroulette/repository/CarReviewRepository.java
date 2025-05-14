@@ -14,4 +14,5 @@ public interface CarReviewRepository extends JpaRepository<CarReview, Integer> {
   void deleteAllByCarId(int carId);
   
   List<CarReview> findAllByCar(Car car);
+  List<CarReview> findAllByUser(User user);
 }

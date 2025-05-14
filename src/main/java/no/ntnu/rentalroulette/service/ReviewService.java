@@ -93,9 +93,19 @@ public class ReviewService {
   }
 
   @Transactional
-  public void deleteCarReviewsByUserId(int userId) {
-    userReviewRepository.deleteAllByReviewedUserId(userId);
-    userReviewRepository.deleteAllByReviewingUserId(userId);
+  public void nullifyReviewerByUserId(int userId) {
+    Optional<User> user = userRepository.findById(userId);
+    if (user.isPresent()) {
+        userReviewRepository.deleteAllByReviewedUserId(userId);
+
+        List<UserReview> userReviews = userReviewRepository.findAllByReviewingUser(user.get());
+        userReviews.stream().forEach(r -> r.setReviewingUser(null));
+        userReviewRepository.saveAll(userReviews);
+
+        List<CarReview> carReviews = carReviewRepository.findAllByUser(user.get());
+        carReviews.stream().forEach(r -> r.setUser(null));
+        carReviewRepository.saveAll(carReviews);
+    }
   }
 
   public List<UserReview> getUserReviews(int userId) throws NoSuchFieldException {
