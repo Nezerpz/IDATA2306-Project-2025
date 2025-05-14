@@ -103,12 +103,18 @@ public class OrderService {
   }
 
   @Transactional
-  public void updateOrder(ObjectNode requestBody, int id) throws NoSuchFieldException {
+  public void updateOrder(ObjectNode requestBody, int id) throws NoSuchFieldException,
+      IllegalStateException {
     Order existingOrder = getOrderById(id);
 
+    if (existingOrder.getOrderStatus() == OrderStatus.COMPLETED
+        || existingOrder.getOrderStatus() == OrderStatus.CANCELLED) {
+      throw new IllegalStateException("Cannot update a completed or cancelled order");
+    }
+
     OrderStatus orderStatus = OrderStatus.valueOf(requestBody.get("orderStatus").asText());
-    if (orderStatus == OrderStatus.COMPLETED
-        || orderStatus == OrderStatus.CANCELLED) {
+    if (existingOrder.getOrderStatus() != OrderStatus.COMPLETED
+        && existingOrder.getOrderStatus() != OrderStatus.CANCELLED) {
       existingOrder.setOrderStatus(orderStatus);
       Car car = existingOrder.getCar();
       if (car.getCarStatus() == CarStatus.INUSE) {

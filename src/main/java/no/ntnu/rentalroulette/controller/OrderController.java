@@ -67,6 +67,8 @@ public class OrderController {
       return new ResponseEntity<>(order, HttpStatus.OK);
     } catch (NoSuchFieldException e) {
       return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    } catch (IllegalStateException e) {
+      return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
   }
 
