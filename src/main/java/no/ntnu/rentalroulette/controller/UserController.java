@@ -75,11 +75,30 @@ public class UserController {
   @PutMapping("/users/self/password")
   public ResponseEntity<String> changePassword(HttpServletRequest request) {
     ObjectNode requestBody = controllerUtil.getRequestBody(request);
-    if (userService.changePassword(requestBody,
-        controllerUtil.getUserBasedOnJWT(request).getId())) {
-      return new ResponseEntity<>(HttpStatus.OK);
-    } else {
-      return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    try {
+        User user = controllerUtil.getUserBasedOnJWT(request);
+        String password = requestBody.get("password").asText();
+        userService.changePassword(user, password);
+        return new ResponseEntity<>(HttpStatus.OK);
+    } catch (Exception e) {
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  @PutMapping("/users/{id}/password/")
+  @PreAuthorize("hasRole('ADMIN')")
+  public ResponseEntity<String> changePassword(
+          HttpServletRequest request,
+          @PathVariable int id
+    ) {
+    ObjectNode requestBody = controllerUtil.getRequestBody(request);
+    try {
+        User user = userService.getUserById(id);
+        String password = requestBody.get("password").asText();
+        userService.changePassword(user, password);
+        return new ResponseEntity<>(HttpStatus.OK);
+    } catch (Exception e) {
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
   }
 

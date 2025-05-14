@@ -117,10 +117,9 @@ public class UserService {
   }
 
   @Transactional
-  public boolean changePassword(ObjectNode requestBody, int id) {
-    User user = userRepository.findById(id).orElse(null);
+  public boolean changePassword(User user, String password) {
     if (user != null) {
-      user.setPassword(requestBody.get("password").asText());
+      user.setPassword(password);
       userRepository.save(user);
       return true;
     }
