@@ -23,6 +23,9 @@ public class UserService {
   private OrderRepository orderRepository;
 
   @Autowired
+  private ReviewService reviewService;
+
+  @Autowired
   private CarService carService;
 
   public List<User> getAllUsers() {
@@ -81,6 +84,7 @@ public class UserService {
       for (Car car : user.getCars()) {
         carService.deleteCar(car.getId());
       }
+      reviewService.nullifyReviewerByUserId(id);
       System.out.println("Deleting user: " + user.getFirstName() + " " + user.getLastName());
       user.getCars().clear();
       orderRepository.saveAll(customerOrders);
@@ -102,6 +106,13 @@ public class UserService {
   public void suspendUserById(int id) {
     User user = userRepository.findById(id).get();
     user.setActive(false);
+    userRepository.save(user);
+  }
+
+  @Transactional
+  public void unsuspendUserById(int id) {
+    User user = userRepository.findById(id).get();
+    user.setActive(true);
     userRepository.save(user);
   }
 

@@ -50,6 +50,11 @@ public class AuthenticationController {
 
     final UserDetails userDetails =
         userDetailsService.loadUserByUsername(authenticationRequest.getUsername());
+
+    if (!userDetails.isAccountNonLocked()) {
+        return new ResponseEntity<>("Your account is suspended", HttpStatus.FORBIDDEN);
+    }
+
     final String jwtAccessToken = jwtUtil.generateAccessToken(userDetails);
     final String jwtRefreshToken = jwtUtil.generateRefreshToken(userDetails);
 
