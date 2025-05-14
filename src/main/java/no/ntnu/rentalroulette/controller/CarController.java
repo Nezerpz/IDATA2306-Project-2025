@@ -5,6 +5,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import java.util.List;
 import no.ntnu.rentalroulette.entity.Car;
 import no.ntnu.rentalroulette.service.CarService;
+import no.ntnu.rentalroulette.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -58,21 +59,22 @@ public class CarController {
     return new ResponseEntity<>(cars, HttpStatus.OK);
   }
 
-  @PostMapping("cars/add")
+  @PostMapping("/cars/add")
   @PreAuthorize("hasRole('PROVIDER')")
   public ResponseEntity<String> addCar(HttpServletRequest request) {
+    System.out.println(request);
     ObjectNode requestBody = controllerUtil.getRequestBody(request);
-    carService.addCar(requestBody,
-        controllerUtil.getFeaturesFromRequestBody(requestBody.get("features")));
+    User user = controllerUtil.getUserBasedOnJWT(request);
+    carService.addCar(requestBody, user);
     return new ResponseEntity<>(HttpStatus.OK);
   }
+
 
   @PutMapping("/cars/{id}")
   @PreAuthorize("hasRole('PROVIDER') or hasRole('ADMIN')")
   public ResponseEntity<String> updateCar(HttpServletRequest request, @PathVariable int id) {
     ObjectNode requestBody = controllerUtil.getRequestBody(request);
-    carService.updateCar(requestBody, id,
-        controllerUtil.getFeaturesFromRequestBody(requestBody.get("features")));
+    carService.updateCar(requestBody, id);
     return new ResponseEntity<>(HttpStatus.OK);
   }
 

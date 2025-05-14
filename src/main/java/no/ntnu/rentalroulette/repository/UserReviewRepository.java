@@ -17,4 +17,5 @@ public interface UserReviewRepository extends JpaRepository<UserReview, Integer>
   void deleteAllByReviewingUserId(int userId);
 
   List<UserReview> findAllByReviewedUser(User reviewedUser);
+  List<UserReview> findAllByReviewingUser(User reviewingUser);
 }

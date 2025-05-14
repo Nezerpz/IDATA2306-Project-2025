@@ -116,4 +116,18 @@ public class UserController {
     );
     return new ResponseEntity<>(HttpStatus.OK);
   }
+
+  @PostMapping("/users/suspend/{id}")
+  @PreAuthorize("hasRole('ADMIN')")
+  public ResponseEntity<String> suspendUser(HttpServletRequest request, @PathVariable int id) {
+    userService.suspendUserById(id);
+    return new ResponseEntity<String>("User suspended", HttpStatus.OK);
+  }
+
+  @PostMapping("/users/unsuspend/{id}")
+  @PreAuthorize("hasRole('ADMIN')")
+  public ResponseEntity<String> unsuspendUser(HttpServletRequest request, @PathVariable int id) {
+    userService.unsuspendUserById(id);
+    return new ResponseEntity<String>("User unsuspended", HttpStatus.OK);
+  }
 }
