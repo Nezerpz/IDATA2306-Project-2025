@@ -83,6 +83,9 @@ public class OrderService {
     if (provider.isEmpty()) {
       throw new IllegalArgumentException("Provider not found");
     }
+    if (car.getUser().getId() == user.getId()) {
+      throw new IllegalArgumentException("Cannot rent your own car");
+    }
 
     Order order = new Order(
         user,
