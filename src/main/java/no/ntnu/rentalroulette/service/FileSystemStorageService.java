@@ -50,11 +50,19 @@ public class FileSystemStorageService implements StorageService {
       if (file.isEmpty()) {
         throw new StorageException("Failed to store empty file.");
       }
+      String filename = file.getOriginalFilename();
+      if (filename == null || filename.isEmpty()) {
+        throw new StorageException("File name cannot be null or empty.");
+      }
+      // Validate file extension
+      String lowerCaseFilename = filename.toLowerCase();
+      if (!(lowerCaseFilename.endsWith(".png") || lowerCaseFilename.endsWith(".jpg") ||
+          lowerCaseFilename.endsWith(".jpeg"))) {
+        throw new StorageException("Invalid file type. Only .png, .jpg, and .jpeg are allowed.");
+      }
       destinationFile = this.rootLocation.resolve(
               Paths.get(file.getOriginalFilename()))
           .normalize().toAbsolutePath();
-      System.out.println(rootLocation);
-      System.out.println(destinationFile);
       if (!destinationFile.getParent().equals(this.rootLocation.toAbsolutePath())) {
         // This is a security check
         throw new StorageException(

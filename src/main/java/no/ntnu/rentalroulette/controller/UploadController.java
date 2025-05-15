@@ -1,5 +1,6 @@
 package no.ntnu.rentalroulette.controller;
 
+import no.ntnu.rentalroulette.exception.StorageException;
 import org.springframework.stereotype.Controller;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,20 +16,25 @@ import java.nio.file.Path;
 @Controller
 public class UploadController {
 
-    private final StorageService storageService;
+  private final StorageService storageService;
 
-	@Autowired
-	public UploadController(StorageService storageService) {
-		this.storageService = storageService;
-	}
+  @Autowired
+  public UploadController(StorageService storageService) {
+    this.storageService = storageService;
+  }
 
-    @PostMapping("/upload")
-    @PreAuthorize("hasRole('PROVIDER')")
-	public ResponseEntity<String> handleFileUpload(
-            @RequestParam("file") MultipartFile file
-    ) {
-		Path filePath = storageService.store(file);
-        System.out.println(filePath);
-		return new ResponseEntity<String>(filePath.toString(), HttpStatus.OK);
-	}
+  @PostMapping("/upload")
+  @PreAuthorize("hasRole('PROVIDER')")
+  public ResponseEntity<String> handleFileUpload(
+      @RequestParam("file") MultipartFile file
+  ) {
+    try {
+      Path filePath = storageService.store(file);
+      System.out.println(filePath);
+      return new ResponseEntity<String>(filePath.toString(), HttpStatus.OK);
+    } catch (StorageException e) {
+      System.out.println(e.getMessage());
+      return new ResponseEntity<String>(e.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
+    }
+  }
 }
