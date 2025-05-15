@@ -36,7 +36,7 @@ public class ReviewController {
       ),
       @ApiResponse(
           responseCode = "404",
-          description = "Cannot review user that does't exist"
+          description = "User (that you are reviewing) could not be found"
       ),
       @ApiResponse(
           responseCode = "400",
@@ -62,6 +62,28 @@ public class ReviewController {
   }
 
   @PostMapping("/review-car")
+  @Operation(
+      summary = "Review a Car",
+      description = "Endpoint used to submit a review made by a user (customer) that has used a particular car."
+  )
+  @ApiResponses(value = {
+      @ApiResponse(
+          responseCode = "200",
+          description = "Everything good. Car review submitted"
+      ),
+      @ApiResponse(
+          responseCode = "404",
+          description = "Car (you are reviewing) could not be found"
+      ),
+      @ApiResponse(
+          responseCode = "400",
+          description = "You cannot review your own car"
+      ),
+      @ApiResponse(
+          responseCode = "409",
+          description = "You have already made the review"
+      )
+  })
   public ResponseEntity<String> reviewCar(HttpServletRequest request) {
     try {
       reviewService.reviewCar(controllerUtil.getRequestBody(request));
