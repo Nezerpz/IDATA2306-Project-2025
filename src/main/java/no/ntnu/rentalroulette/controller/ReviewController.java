@@ -100,6 +100,20 @@ public class ReviewController {
 
 
   @GetMapping("/review/user/{userId}")
+  @Operation(
+      summary = "Get (existing) user review",
+      description = "Endpoint used to fetch reviews regarding a particular user."
+  )
+  @ApiResponses(value = {
+      @ApiResponse(
+          responseCode = "200",
+          description = "Everything good. Reviews about user sent in response"
+      ),
+      @ApiResponse(
+          responseCode = "404",
+          description = "Reviews about the user could not be found"
+      )
+  })
   public ResponseEntity<List<UserReview>> getUserReviews(@PathVariable int userId) {
     try {
       return new ResponseEntity<>(reviewService.getUserReviews(userId), HttpStatus.OK);
