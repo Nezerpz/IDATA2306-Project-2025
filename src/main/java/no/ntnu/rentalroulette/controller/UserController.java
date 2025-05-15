@@ -36,7 +36,7 @@ public class UserController {
   }
 
   @PutMapping("/users/{id}/update")
-  @PreAuthorize("harRole('ADMIN')")
+  @PreAuthorize("hasRole('ADMIN')")
   public ResponseEntity<String> updateUser(
           @PathVariable int id,
           HttpServletRequest request
