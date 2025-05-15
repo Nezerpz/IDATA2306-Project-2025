@@ -22,6 +22,28 @@ public class ReviewController {
   private ControllerUtil controllerUtil;
 
   @PostMapping("/review-user")
+  @Operation(
+      summary = "Review a user",
+      description = "Endpoint used to submit a review made by one user of another user."
+  )
+  @ApiResponses(value = {
+      @ApiResponse(
+          responseCode = "200",
+          description = "Everything good. Cars are sent in response"
+      ),
+      @ApiResponse(
+          responseCode = "404",
+          description = "Cannot review user that does't exist"
+      ),
+      @ApiResponse(
+          responseCode = "400",
+          description = "You cannot review yourself"
+      ),
+      @ApiResponse(
+          responseCode = "409",
+          description = "You have already made the review"
+      )
+  })
   public ResponseEntity<String> reviewUser(HttpServletRequest request) {
     try {
       reviewService.reviewUser(controllerUtil.getRequestBody(request));
