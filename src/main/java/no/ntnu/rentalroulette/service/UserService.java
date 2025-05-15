@@ -8,6 +8,7 @@ import no.ntnu.rentalroulette.entity.Car;
 import no.ntnu.rentalroulette.entity.Order;
 import no.ntnu.rentalroulette.entity.User;
 import no.ntnu.rentalroulette.enums.UserType;
+import no.ntnu.rentalroulette.exception.UserNotFoundException;
 import no.ntnu.rentalroulette.repository.OrderRepository;
 import no.ntnu.rentalroulette.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -117,12 +118,64 @@ public class UserService {
   }
 
   @Transactional
-  public boolean changePassword(User user, String password) {
+  public boolean changeFirstName(int id, String firstName) {
+    User user = getUserById(id);
+
+    if (user == null) {
+        throw new UserNotFoundException("User not found");
+    }
+
+    String newFirstName = userModifications.getFirstName();
+    if (newFirstName != null && !newFirstName.isEmpty()) { 
+  }
+
+  @Transactional
+  public boolean changeLastName(int id, String lastName) {
+    User user = getUserById(id);
+
+    if (user == null) {
+        throw new UserNotFoundException("User not found");
+    }
+
+    if (lastName != null && !lastName.isEmpty()) { 
+        user.setLastName(lastName);
+    }
+  }
+
+  @Transactional
+  public boolean changeUsername(int id, String username) {
+    User user = getUserById(id);
+
+    if (user == null) {
+        throw new UserNotFoundException("User not found");
+    }
+
+    String newUsername = userModifications.getUsername();
+    if (newUsername != null && !newUsername.isEmpty()) { 
+  }
+
+  @Transactional
+  public boolean changeEmail(int id, String email) {
+    User user = getUserById(id);
+
+    if (user == null) {
+        throw new UserNotFoundException("User not found");
+    }
+
+    if (email != null && !email.isEmpty()) { 
+  }
+
+  @Transactional
+  public boolean changePassword(int id, String password) {
+    User user = getUserById(id);
+
     if (user != null) {
       user.setPassword(password);
       userRepository.save(user);
       return true;
     }
+
     return false;
   }
+
 }

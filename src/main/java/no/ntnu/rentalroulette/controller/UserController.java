@@ -6,6 +6,7 @@ import java.util.List;
 import no.ntnu.rentalroulette.entity.User;
 import no.ntnu.rentalroulette.enums.UserType;
 import no.ntnu.rentalroulette.service.UserService;
+import no.ntnu.rentalroulette.exception.UserNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,6 +33,31 @@ public class UserController {
   public ResponseEntity<List<User>> getUsers() {
     List<User> users = userService.getAllUsers();
     return new ResponseEntity<>(users, HttpStatus.OK);
+  }
+
+  @PutMapping("/users/{id}/update")
+  @PreAuthorize("harRole('ADMIN')")
+  public ResponseEntity<String> updateUser(
+          User userModifications,
+          @PathVariable int id
+  ) {
+
+      // Updated values
+      String newFirstName = userModifications.getFirstName();
+      String newLastName = userModifications.getLastName();
+      String newUsername = userModifications.getUsername();
+      String newEmail = userModifications.getEmail();
+
+      try {
+          userService.changeFirstName(id, newFirstName);
+          userService.changeLastName(id, newLastName);
+          userService.changeUsername(id, newUsername);
+          userService.changeEmail(id, newEmail);
+      }
+
+      catch (UserNotFoundException e) {
+          return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+      }
   }
 
   @GetMapping("/users/{id}")
