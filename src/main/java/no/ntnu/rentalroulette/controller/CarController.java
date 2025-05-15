@@ -63,7 +63,18 @@ public class CarController {
     return new ResponseEntity<>(car, HttpStatus.OK);
   }
 
+  //TODO: Make this a GET-request and fix conflict that arises from doing so
   @PostMapping("/cars")
+  @Operation(
+      summary = "Returns all cars within timespan",
+      description = "Timespan is specified in request body"
+  )
+  @ApiResponses(value = {
+      @ApiResponse(
+          responseCode = "200",
+          description = "Everything good. Cars are sent in response"
+      )
+  })
   public ResponseEntity<List<ObjectNode>> getCarsByDates(@RequestBody DateRange dateRange) {
     List<ObjectNode> cars = carService.getAllCarsByDate(
         dateRange.getDateFrom(),
@@ -75,6 +86,16 @@ public class CarController {
   }
 
   @GetMapping("/cars/provider")
+  @Operation(
+      summary = "Returns all cars from provider",
+      description = "Cars are all from different providers. Here you can see all cars from a particular provider."
+  )
+  @ApiResponses(value = {
+      @ApiResponse(
+          responseCode = "200",
+          description = "Everything good. Cars are sent in response"
+      )
+  })
   @PreAuthorize("hasRole('PROVIDER')")
   public ResponseEntity<List<ObjectNode>> getCarsByProvider(HttpServletRequest request) {
     List<ObjectNode> cars =
@@ -83,6 +104,16 @@ public class CarController {
   }
 
   @PostMapping("/cars/add")
+  @Operation(
+      summary = "Adds a car to database",
+      description = "Car providers can add new cars to rent out. This is done with this endpoint."
+  )
+  @ApiResponses(value = {
+      @ApiResponse(
+          responseCode = "200",
+          description = "Everything good. Cars are sent in response"
+      )
+  })
   @PreAuthorize("hasRole('PROVIDER')")
   public ResponseEntity<String> addCar(HttpServletRequest request) {
     System.out.println(request);
