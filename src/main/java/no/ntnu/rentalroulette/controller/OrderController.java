@@ -78,7 +78,7 @@ public class OrderController {
 
   @GetMapping("/orders/customer")
   @Operation(
-      summary = "Orders by customer endpoint",
+      summary = "Orders by customer",
       description = "Returns a list of all orders for the authenticated customer"
   )
   @ApiResponses(value = {
@@ -96,7 +96,7 @@ public class OrderController {
   @GetMapping("/orders/provider")
   @PreAuthorize("hasRole('PROVIDER')")
   @Operation(
-      summary = "Orders by provider endpoint",
+      summary = "Orders by provider",
       description = "Returns a list of all orders for a specific provider"
   )
   @ApiResponses(value = {
@@ -112,6 +112,20 @@ public class OrderController {
   }
 
   @PutMapping("/orders/{id}")
+  @Operation(
+      summary = "Update order",
+      description = "Updates a specific order by ID"
+  )
+  @ApiResponses(value = {
+      @ApiResponse(
+          responseCode = "200",
+          description = "The order is updated"
+      ),
+      @ApiResponse(
+          responseCode = "404",
+          description = "Order not found"
+      )
+  })
   @PreAuthorize("hasRole('PROVIDER') or hasRole('ADMIN')")
   public ResponseEntity<String> updateOrder(HttpServletRequest request, @PathVariable int id) {
     ObjectNode requestBody = controllerUtil.getRequestBody(request);
@@ -124,6 +138,16 @@ public class OrderController {
   }
 
   @PostMapping("/order")
+  @Operation(
+      summary = "Order a car",
+      description = "User makes a order here."
+  )
+  @ApiResponses(value = {
+      @ApiResponse(
+          responseCode = "200",
+          description = "The order is registered"
+      )
+  })
   public ResponseEntity<String> orderCar(
       HttpServletRequest request
   ) {
