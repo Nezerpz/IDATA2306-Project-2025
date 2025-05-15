@@ -33,6 +33,24 @@ public class AuthenticationController {
   JwtUtil jwtUtil;
 
   @PostMapping("/authenticate")
+  @Operation(
+      summary = "Endpoint used to authenticate all users",
+      description = "Returns JWT and Refresh Token Cookie"
+  )
+  @ApiResponses(value = {
+      @ApiResponse(
+          responseCode = "200",
+          description = "The small text returned in response body"
+      ),
+      @ApiResponse(
+          responseCode = "403",
+          description = "Your account has been suspended/locked"
+      ),
+      @ApiResponse(
+          responseCode = "401",
+          description = "Unauthorized, wrong password, etc."
+      ),
+  })
   public ResponseEntity<?> createAuthenticationToken(
       @RequestBody AuthenticationRequest authenticationRequest,
       HttpServletResponse response) throws BadCredentialsException {
