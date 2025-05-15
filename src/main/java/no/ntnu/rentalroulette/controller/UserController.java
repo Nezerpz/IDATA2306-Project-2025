@@ -133,7 +133,7 @@ public class UserController {
   @ApiResponses(value = {
       @ApiResponse(
           responseCode = "200",
-          description = "Everything good. Username sent in response"
+          description = "Everything good. New user created"
       )
   })
   public ResponseEntity<User> createUser(HttpServletRequest request) {
@@ -142,6 +142,20 @@ public class UserController {
   }
 
   @GetMapping("/users/self")
+  @Operation(
+      summary = "Return personal userinfo",
+      description = "Endpoint used to return info about your own user (based on JWT)"
+  )
+  @ApiResponses(value = {
+      @ApiResponse(
+          responseCode = "200",
+          description = "Everything good. Userinfo sent in response"
+      ),
+      @ApiResponse(
+          responseCode = "404",
+          description = "NaturalistMetaphysicsException: Self not found"
+      )
+  })
   public ResponseEntity<User> getSelf(HttpServletRequest request) {
     User user = controllerUtil.getUserBasedOnJWT(request);
     User userToReturn = userService.getUserById(user.getId());
