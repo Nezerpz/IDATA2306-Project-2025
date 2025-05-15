@@ -94,6 +94,16 @@ public class EnumController {
   }
 
   @GetMapping("/order-statuses")
+  @Operation(
+      summary = "Returns all possible order states",
+      description = "Orders pass through various states from ordering to returning a car. This endpoint returns all the possible states."
+  )
+  @ApiResponses(value = {
+      @ApiResponse(
+          responseCode = "200",
+          description = "Everything good. Possible order states sent in response"
+      )
+  })
   public ResponseEntity<List<OrderStatus>> getOrderStatuses() {
     return ResponseEntity.ok(List.of(OrderStatus.values()));
   }
