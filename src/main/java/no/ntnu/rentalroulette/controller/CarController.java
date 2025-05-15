@@ -105,13 +105,13 @@ public class CarController {
 
   @PostMapping("/cars/add")
   @Operation(
-      summary = "Adds a car to database",
+      summary = "Add a car to database",
       description = "Car providers can add new cars to rent out. This is done with this endpoint."
   )
   @ApiResponses(value = {
       @ApiResponse(
           responseCode = "200",
-          description = "Everything good. Cars are sent in response"
+          description = "Everything good. Car has been added to database"
       )
   })
   @PreAuthorize("hasRole('PROVIDER')")
@@ -125,6 +125,16 @@ public class CarController {
 
 
   @PutMapping("/cars/{id}")
+  @Operation(
+      summary = "Update a car in the database",
+      description = "Car providers (or admins) can update cars to rent out. This is done with this endpoint."
+  )
+  @ApiResponses(value = {
+      @ApiResponse(
+          responseCode = "200",
+          description = "Everything good. Car is now updated"
+      )
+  })
   @PreAuthorize("hasRole('PROVIDER') or hasRole('ADMIN')")
   public ResponseEntity<String> updateCar(HttpServletRequest request, @PathVariable int id) {
     ObjectNode requestBody = controllerUtil.getRequestBody(request);
@@ -133,6 +143,16 @@ public class CarController {
   }
 
   @DeleteMapping("/cars/{id}")
+  @Operation(
+      summary = "Delete a car in the database",
+      description = "Car providers (or admins) can delete cars from the database. This is done with this endpoint."
+  )
+  @ApiResponses(value = {
+      @ApiResponse(
+          responseCode = "200",
+          description = "Everything good. Car is now deleted from database"
+      )
+  })
   @PreAuthorize("hasRole('PROVIDER') or hasRole('ADMIN')")
   public ResponseEntity<String> deleteCar(@PathVariable int id) {
     carService.deleteCar(id);
