@@ -101,7 +101,7 @@ public class UserController {
   }
 
   @PutMapping("/users/self/password")
-  public ResponseEntity<String> changePassword(HttpServletRequest request) {
+  public ResponseEntity<String> changePasswordSelf(HttpServletRequest request) {
     ObjectNode requestBody = controllerUtil.getRequestBody(request);
     try {
         User user = controllerUtil.getUserBasedOnJWT(request);
