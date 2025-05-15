@@ -32,7 +32,7 @@ public class OrderController {
   @GetMapping("/orders")
   @PreAuthorize("hasRole('ADMIN')")
   @Operation(
-      summary = "Orders endpoint",
+      summary = "Orders",
       description = "Returns a list of all orders in the system"
   )
   @ApiResponses(value = {
@@ -47,7 +47,7 @@ public class OrderController {
 
   @GetMapping("/orders/{id}")
   @Operation(
-      summary = "Order by ID endpoint",
+      summary = "Order by ID",
       description = "Returns a specific order by ID"
   )
   @ApiResponses(value = {
@@ -58,6 +58,10 @@ public class OrderController {
       @ApiResponse(
           responseCode = "404",
           description = "Order not found"
+      ),
+      @ApiResponse(
+          responseCode = "400",
+          description = "Bad request"
       )
   })
   @PreAuthorize("hasRole('ADMIN') or hasRole('PROVIDER')")
