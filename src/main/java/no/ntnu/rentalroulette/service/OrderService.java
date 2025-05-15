@@ -112,7 +112,20 @@ public class OrderService {
       throw new IllegalStateException("Cannot update a completed or cancelled order");
     }
 
+
     OrderStatus orderStatus = OrderStatus.valueOf(requestBody.get("orderStatus").asText());
+
+    if (orderStatus == OrderStatus.COMPLETED || orderStatus == OrderStatus.CANCELLED) {
+      LocalDate nowDate = LocalDate.now();
+      LocalTime nowTime = LocalTime.now();
+      if (existingOrder.getDateTo().isAfter(nowDate) ||
+          (existingOrder.getDateTo().isEqual(nowDate) &&
+              existingOrder.getTimeTo().isAfter(nowTime))) {
+        existingOrder.setDateTo(nowDate);
+        existingOrder.setTimeTo(nowTime);
+      }
+    }
+
     if (existingOrder.getOrderStatus() != OrderStatus.COMPLETED
         && existingOrder.getOrderStatus() != OrderStatus.CANCELLED) {
       existingOrder.setOrderStatus(orderStatus);
