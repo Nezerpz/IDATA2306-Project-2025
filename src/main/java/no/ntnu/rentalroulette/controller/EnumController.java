@@ -49,16 +49,46 @@ public class EnumController {
   }
 
   @GetMapping("/fuel-types")
+  @Operation(
+      summary = "Returns all fuel types",
+      description = "Various cars have different fuel systems. This endpoint returns a list of all fuel types. Used in search-filtering among other things."
+  )
+  @ApiResponses(value = {
+      @ApiResponse(
+          responseCode = "200",
+          description = "Everything good. Fuel types sent in response"
+      )
+  })
   public ResponseEntity<List<FuelType>> getFuelTypes() {
     return ResponseEntity.ok(List.of(FuelType.values()));
   }
 
   @GetMapping("/car-status")
+  @Operation(
+      summary = "Returns all possible car states",
+      description = "As cars within the systems can have different states (being used, not being used, available for renting etc.), we use this endpoint to list all possible states."
+  )
+  @ApiResponses(value = {
+      @ApiResponse(
+          responseCode = "200",
+          description = "Everything good. Possible car states sent in response"
+      )
+  })
   public ResponseEntity<List<CarStatus>> getCarStatuses() {
     return ResponseEntity.ok(List.of(CarStatus.values()));
   }
 
   @GetMapping("/user-types")
+  @Operation(
+      summary = "Returns all user types",
+      description = "Different users have different roles in the system. Some are administrators, some are not etc. This endpoint returns all possible types."
+  )
+  @ApiResponses(value = {
+      @ApiResponse(
+          responseCode = "200",
+          description = "Everything good. User types sent in response"
+      )
+  })
   public ResponseEntity<List<UserType>> getUserTypes() {
     return ResponseEntity.ok(List.of(UserType.values()));
   }
