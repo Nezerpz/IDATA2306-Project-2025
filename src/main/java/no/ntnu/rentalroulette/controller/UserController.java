@@ -166,6 +166,16 @@ public class UserController {
   }
 
   @DeleteMapping("/users/self")
+  @Operation(
+      summary = "Delete personal account",
+      description = "Endpoint used to delete your own account (based on JWT)"
+  )
+  @ApiResponses(value = {
+      @ApiResponse(
+          responseCode = "200",
+          description = "Everything good. User deleted"
+      )
+  })
   public ResponseEntity<String> deleteSelf(HttpServletRequest request) {
     userService.deleteUserById(controllerUtil.getUserBasedOnJWT(request).getId());
     return new ResponseEntity<>("User deleted", HttpStatus.OK);
