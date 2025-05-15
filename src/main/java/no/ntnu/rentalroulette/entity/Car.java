@@ -142,7 +142,7 @@ public class Car {
       joinColumns = @JoinColumn(name = "car_id"),
       inverseJoinColumns = @JoinColumn(name = "feature_id")
   )
-  @JsonProperty("features")
+
   private List<Feature> features = new ArrayList<>();
 
   public Car(
@@ -186,12 +186,7 @@ public class Car {
     this.carStatus = CarStatus.AVAILABLE;
     this.features = features;
   }
-
-  @JsonProperty("features")
-  public List<String> getFeatureNames() {
-    return features.stream().map(Feature::getFeatureName).toList();
-  }
-
+  
   @JsonProperty("user")
   public String getProviderName() {
     StringBuilder sb = new StringBuilder();

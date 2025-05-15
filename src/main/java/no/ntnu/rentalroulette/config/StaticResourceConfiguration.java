@@ -9,12 +9,12 @@ import java.nio.file.Path;
 
 @Configuration
 public class StaticResourceConfiguration implements WebMvcConfigurer {
-    @Override
-    public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        FileSystemStorageService service = new FileSystemStorageService();
-        Path rootLocation = service.getRootLocation();
-        registry
-            .addResourceHandler("/src/user-uploads/**")
-            .addResourceLocations("file:/" + rootLocation.toAbsolutePath().toString());
-    }
+  @Override
+  public void addResourceHandlers(ResourceHandlerRegistry registry) {
+    FileSystemStorageService service = new FileSystemStorageService();
+    Path rootLocation = service.getRootLocation();
+    registry
+        .addResourceHandler("/user-uploads/**")
+        .addResourceLocations("file:" + rootLocation.toAbsolutePath().toString() + "/");
+  }
 }
