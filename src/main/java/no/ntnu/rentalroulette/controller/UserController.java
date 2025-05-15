@@ -32,6 +32,16 @@ public class UserController {
   private UserService userService;
 
   @PostMapping("/users")
+  @Operation(
+      summary = "Returns list of all users",
+      description = "Endpoint used by admins to get all registered users"
+  )
+  @ApiResponses(value = {
+      @ApiResponse(
+          responseCode = "200",
+          description = "Everything good. Users sent in response"
+      )
+  })
   @PreAuthorize("hasRole('ADMIN')")
   public ResponseEntity<List<User>> getUsers() {
     List<User> users = userService.getAllUsers();
@@ -39,6 +49,20 @@ public class UserController {
   }
 
   @PutMapping("/users/{id}/update")
+  @Operation(
+      summary = "Updates a particular user",
+      description = "Endpoint used by admins to update userinfo by id"
+  )
+  @ApiResponses(value = {
+      @ApiResponse(
+          responseCode = "200",
+          description = "Everything good. User updated"
+      ),
+      @ApiResponse(
+          responseCode = "404",
+          description = "User not found"
+      )
+  })
   @PreAuthorize("hasRole('ADMIN')")
   public ResponseEntity<String> updateUser(
           @PathVariable int id,
@@ -66,6 +90,16 @@ public class UserController {
   }
 
   @GetMapping("/users/{id}")
+  @Operation(
+      summary = "Returns a particular user",
+      description = "Endpoint used by admins return userinfo by id"
+  )
+  @ApiResponses(value = {
+      @ApiResponse(
+          responseCode = "200",
+          description = "Everything good. User updated"
+      )
+  })
   @PreAuthorize("hasRole('ADMIN')")
   public ResponseEntity<User> getUser(@PathVariable int id) {
     User user = userService.getUserById(id);
@@ -73,6 +107,16 @@ public class UserController {
   }
 
   @GetMapping("/users/name/{id}")
+  @Operation(
+      summary = "Returns a particular user's username",
+      description = "Endpoint used to return username by id"
+  )
+  @ApiResponses(value = {
+      @ApiResponse(
+          responseCode = "200",
+          description = "Everything good. Username sent in response"
+      )
+  })
   public ResponseEntity<String> getUserName(@PathVariable int id) {
     String userName = userService.getUsernameById(id);
     if (userName == null) {
@@ -82,6 +126,16 @@ public class UserController {
   }
 
   @PostMapping("/users/new")
+  @Operation(
+      summary = "Create a new user",
+      description = "Endpoint used to make a new user (sign up)"
+  )
+  @ApiResponses(value = {
+      @ApiResponse(
+          responseCode = "200",
+          description = "Everything good. Username sent in response"
+      )
+  })
   public ResponseEntity<User> createUser(HttpServletRequest request) {
     return new ResponseEntity<>(userService.createUser(controllerUtil.getRequestBody(request)),
         HttpStatus.OK);
