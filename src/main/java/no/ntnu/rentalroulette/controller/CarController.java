@@ -32,8 +32,8 @@ public class CarController {
 
   @GetMapping("/cars")
   @Operation(
-      summary = "Endpoint used by admins to get registered cars",
-      description = "Returns all cars"
+      summary = "Returns all cars",
+      description = "Endpoint used by admins to get registered cars"
   )
   @ApiResponses(value = {
       @ApiResponse(
@@ -48,6 +48,16 @@ public class CarController {
   }
 
   @GetMapping("/cars/{id}")
+  @Operation(
+      summary = "Returns one car",
+      description = "Endpoint used to get a single car by ID"
+  )
+  @ApiResponses(value = {
+      @ApiResponse(
+          responseCode = "200",
+          description = "Everything good. Cars are sent in response"
+      )
+  })
   public ResponseEntity<Car> getCar(@PathVariable(value = "id") int id) {
     Car car = carService.getCarById(id);
     return new ResponseEntity<>(car, HttpStatus.OK);
