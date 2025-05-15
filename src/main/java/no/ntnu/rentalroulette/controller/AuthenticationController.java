@@ -13,6 +13,9 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 
 import org.springframework.web.bind.annotation.RequestBody;
 import no.ntnu.rentalroulette.security.AuthenticationRequest;
@@ -40,7 +43,7 @@ public class AuthenticationController {
   @ApiResponses(value = {
       @ApiResponse(
           responseCode = "200",
-          description = "The small text returned in response body"
+          description = "Everything good. Tokens are sent in response"
       ),
       @ApiResponse(
           responseCode = "403",
@@ -89,6 +92,24 @@ public class AuthenticationController {
   }
 
   @PostMapping("/refresh-token")
+  @Operation(
+      summary = "Endpoint used to retreive new JWT based on Refresh Token Cookie",
+      description = "Returns new JWT"
+  )
+  @ApiResponses(value = {
+      @ApiResponse(
+          responseCode = "200",
+          description = "Everything good. Token being sent in response"
+      ),
+      @ApiResponse(
+          responseCode = "403",
+          description = "Your account has been suspended/locked"
+      ),
+      @ApiResponse(
+          responseCode = "401",
+          description = "Unauthorized, wrong password, etc."
+      ),
+  })
   public ResponseEntity<?> refreshAccessToken(HttpServletRequest request) {
     Cookie[] cookies = request.getCookies();
     if (cookies == null) {
