@@ -11,16 +11,39 @@ import no.ntnu.rentalroulette.enums.UserType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 
 @RestController
 public class EnumController {
 
   @GetMapping("/manufacturers")
+  @Operation(
+      summary = "Returns all manufacturers",
+      description = "All cars are made by a manufacturer. This endpoint returns a list of all manufacturers"
+  )
+  @ApiResponses(value = {
+      @ApiResponse(
+          responseCode = "200",
+          description = "Everything good. Manufacturers sent in response"
+      )
+  })
   public ResponseEntity<List<Manufacturer>> getManufacturers() {
     return ResponseEntity.ok(List.of(Manufacturer.values()));
   }
 
   @GetMapping("/transmission-types")
+  @Operation(
+      summary = "Returns all transmission types",
+      description = "Various cars have different transmission systems. This endpoint returns a list of all of them. Used in search-filtering among other things."
+  )
+  @ApiResponses(value = {
+      @ApiResponse(
+          responseCode = "200",
+          description = "Everything good. Transmission types sent in response"
+      )
+  })
   public ResponseEntity<List<TransmissionType>> getTransmissionTypes() {
     return ResponseEntity.ok(List.of(TransmissionType.values()));
   }
