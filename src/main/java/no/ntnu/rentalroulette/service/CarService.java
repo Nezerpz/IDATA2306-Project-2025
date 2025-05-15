@@ -139,6 +139,7 @@ public class CarService {
 
   @Transactional
   public void updateCar(ObjectNode requestBody, int carId) {
+    System.out.println(requestBody);
     String imagePath = requestBody.get("imagePath").asText();
     String model = requestBody.get("carModel").asText();
     Manufacturer manufacturer = Manufacturer.valueOf(requestBody.get("manufacturer").asText());
