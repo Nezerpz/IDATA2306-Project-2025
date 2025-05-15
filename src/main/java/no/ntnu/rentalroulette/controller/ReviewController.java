@@ -124,6 +124,20 @@ public class ReviewController {
   }
 
   @GetMapping("/review/car/{carId}")
+  @Operation(
+      summary = "Get (existing) reviews of a car",
+      description = "Endpoint used to fetch reviews regarding a particular car."
+  )
+  @ApiResponses(value = {
+      @ApiResponse(
+          responseCode = "200",
+          description = "Everything good. Car reviews sent in response"
+      ),
+      @ApiResponse(
+          responseCode = "404",
+          description = "Reviews about the car could not be found"
+      )
+  })
   public ResponseEntity<List<CarReview>> getCarReviews(@PathVariable int carId) {
     try {
       return new ResponseEntity<>(reviewService.getCarReviews(carId), HttpStatus.OK);
