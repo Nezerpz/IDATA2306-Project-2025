@@ -6,6 +6,9 @@ import java.util.List;
 import no.ntnu.rentalroulette.entity.Car;
 import no.ntnu.rentalroulette.service.CarService;
 import no.ntnu.rentalroulette.entity.User;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,6 +31,16 @@ public class CarController {
   private ControllerUtil controllerUtil;
 
   @GetMapping("/cars")
+  @Operation(
+      summary = "Endpoint used by admins to get registered cars",
+      description = "Returns all cars"
+  )
+  @ApiResponses(value = {
+      @ApiResponse(
+          responseCode = "200",
+          description = "Everything good. Cars are sent in response"
+      )
+  })
   @PreAuthorize("hasRole('ADMIN')")
   public ResponseEntity<List<ObjectNode>> getCars() {
     List<ObjectNode> cars = carService.getAllCars();
