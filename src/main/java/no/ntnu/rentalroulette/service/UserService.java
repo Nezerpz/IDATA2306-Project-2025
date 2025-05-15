@@ -118,7 +118,7 @@ public class UserService {
   }
 
   @Transactional
-  public void changeFirstName(int id, String firstName) {
+  public void changeFirstName(int id, String firstName) throws UserNotFoundException {
     User user = getUserById(id);
 
     if (user == null) {
@@ -132,7 +132,7 @@ public class UserService {
   }
 
   @Transactional
-  public void changeLastName(int id, String lastName) {
+  public void changeLastName(int id, String lastName) throws UserNotFoundException {
     User user = getUserById(id);
 
     if (user == null) {
@@ -146,7 +146,7 @@ public class UserService {
   }
 
   @Transactional
-  public void changeUsername(int id, String username) {
+  public void changeUsername(int id, String username) throws UserNotFoundException {
     User user = getUserById(id);
 
     if (user == null) {
@@ -160,7 +160,7 @@ public class UserService {
   }
 
   @Transactional
-  public void changeEmail(int id, String email) {
+  public void changeEmail(int id, String email) throws UserNotFoundException {
     User user = getUserById(id);
 
     if (user == null) {
@@ -174,7 +174,7 @@ public class UserService {
   }
 
   @Transactional
-  public void changePassword(int id, String password) {
+  public void changePassword(int id, String password) throws UserNotFoundException {
     User user = getUserById(id);
 
     if (user == null) {

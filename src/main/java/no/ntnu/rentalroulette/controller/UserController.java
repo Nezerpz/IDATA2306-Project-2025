@@ -38,21 +38,23 @@ public class UserController {
   @PutMapping("/users/{id}/update")
   @PreAuthorize("harRole('ADMIN')")
   public ResponseEntity<String> updateUser(
-          User userModifications,
-          @PathVariable int id
+          @PathVariable int id,
+          HttpServletRequest request
   ) {
-
+    
       // Updated values
-      String newFirstName = userModifications.getFirstName();
-      String newLastName = userModifications.getLastName();
-      String newUsername = userModifications.getUsername();
-      String newEmail = userModifications.getEmail();
+      ObjectNode requestBody = controllerUtil.getRequestBody(request);
+      String newFirstName = requestBody.get("firstName").asText();
+      String newLastName = requestBody.get("lastName").asText();
+      String newUsername = requestBody.get("username").asText();
+      String newEmail = requestBody.get("email").asText();
 
       try {
           userService.changeFirstName(id, newFirstName);
           userService.changeLastName(id, newLastName);
           userService.changeUsername(id, newUsername);
           userService.changeEmail(id, newEmail);
+          return new ResponseEntity<>(HttpStatus.OK);
       }
 
       catch (UserNotFoundException e) {
@@ -104,7 +106,7 @@ public class UserController {
     try {
         User user = controllerUtil.getUserBasedOnJWT(request);
         String password = requestBody.get("password").asText();
-        userService.changePassword(user, password);
+        userService.changePassword(user.getId(), password);
         return new ResponseEntity<>(HttpStatus.OK);
     } catch (Exception e) {
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -121,7 +123,7 @@ public class UserController {
     try {
         User user = userService.getUserById(id);
         String password = requestBody.get("password").asText();
-        userService.changePassword(user, password);
+        userService.changePassword(user.getId(), password);
         return new ResponseEntity<>(HttpStatus.OK);
     } catch (Exception e) {
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
