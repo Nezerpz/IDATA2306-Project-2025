@@ -118,19 +118,21 @@ public class UserService {
   }
 
   @Transactional
-  public boolean changeFirstName(int id, String firstName) {
+  public void changeFirstName(int id, String firstName) {
     User user = getUserById(id);
 
     if (user == null) {
         throw new UserNotFoundException("User not found");
     }
 
-    String newFirstName = userModifications.getFirstName();
-    if (newFirstName != null && !newFirstName.isEmpty()) { 
+    if (firstName != null && !firstName.isEmpty()) { 
+        user.setFirstName(firstName);
+        userRepository.save(user);
+    }
   }
 
   @Transactional
-  public boolean changeLastName(int id, String lastName) {
+  public void changeLastName(int id, String lastName) {
     User user = getUserById(id);
 
     if (user == null) {
@@ -139,43 +141,50 @@ public class UserService {
 
     if (lastName != null && !lastName.isEmpty()) { 
         user.setLastName(lastName);
+        userRepository.save(user);
     }
   }
 
   @Transactional
-  public boolean changeUsername(int id, String username) {
+  public void changeUsername(int id, String username) {
     User user = getUserById(id);
 
     if (user == null) {
         throw new UserNotFoundException("User not found");
     }
 
-    String newUsername = userModifications.getUsername();
-    if (newUsername != null && !newUsername.isEmpty()) { 
+    if (username != null && !username.isEmpty()) { 
+        user.setUsername(username);
+        userRepository.save(user);
+    }
   }
 
   @Transactional
-  public boolean changeEmail(int id, String email) {
+  public void changeEmail(int id, String email) {
     User user = getUserById(id);
 
     if (user == null) {
         throw new UserNotFoundException("User not found");
     }
 
-    if (email != null && !email.isEmpty()) { 
+    if (email != null && !email.isEmpty()) {
+        user.setEmail(email);
+        userRepository.save(user);
+    }
   }
 
   @Transactional
-  public boolean changePassword(int id, String password) {
+  public void changePassword(int id, String password) {
     User user = getUserById(id);
 
-    if (user != null) {
+    if (user == null) {
+        throw new UserNotFoundException("User not found");
+    }
+
+    if (password != null && !password.isEmpty()) {
       user.setPassword(password);
       userRepository.save(user);
-      return true;
     }
-
-    return false;
   }
 
 }
