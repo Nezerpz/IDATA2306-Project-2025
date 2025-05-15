@@ -113,15 +113,16 @@ public class UserController {
     }
   }
 
-  @PutMapping("/users/{id}/password/")
+  @PutMapping("/users/{id}/password")
   @PreAuthorize("hasRole('ADMIN')")
   public ResponseEntity<String> changePassword(
-          HttpServletRequest request,
-          @PathVariable int id
+          @PathVariable int id,
+          HttpServletRequest request
     ) {
     ObjectNode requestBody = controllerUtil.getRequestBody(request);
     try {
         User user = userService.getUserById(id);
+        System.out.println(requestBody);
         String password = requestBody.get("password").asText();
         userService.changePassword(user.getId(), password);
         return new ResponseEntity<>(HttpStatus.OK);
