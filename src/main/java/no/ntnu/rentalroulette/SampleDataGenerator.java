@@ -540,19 +540,19 @@ public class SampleDataGenerator {
     // Car reviews
     List<CarReview> carReviews = new ArrayList<>();
     if (golf1 != null) {
-      carReviews.add(new CarReview(olaNordmann, golf1, 5, "Ola: Excellent car for long trips!"));
-      carReviews.add(new CarReview(kariNordmann, golf1, 4, "Kari: Comfortable and reliable."));
+      carReviews.add(new CarReview(olaNordmann, golf1, 5, "Excellent car for long trips!"));
+      carReviews.add(new CarReview(kariNordmann, golf1, 4, "Comfortable and reliable."));
     }
     if (model3_1 != null) {
-      carReviews.add(new CarReview(olaNordmann, model3_1, 5, "Ola: Amazing electric car!"));
+      carReviews.add(new CarReview(olaNordmann, model3_1, 5, "Amazing electric car!"));
     }
     if (transporter1 != null) {
-      carReviews.add(new CarReview(kariNordmann, transporter1, 3, "Kari: Decent but old."));
+      carReviews.add(new CarReview(kariNordmann, transporter1, 3, "Decent but old."));
     }
     if (peugeot207_1 != null) {
-      carReviews.add(new CarReview(olaNordmann, peugeot207_1, 4, "Ola: Good for city driving."));
+      carReviews.add(new CarReview(olaNordmann, peugeot207_1, 4, "Good for city driving."));
       carReviews.add(
-          new CarReview(kariNordmann, peugeot207_1, 5, "Kari: Perfect for small families."));
+          new CarReview(kariNordmann, peugeot207_1, 5, "Perfect for small families."));
     }
     carReviewRepository.saveAll(carReviews);
 

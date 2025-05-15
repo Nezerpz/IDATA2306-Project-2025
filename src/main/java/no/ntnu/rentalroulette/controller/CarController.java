@@ -29,8 +29,8 @@ public class CarController {
 
   @GetMapping("/cars")
   @PreAuthorize("hasRole('ADMIN')")
-  public ResponseEntity<List<Car>> getCars() {
-    List<Car> cars = carService.getAllCars();
+  public ResponseEntity<List<ObjectNode>> getCars() {
+    List<ObjectNode> cars = carService.getAllCars();
     return new ResponseEntity<>(cars, HttpStatus.OK);
   }
 
@@ -41,8 +41,8 @@ public class CarController {
   }
 
   @PostMapping("/cars")
-  public ResponseEntity<List<Car>> getCarsByDates(@RequestBody DateRange dateRange) {
-    List<Car> cars = carService.getAllCarsByDate(
+  public ResponseEntity<List<ObjectNode>> getCarsByDates(@RequestBody DateRange dateRange) {
+    List<ObjectNode> cars = carService.getAllCarsByDate(
         dateRange.getDateFrom(),
         dateRange.getDateTo(),
         dateRange.getTimeFrom(),
@@ -53,8 +53,8 @@ public class CarController {
 
   @GetMapping("/cars/provider")
   @PreAuthorize("hasRole('PROVIDER')")
-  public ResponseEntity<List<Car>> getCarsByProvider(HttpServletRequest request) {
-    List<Car> cars =
+  public ResponseEntity<List<ObjectNode>> getCarsByProvider(HttpServletRequest request) {
+    List<ObjectNode> cars =
         carService.getAllCarsByProviderId(controllerUtil.getUserBasedOnJWT(request).getId());
     return new ResponseEntity<>(cars, HttpStatus.OK);
   }
