@@ -33,6 +33,6 @@ public class AuthenticationRequest {
 
   @Override
   public String toString() {
-    return "AuthenticationRequest{username='" + username + "', password='" + password + "'}";
+    return "AuthenticationRequest{username='" + username + "', password=<secret>}";
   }
 }
