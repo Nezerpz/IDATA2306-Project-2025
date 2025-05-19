@@ -147,7 +147,11 @@ public class OrderController {
       @ApiResponse(
           responseCode = "200",
           description = "The order is registered"
-      )
+      ),
+      @ApiResponse(
+          responseCode = "500",
+          description = "Car is not available"
+      ),
   })
   public ResponseEntity<String> orderCar(
       HttpServletRequest request

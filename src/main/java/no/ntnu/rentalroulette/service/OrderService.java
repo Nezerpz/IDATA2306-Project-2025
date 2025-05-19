@@ -77,6 +77,8 @@ public class OrderService {
     LocalTime startTime = stringToTime(requestBody.get("timeFrom").asText());
     LocalTime endTime = stringToTime(requestBody.get("timeTo").asText());
 
+    validateCarAvailability(car, startDate, endDate, startTime, endTime);
+
     float totalPrice = car.getPrice() * ChronoUnit.DAYS.between(startDate, endDate);
 
     Optional<User> provider = userRepository.findById(car.getUser().getId());
@@ -103,6 +105,22 @@ public class OrderService {
     carRepository.save(car);
 
     orderRepository.save(order);
+  }
+
+  private void validateCarAvailability(Car car, LocalDate startDate, LocalDate endDate,
+                                       LocalTime startTime, LocalTime endTime) {
+
+    List<Order> existingOrders = orderRepository.findAllByCarId(car.getId());
+    for (Order order : existingOrders) {
+      boolean datesOverlap =
+          !(endDate.isBefore(order.getDateFrom()) || startDate.isAfter(order.getDateTo()));
+      boolean timesOverlap = datesOverlap &&
+          !(endTime.isBefore(order.getTimeFrom()) || startTime.isAfter(order.getTimeTo()));
+
+      if (datesOverlap && timesOverlap) {
+        throw new IllegalArgumentException("Car is already booked during the requested timeframe");
+      }
+    }
   }
 
   @Transactional
