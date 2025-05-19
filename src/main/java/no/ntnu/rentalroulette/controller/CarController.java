@@ -40,6 +40,10 @@ public class CarController {
       @ApiResponse(
           responseCode = "200",
           description = "Everything good. Cars are sent in response"
+      ),
+      @ApiResponse(
+          responseCode = "403",
+          description = "You are not authorized to access this resource"
       )
   })
   @PreAuthorize("hasRole('ADMIN')")
@@ -57,10 +61,17 @@ public class CarController {
       @ApiResponse(
           responseCode = "200",
           description = "Everything good. Cars are sent in response"
+      ),
+      @ApiResponse(
+          responseCode = "404",
+          description = "Car not found"
       )
   })
   public ResponseEntity<Car> getCar(@PathVariable(value = "id") int id) {
     Car car = carService.getCarById(id);
+    if (car == null) {
+      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
     return new ResponseEntity<>(car, HttpStatus.OK);
   }
 
