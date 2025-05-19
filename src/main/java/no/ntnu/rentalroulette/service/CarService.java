@@ -147,7 +147,7 @@ public class CarService {
                   reviews.stream().mapToInt(CarReview::getRating).average().orElse(0.0);
               return avgRating > 0;
             })
-            .limit(6)
+            .limit(3)
             .toList()
     );
   }
