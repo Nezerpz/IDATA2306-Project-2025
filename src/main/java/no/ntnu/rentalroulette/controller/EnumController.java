@@ -2,12 +2,14 @@ package no.ntnu.rentalroulette.controller;
 
 
 import java.util.List;
+import java.util.stream.Stream;
 import no.ntnu.rentalroulette.enums.CarStatus;
 import no.ntnu.rentalroulette.enums.FuelType;
 import no.ntnu.rentalroulette.enums.Manufacturer;
 import no.ntnu.rentalroulette.enums.OrderStatus;
 import no.ntnu.rentalroulette.enums.TransmissionType;
 import no.ntnu.rentalroulette.enums.UserType;
+import no.ntnu.rentalroulette.util.ManufacturerUtil;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -16,8 +18,12 @@ import org.springframework.web.bind.annotation.RestController;
 public class EnumController {
 
   @GetMapping("/manufacturers")
-  public ResponseEntity<List<Manufacturer>> getManufacturers() {
-    return ResponseEntity.ok(List.of(Manufacturer.values()));
+  public ResponseEntity<List<String>> getManufacturers() {
+    List<String> formattedManufacturers = Stream.of(Manufacturer.values())
+        .map(ManufacturerUtil::formatManufacturer)
+        .toList();
+
+    return ResponseEntity.ok(formattedManufacturers);
   }
 
   @GetMapping("/transmission-types")
