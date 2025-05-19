@@ -97,7 +97,7 @@ public class CarController {
     return new ResponseEntity<>(cars, HttpStatus.OK);
   }
 
-  @GetMapping("/cars/top-rated")
+  @GetMapping("/cars/top-rated-available")
   @Operation(
       summary = "Returns the top 4 cars with the highest average rating",
       description = "Fetches the 4 cars with the highest average rating from the database"
