@@ -25,6 +25,7 @@ import no.ntnu.rentalroulette.repository.OrderRepository;
 import no.ntnu.rentalroulette.repository.UserRepository;
 import no.ntnu.rentalroulette.repository.UserReviewRepository;
 import org.springframework.context.ApplicationContext;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 public class SampleDataGenerator {
   private ApplicationContext context;
@@ -119,6 +120,12 @@ public class SampleDataGenerator {
         "password", "fossefall.bilforhandler@example.com", "+47 43109876"));
     users.add(new User(UserType.PROVIDER, "Betrel", "Ostein", "betrel.ostein", "password",
         "betrel.ostein@example.com", "+47 31098765"));
+
+    BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(12);
+
+    for (User user : users) {
+        user.setPassword(encoder.encode(user.getPassword()));
+    }
 
     return users;
   }
