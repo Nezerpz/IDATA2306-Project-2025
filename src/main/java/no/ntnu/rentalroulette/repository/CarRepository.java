@@ -48,4 +48,6 @@ public interface CarRepository extends JpaRepository<Car, Integer> {
   @Query("SELECT c FROM Car c WHERE c.user.id = :providerId")
   List<Car> findAllByProviderId(@Param("providerId") int providerId);
 
+  @Query("SELECT c FROM Car c JOIN Order o ON c.id = o.car.id WHERE o.id = :orderId")
+  Car findByOrderId(@Param("orderId") int orderId);
 }

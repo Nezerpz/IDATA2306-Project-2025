@@ -10,6 +10,7 @@ import no.ntnu.rentalroulette.entity.User;
 import no.ntnu.rentalroulette.entity.UserReview;
 import no.ntnu.rentalroulette.repository.CarRepository;
 import no.ntnu.rentalroulette.repository.CarReviewRepository;
+import no.ntnu.rentalroulette.repository.OrderRepository;
 import no.ntnu.rentalroulette.repository.UserRepository;
 import no.ntnu.rentalroulette.repository.UserReviewRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +30,8 @@ public class ReviewService {
 
   @Autowired
   private UserRepository userRepository;
+  @Autowired
+  private OrderRepository orderRepository;
 
   @Transactional
   public void reviewUser(ObjectNode requestBody) throws NoSuchFieldException {
@@ -61,7 +64,7 @@ public class ReviewService {
   @Transactional
   public void reviewCar(ObjectNode requestBody) throws NoSuchFieldException {
     Optional<User> user = userRepository.findById(requestBody.get("user_id").asInt());
-    Car car = carRepository.findById(requestBody.get("car_id").asInt());
+    Car car = carRepository.findByOrderId(requestBody.get("order_id").asInt());
     if (user.isEmpty()) {
       throw new NoSuchFieldException("User not found");
     }
