@@ -259,12 +259,32 @@ public class UserController {
   }
 
   @GetMapping("/userType")
+  @Operation(
+      summary = "Get personal user type",
+      description = "Endpoint used to get your own user type (based on id). This can be things like user, provider, admin."
+  )
+  @ApiResponses(value = {
+      @ApiResponse(
+          responseCode = "200",
+          description = "Everything good. User type returned in response"
+      )
+  })
   public ResponseEntity<UserType> getUserType(HttpServletRequest request) {
     return new ResponseEntity<>(controllerUtil.getUserBasedOnJWT(request).getUserType(),
         HttpStatus.OK);
   }
 
   @GetMapping("users/owner/{id}")
+  @Operation(
+      summary = "Get car owner",
+      description = "Endpoint used to get a car's owner (based on car id)"
+  )
+  @ApiResponses(value = {
+      @ApiResponse(
+          responseCode = "200",
+          description = "Everything good. Car owner returned in response."
+      )
+  })
   public ResponseEntity<User> getOwnerOfCar(@PathVariable int id) {
     User user = userService.getOwnerOfCar(id);
     if (user == null) {
@@ -275,6 +295,16 @@ public class UserController {
 
   //TODO: Test this function. Removed a return of user which might be important.
   @PostMapping("/become-provider")
+  @Operation(
+      summary = "Make yourself a car provider",
+      description = "Endpoint used to modify your own user type so that you can rent out cars (based on personal JWT)"
+  )
+  @ApiResponses(value = {
+      @ApiResponse(
+          responseCode = "200",
+          description = "Everything good. You are now a car provider."
+      )
+  })
   @PreAuthorize("hasRole('CUSTOMER')")
   public ResponseEntity<User> becomeProvider(HttpServletRequest request) {
     userService.updateUserType(
