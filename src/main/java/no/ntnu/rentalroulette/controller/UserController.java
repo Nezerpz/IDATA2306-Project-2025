@@ -315,6 +315,16 @@ public class UserController {
   }
 
   @PostMapping("/users/suspend/{id}")
+  @Operation(
+      summary = "Suspend a user",
+      description = "Endpoint used by admins to suspend a user (based on id). This means they can't log in."
+  )
+  @ApiResponses(value = {
+      @ApiResponse(
+          responseCode = "200",
+          description = "Everything good. User suspended."
+      )
+  })
   @PreAuthorize("hasRole('ADMIN')")
   public ResponseEntity<String> suspendUser(HttpServletRequest request, @PathVariable int id) {
     userService.suspendUserById(id);
@@ -322,6 +332,16 @@ public class UserController {
   }
 
   @PostMapping("/users/unsuspend/{id}")
+  @Operation(
+      summary = "Unsuspend a user",
+      description = "Endpoint used by admins to unsuspend a user (based on id). This means they are able to log in."
+  )
+  @ApiResponses(value = {
+      @ApiResponse(
+          responseCode = "200",
+          description = "Everything good. User suspended."
+      )
+  })
   @PreAuthorize("hasRole('ADMIN')")
   public ResponseEntity<String> unsuspendUser(HttpServletRequest request, @PathVariable int id) {
     userService.unsuspendUserById(id);
