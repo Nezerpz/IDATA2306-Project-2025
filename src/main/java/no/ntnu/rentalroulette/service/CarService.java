@@ -172,6 +172,7 @@ public class CarService {
         productionYear, car);
     car.setFeatures(features);
     car.setUser(user);
+    car.setCarStatus(CarStatus.AVAILABLE);
     carRepository.save(car);
   }
 
