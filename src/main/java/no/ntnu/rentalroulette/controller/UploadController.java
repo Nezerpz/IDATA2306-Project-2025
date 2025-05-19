@@ -9,6 +9,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import no.ntnu.rentalroulette.service.StorageService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.nio.file.Path;
@@ -24,6 +27,20 @@ public class UploadController {
   }
 
   @PostMapping("/upload")
+  @Operation(
+      summary = "Upload car image",
+      description = "Endpoint used by providers and admins to update car image"
+  )
+  @ApiResponses(value = {
+      @ApiResponse(
+          responseCode = "200",
+          description = "Everything good. Image uploaded to server"
+      ),
+      @ApiResponse(
+          responseCode = "422",
+          description = "Invalid image upload (not a image etc.)"
+      )
+  })
   @PreAuthorize("hasRole('PROVIDER')")
   public ResponseEntity<String> handleFileUpload(
       @RequestParam("file") MultipartFile file

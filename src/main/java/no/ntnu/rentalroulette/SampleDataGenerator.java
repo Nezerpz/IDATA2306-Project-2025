@@ -410,6 +410,16 @@ public class SampleDataGenerator {
     carRepository.saveAll(List.of(golf1, transporter1, transporter2, transporter3, iOn1, iOn2, iOn3,
         iOn4, iOn5));
     orderRepository.saveAll(orders);
+
+    for (Order order : orders){
+      if (order.getDateTo().isBefore(LocalDate.now()) && order.getOrderStatus() == OrderStatus.ONGOING) {
+        order.setOrderStatus(OrderStatus.COMPLETED);
+        Car car = order.getCar();
+        car.setCarStatus(CarStatus.AVAILABLE);
+        carRepository.save(car);
+        orderRepository.save(order);
+      }
+    }
   }
 
   private void createDefaultFeatures(CarRepository carRepository,
