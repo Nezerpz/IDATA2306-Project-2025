@@ -30,12 +30,10 @@ public class CarReview {
 
   @Setter
   @ManyToOne(fetch = FetchType.EAGER)
-  @JsonProperty("userId")
   private User user;
 
   @Setter
   @ManyToOne(fetch = FetchType.EAGER)
-  @JsonProperty("carId")
   private Car car;
 
   @Setter
@@ -53,13 +51,5 @@ public class CarReview {
     this.review = review;
   }
 
-  @JsonProperty("userId")
-  public int getUser() {
-    return user.getId();
-  }
 
-  @JsonProperty("carId")
-  public int getCar() {
-    return car.getId();
-  }
 }

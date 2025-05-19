@@ -6,6 +6,10 @@ import java.util.List;
 import no.ntnu.rentalroulette.entity.Car;
 import no.ntnu.rentalroulette.service.CarService;
 import no.ntnu.rentalroulette.entity.User;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import no.ntnu.rentalroulette.util.ControllerUtil;v
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,21 +32,52 @@ public class CarController {
   private ControllerUtil controllerUtil;
 
   @GetMapping("/cars")
+  @Operation(
+      summary = "Returns all cars",
+      description = "Endpoint used by admins to get registered cars"
+  )
+  @ApiResponses(value = {
+      @ApiResponse(
+          responseCode = "200",
+          description = "Everything good. Cars are sent in response"
+      )
+  })
   @PreAuthorize("hasRole('ADMIN')")
-  public ResponseEntity<List<Car>> getCars() {
-    List<Car> cars = carService.getAllCars();
+  public ResponseEntity<List<ObjectNode>> getCars() {
+    List<ObjectNode> cars = carService.getAllCars();
     return new ResponseEntity<>(cars, HttpStatus.OK);
   }
 
   @GetMapping("/cars/{id}")
+  @Operation(
+      summary = "Returns one car",
+      description = "Endpoint used to get a single car by ID"
+  )
+  @ApiResponses(value = {
+      @ApiResponse(
+          responseCode = "200",
+          description = "Everything good. Cars are sent in response"
+      )
+  })
   public ResponseEntity<Car> getCar(@PathVariable(value = "id") int id) {
     Car car = carService.getCarById(id);
     return new ResponseEntity<>(car, HttpStatus.OK);
   }
 
+  //TODO: Make this a GET-request and fix conflict that arises from doing so
   @PostMapping("/cars")
-  public ResponseEntity<List<Car>> getCarsByDates(@RequestBody DateRange dateRange) {
-    List<Car> cars = carService.getAllCarsByDate(
+  @Operation(
+      summary = "Returns all cars within timespan",
+      description = "Timespan is specified in request body"
+  )
+  @ApiResponses(value = {
+      @ApiResponse(
+          responseCode = "200",
+          description = "Everything good. Cars are sent in response"
+      )
+  })
+  public ResponseEntity<List<ObjectNode>> getCarsByDates(@RequestBody DateRange dateRange) {
+    List<ObjectNode> cars = carService.getAllCarsByDate(
         dateRange.getDateFrom(),
         dateRange.getDateTo(),
         dateRange.getTimeFrom(),
@@ -52,14 +87,34 @@ public class CarController {
   }
 
   @GetMapping("/cars/provider")
+  @Operation(
+      summary = "Returns all cars from provider",
+      description = "Cars are all from different providers. Here you can see all cars from a particular provider."
+  )
+  @ApiResponses(value = {
+      @ApiResponse(
+          responseCode = "200",
+          description = "Everything good. Cars are sent in response"
+      )
+  })
   @PreAuthorize("hasRole('PROVIDER')")
-  public ResponseEntity<List<Car>> getCarsByProvider(HttpServletRequest request) {
-    List<Car> cars =
+  public ResponseEntity<List<ObjectNode>> getCarsByProvider(HttpServletRequest request) {
+    List<ObjectNode> cars =
         carService.getAllCarsByProviderId(controllerUtil.getUserBasedOnJWT(request).getId());
     return new ResponseEntity<>(cars, HttpStatus.OK);
   }
 
   @PostMapping("/cars/add")
+  @Operation(
+      summary = "Add a car to database",
+      description = "Car providers can add new cars to rent out. This is done with this endpoint."
+  )
+  @ApiResponses(value = {
+      @ApiResponse(
+          responseCode = "200",
+          description = "Everything good. Car has been added to database"
+      )
+  })
   @PreAuthorize("hasRole('PROVIDER')")
   public ResponseEntity<String> addCar(HttpServletRequest request) {
     System.out.println(request);
@@ -71,6 +126,16 @@ public class CarController {
 
 
   @PutMapping("/cars/{id}")
+  @Operation(
+      summary = "Update a car in the database",
+      description = "Car providers (or admins) can update cars to rent out. This is done with this endpoint."
+  )
+  @ApiResponses(value = {
+      @ApiResponse(
+          responseCode = "200",
+          description = "Everything good. Car is now updated"
+      )
+  })
   @PreAuthorize("hasRole('PROVIDER') or hasRole('ADMIN')")
   public ResponseEntity<String> updateCar(HttpServletRequest request, @PathVariable int id) {
     ObjectNode requestBody = controllerUtil.getRequestBody(request);
@@ -79,6 +144,16 @@ public class CarController {
   }
 
   @DeleteMapping("/cars/{id}")
+  @Operation(
+      summary = "Delete a car in the database",
+      description = "Car providers (or admins) can delete cars from the database. This is done with this endpoint."
+  )
+  @ApiResponses(value = {
+      @ApiResponse(
+          responseCode = "200",
+          description = "Everything good. Car is now deleted from database"
+      )
+  })
   @PreAuthorize("hasRole('PROVIDER') or hasRole('ADMIN')")
   public ResponseEntity<String> deleteCar(@PathVariable int id) {
     carService.deleteCar(id);

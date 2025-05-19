@@ -83,6 +83,9 @@ public class OrderService {
     if (provider.isEmpty()) {
       throw new IllegalArgumentException("Provider not found");
     }
+    if (car.getUser().getId() == user.getId()) {
+      throw new IllegalArgumentException("Cannot rent your own car");
+    }
 
     Order order = new Order(
         user,
@@ -103,12 +106,31 @@ public class OrderService {
   }
 
   @Transactional
-  public void updateOrder(ObjectNode requestBody, int id) throws NoSuchFieldException {
+  public void updateOrder(ObjectNode requestBody, int id) throws NoSuchFieldException,
+      IllegalStateException {
     Order existingOrder = getOrderById(id);
 
+    if (existingOrder.getOrderStatus() == OrderStatus.COMPLETED
+        || existingOrder.getOrderStatus() == OrderStatus.CANCELLED) {
+      throw new IllegalStateException("Cannot update a completed or cancelled order");
+    }
+
+
     OrderStatus orderStatus = OrderStatus.valueOf(requestBody.get("orderStatus").asText());
-    if (orderStatus == OrderStatus.COMPLETED
-        || orderStatus == OrderStatus.CANCELLED) {
+
+    if (orderStatus == OrderStatus.COMPLETED || orderStatus == OrderStatus.CANCELLED) {
+      LocalDate nowDate = LocalDate.now();
+      LocalTime nowTime = LocalTime.now();
+      if (existingOrder.getDateTo().isAfter(nowDate) ||
+          (existingOrder.getDateTo().isEqual(nowDate) &&
+              existingOrder.getTimeTo().isAfter(nowTime))) {
+        existingOrder.setDateTo(nowDate);
+        existingOrder.setTimeTo(nowTime);
+      }
+    }
+
+    if (existingOrder.getOrderStatus() != OrderStatus.COMPLETED
+        && existingOrder.getOrderStatus() != OrderStatus.CANCELLED) {
       existingOrder.setOrderStatus(orderStatus);
       Car car = existingOrder.getCar();
       if (car.getCarStatus() == CarStatus.INUSE) {

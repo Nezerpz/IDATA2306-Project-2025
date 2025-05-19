@@ -1,16 +1,19 @@
 package no.ntnu.rentalroulette.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.JsonNode;
 import jakarta.transaction.Transactional;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.lang.Integer;
 import java.util.ArrayList;
 import java.util.Optional;
 import no.ntnu.rentalroulette.entity.Car;
 import no.ntnu.rentalroulette.entity.User;
+import no.ntnu.rentalroulette.entity.CarReview;
 import no.ntnu.rentalroulette.entity.Feature;
 import no.ntnu.rentalroulette.entity.Order;
 import no.ntnu.rentalroulette.enums.CarStatus;
@@ -18,8 +21,10 @@ import no.ntnu.rentalroulette.enums.FuelType;
 import no.ntnu.rentalroulette.enums.Manufacturer;
 import no.ntnu.rentalroulette.enums.TransmissionType;
 import no.ntnu.rentalroulette.repository.CarRepository;
+import no.ntnu.rentalroulette.repository.CarReviewRepository;
 import no.ntnu.rentalroulette.repository.FeatureRepository;
 import no.ntnu.rentalroulette.repository.OrderRepository;
+import no.ntnu.rentalroulette.util.ManufacturerUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -38,24 +43,59 @@ public class CarService {
   @Autowired
   private OrderRepository orderRepository;
 
+  @Autowired
+  private CarReviewRepository carReviewRepository;
+
+  /**
+   * Get a car by its ID.
+   *
+   * @param carId the ID of the car to retrieve
+   * @return the car with the specified ID
+   */
   public Car getCarById(int carId) {
     return carRepository.findById(carId);
   }
 
-  public List<Car> getAllCars() {
-    return carRepository.findAll();
+  /**
+   * Get all cars with their average rating.
+   *
+   * @return a list of ObjectNode containing car details and average rating
+   */
+  public List<ObjectNode> getAllCars() {
+    return getCarsWithAverageRating(carRepository.findAll());
   }
 
-  public List<Car> getAllCarsByProviderId(int providerId) {
-    return carRepository.findAllByProviderId(providerId);
+  /**
+   * Get all cars with their average rating.
+   *
+   * @param cars the list of cars to get the average rating for
+   * @return a list of ObjectNode containing car details and average rating
+   */
+  private List<ObjectNode> getCarsWithAverageRating(List<Car> cars) {
+    return cars.stream().map(car -> {
+      List<CarReview> reviews = carReviewRepository.findAllByCar(car);
+      double averageRating = reviews.isEmpty() ? 0.0 :
+          reviews.stream().mapToInt(CarReview::getRating).average().orElse(0.0);
+
+      ObjectNode carDetails = new ObjectMapper().convertValue(car, ObjectNode.class);
+      carDetails.put("averageRating", averageRating);
+
+      return carDetails;
+    }).toList();
   }
 
-  public List<Car> getAllCarsByDate(LocalDate startDate, LocalDate endDate, LocalTime startTime,
-                                    LocalTime endTime) {
+  public List<ObjectNode> getAllCarsByProviderId(int providerId) {
+    return getCarsWithAverageRating(carRepository.findAllByProviderId(providerId));
+  }
 
-    return carRepository.findAvailableCars(startDate, endDate, startTime, endTime).stream().filter(
-        car -> car.getCarStatus() != CarStatus.UNAVAILABLE
-    ).toList();
+  public List<ObjectNode> getAllCarsByDate(LocalDate startDate, LocalDate endDate,
+                                           LocalTime startTime,
+                                           LocalTime endTime) {
+
+    return getCarsWithAverageRating(
+        carRepository.findAvailableCars(startDate, endDate, startTime, endTime).stream().filter(
+            car -> car.getCarStatus() != CarStatus.UNAVAILABLE
+        ).toList());
   }
 
 
@@ -80,29 +120,45 @@ public class CarService {
 
   @Transactional
   public void addCar(ObjectNode requestBody, User user) {
-    String imagePath = requestBody.has("imagePath") 
+    String imagePath = requestBody.has("imagePath")
         ? requestBody.get("imagePath").asText()
         : "";
     String model = requestBody.get("carModel").asText();
-    Manufacturer manufacturer = Manufacturer.valueOf(requestBody.get("manufacturer").asText());
+    String manufacturer = requestBody.get("manufacturer").asText();
     int seats = requestBody.get("numberOfSeats").asInt();
     TransmissionType transmissionType =
         TransmissionType.valueOf(requestBody.get("transmissionType").asText());
     FuelType fuelType = FuelType.valueOf(requestBody.get("fuelType").asText());
     int price = requestBody.get("price").asInt();
     int productionYear = requestBody.get("productionYear").asInt();
-    List<Feature> features = getFeaturesFromRequestBody(requestBody.get("features")); 
-    Car car = new Car(imagePath, model, manufacturer, seats, transmissionType,
-        fuelType, price, productionYear, features);
+    List<Feature> features = getFeaturesFromRequestBody(requestBody.get("features"));
+    Car car = new Car();
+    carSetOperations(imagePath, model, manufacturer, seats, transmissionType, fuelType, price,
+        productionYear, car);
+    car.setFeatures(features);
     car.setUser(user);
     carRepository.save(car);
   }
 
+  private void carSetOperations(String imagePath, String model, String manufacturer, int seats,
+                                TransmissionType transmissionType, FuelType fuelType, int price,
+                                int productionYear, Car car) {
+    car.setImagePath(imagePath);
+    car.setCarModel(model);
+    car.setManufacturer(manufacturer);
+    car.setNumberOfSeats(seats);
+    car.setTransmissionType(transmissionType);
+    car.setFuelType(fuelType);
+    car.setPrice(price);
+    car.setProductionYear(productionYear);
+  }
+
   @Transactional
   public void updateCar(ObjectNode requestBody, int carId) {
+    System.out.println(requestBody);
     String imagePath = requestBody.get("imagePath").asText();
     String model = requestBody.get("carModel").asText();
-    Manufacturer manufacturer = Manufacturer.valueOf(requestBody.get("manufacturer").asText());
+    String manufacturer = requestBody.get("manufacturer").asText();
     int seats = requestBody.get("numberOfSeats").asInt();
     TransmissionType transmissionType =
         TransmissionType.valueOf(requestBody.get("transmissionType").asText());
@@ -112,14 +168,8 @@ public class CarService {
     CarStatus carStatus = CarStatus.valueOf(requestBody.get("carStatus").asText());
     List<Feature> features = getFeaturesFromRequestBody(requestBody.get("features"));
     Car car = carRepository.findById(carId);
-    car.setImagePath(imagePath);
-    car.setCarModel(model);
-    car.setManufacturer(manufacturer);
-    car.setNumberOfSeats(seats);
-    car.setTransmissionType(transmissionType);
-    car.setFuelType(fuelType);
-    car.setPrice(price);
-    car.setProductionYear(productionYear);
+    carSetOperations(imagePath, model, manufacturer, seats, transmissionType, fuelType, price,
+        productionYear, car);
     car.setCarStatus(carStatus);
     car.getFeatures().clear();
     car.setFeatures(features);

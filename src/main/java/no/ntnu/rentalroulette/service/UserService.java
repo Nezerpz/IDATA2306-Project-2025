@@ -8,6 +8,7 @@ import no.ntnu.rentalroulette.entity.Car;
 import no.ntnu.rentalroulette.entity.Order;
 import no.ntnu.rentalroulette.entity.User;
 import no.ntnu.rentalroulette.enums.UserType;
+import no.ntnu.rentalroulette.exception.UserNotFoundException;
 import no.ntnu.rentalroulette.repository.OrderRepository;
 import no.ntnu.rentalroulette.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -117,13 +118,73 @@ public class UserService {
   }
 
   @Transactional
-  public boolean changePassword(ObjectNode requestBody, int id) {
-    User user = userRepository.findById(id).orElse(null);
-    if (user != null) {
-      user.setPassword(requestBody.get("password").asText());
-      userRepository.save(user);
-      return true;
+  public void changeFirstName(int id, String firstName) throws UserNotFoundException {
+    User user = getUserById(id);
+
+    if (user == null) {
+        throw new UserNotFoundException("User not found");
     }
-    return false;
+
+    if (firstName != null && !firstName.isEmpty()) { 
+        user.setFirstName(firstName);
+        userRepository.save(user);
+    }
   }
+
+  @Transactional
+  public void changeLastName(int id, String lastName) throws UserNotFoundException {
+    User user = getUserById(id);
+
+    if (user == null) {
+        throw new UserNotFoundException("User not found");
+    }
+
+    if (lastName != null && !lastName.isEmpty()) { 
+        user.setLastName(lastName);
+        userRepository.save(user);
+    }
+  }
+
+  @Transactional
+  public void changeUsername(int id, String username) throws UserNotFoundException {
+    User user = getUserById(id);
+
+    if (user == null) {
+        throw new UserNotFoundException("User not found");
+    }
+
+    if (username != null && !username.isEmpty()) { 
+        user.setUsername(username);
+        userRepository.save(user);
+    }
+  }
+
+  @Transactional
+  public void changeEmail(int id, String email) throws UserNotFoundException {
+    User user = getUserById(id);
+
+    if (user == null) {
+        throw new UserNotFoundException("User not found");
+    }
+
+    if (email != null && !email.isEmpty()) {
+        user.setEmail(email);
+        userRepository.save(user);
+    }
+  }
+
+  @Transactional
+  public void changePassword(int id, String password) throws UserNotFoundException {
+    User user = getUserById(id);
+
+    if (user == null) {
+        throw new UserNotFoundException("User not found");
+    }
+
+    if (password != null && !password.isEmpty()) {
+      user.setPassword(password);
+      userRepository.save(user);
+    }
+  }
+
 }

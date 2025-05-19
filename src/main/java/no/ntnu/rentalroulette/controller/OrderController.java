@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import java.util.List;
 import no.ntnu.rentalroulette.entity.Order;
 import no.ntnu.rentalroulette.service.OrderService;
+import no.ntnu.rentalroulette.util.ControllerUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,7 +33,7 @@ public class OrderController {
   @GetMapping("/orders")
   @PreAuthorize("hasRole('ADMIN')")
   @Operation(
-      summary = "Orders endpoint",
+      summary = "Orders",
       description = "Returns a list of all orders in the system"
   )
   @ApiResponses(value = {
@@ -47,7 +48,7 @@ public class OrderController {
 
   @GetMapping("/orders/{id}")
   @Operation(
-      summary = "Order by ID endpoint",
+      summary = "Order by ID",
       description = "Returns a specific order by ID"
   )
   @ApiResponses(value = {
@@ -58,6 +59,10 @@ public class OrderController {
       @ApiResponse(
           responseCode = "404",
           description = "Order not found"
+      ),
+      @ApiResponse(
+          responseCode = "400",
+          description = "Bad request"
       )
   })
   @PreAuthorize("hasRole('ADMIN') or hasRole('PROVIDER')")
@@ -67,12 +72,14 @@ public class OrderController {
       return new ResponseEntity<>(order, HttpStatus.OK);
     } catch (NoSuchFieldException e) {
       return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    } catch (IllegalStateException e) {
+      return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
   }
 
   @GetMapping("/orders/customer")
   @Operation(
-      summary = "Orders by customer endpoint",
+      summary = "Orders by customer",
       description = "Returns a list of all orders for the authenticated customer"
   )
   @ApiResponses(value = {
@@ -90,7 +97,7 @@ public class OrderController {
   @GetMapping("/orders/provider")
   @PreAuthorize("hasRole('PROVIDER')")
   @Operation(
-      summary = "Orders by provider endpoint",
+      summary = "Orders by provider",
       description = "Returns a list of all orders for a specific provider"
   )
   @ApiResponses(value = {
@@ -106,6 +113,20 @@ public class OrderController {
   }
 
   @PutMapping("/orders/{id}")
+  @Operation(
+      summary = "Update order",
+      description = "Updates a specific order by ID"
+  )
+  @ApiResponses(value = {
+      @ApiResponse(
+          responseCode = "200",
+          description = "The order is updated"
+      ),
+      @ApiResponse(
+          responseCode = "404",
+          description = "Order not found"
+      )
+  })
   @PreAuthorize("hasRole('PROVIDER') or hasRole('ADMIN')")
   public ResponseEntity<String> updateOrder(HttpServletRequest request, @PathVariable int id) {
     ObjectNode requestBody = controllerUtil.getRequestBody(request);
@@ -118,6 +139,16 @@ public class OrderController {
   }
 
   @PostMapping("/order")
+  @Operation(
+      summary = "Order a car",
+      description = "User makes a order here."
+  )
+  @ApiResponses(value = {
+      @ApiResponse(
+          responseCode = "200",
+          description = "The order is registered"
+      )
+  })
   public ResponseEntity<String> orderCar(
       HttpServletRequest request
   ) {

@@ -5,6 +5,10 @@ import java.util.List;
 import no.ntnu.rentalroulette.entity.CarReview;
 import no.ntnu.rentalroulette.entity.UserReview;
 import no.ntnu.rentalroulette.service.ReviewService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import no.ntnu.rentalroulette.util.ControllerUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +26,28 @@ public class ReviewController {
   private ControllerUtil controllerUtil;
 
   @PostMapping("/review-user")
+  @Operation(
+      summary = "Review a user",
+      description = "Endpoint used to submit a review made by one user of another user."
+  )
+  @ApiResponses(value = {
+      @ApiResponse(
+          responseCode = "200",
+          description = "Everything good. Cars are sent in response"
+      ),
+      @ApiResponse(
+          responseCode = "404",
+          description = "User (that you are reviewing) could not be found"
+      ),
+      @ApiResponse(
+          responseCode = "400",
+          description = "You cannot review yourself"
+      ),
+      @ApiResponse(
+          responseCode = "409",
+          description = "You have already made the review"
+      )
+  })
   public ResponseEntity<String> reviewUser(HttpServletRequest request) {
     try {
       reviewService.reviewUser(controllerUtil.getRequestBody(request));
@@ -37,6 +63,28 @@ public class ReviewController {
   }
 
   @PostMapping("/review-car")
+  @Operation(
+      summary = "Review a Car",
+      description = "Endpoint used to submit a review made by a user (customer) that has used a particular car."
+  )
+  @ApiResponses(value = {
+      @ApiResponse(
+          responseCode = "200",
+          description = "Everything good. Car review submitted"
+      ),
+      @ApiResponse(
+          responseCode = "404",
+          description = "Car (you are reviewing) could not be found"
+      ),
+      @ApiResponse(
+          responseCode = "400",
+          description = "You cannot review your own car"
+      ),
+      @ApiResponse(
+          responseCode = "409",
+          description = "You have already made the review"
+      )
+  })
   public ResponseEntity<String> reviewCar(HttpServletRequest request) {
     try {
       reviewService.reviewCar(controllerUtil.getRequestBody(request));
@@ -53,6 +101,20 @@ public class ReviewController {
 
 
   @GetMapping("/review/user/{userId}")
+  @Operation(
+      summary = "Get (existing) user review",
+      description = "Endpoint used to fetch reviews regarding a particular user."
+  )
+  @ApiResponses(value = {
+      @ApiResponse(
+          responseCode = "200",
+          description = "Everything good. Reviews about user sent in response"
+      ),
+      @ApiResponse(
+          responseCode = "404",
+          description = "Reviews about the user could not be found"
+      )
+  })
   public ResponseEntity<List<UserReview>> getUserReviews(@PathVariable int userId) {
     try {
       return new ResponseEntity<>(reviewService.getUserReviews(userId), HttpStatus.OK);
@@ -63,6 +125,20 @@ public class ReviewController {
   }
 
   @GetMapping("/review/car/{carId}")
+  @Operation(
+      summary = "Get (existing) reviews of a car",
+      description = "Endpoint used to fetch reviews regarding a particular car."
+  )
+  @ApiResponses(value = {
+      @ApiResponse(
+          responseCode = "200",
+          description = "Everything good. Car reviews sent in response"
+      ),
+      @ApiResponse(
+          responseCode = "404",
+          description = "Reviews about the car could not be found"
+      )
+  })
   public ResponseEntity<List<CarReview>> getCarReviews(@PathVariable int carId) {
     try {
       return new ResponseEntity<>(reviewService.getCarReviews(carId), HttpStatus.OK);
