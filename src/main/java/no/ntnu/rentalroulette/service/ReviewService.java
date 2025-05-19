@@ -1,11 +1,9 @@
 package no.ntnu.rentalroulette.service;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
-import no.ntnu.rentalroulette.controller.ControllerUtil;
 import no.ntnu.rentalroulette.entity.Car;
 import no.ntnu.rentalroulette.entity.CarReview;
 import no.ntnu.rentalroulette.entity.User;
@@ -96,15 +94,15 @@ public class ReviewService {
   public void nullifyReviewerByUserId(int userId) {
     Optional<User> user = userRepository.findById(userId);
     if (user.isPresent()) {
-        userReviewRepository.deleteAllByReviewedUserId(userId);
+      userReviewRepository.deleteAllByReviewedUserId(userId);
 
-        List<UserReview> userReviews = userReviewRepository.findAllByReviewingUser(user.get());
-        userReviews.stream().forEach(r -> r.setReviewingUser(null));
-        userReviewRepository.saveAll(userReviews);
+      List<UserReview> userReviews = userReviewRepository.findAllByReviewingUser(user.get());
+      userReviews.stream().forEach(r -> r.setReviewingUser(null));
+      userReviewRepository.saveAll(userReviews);
 
-        List<CarReview> carReviews = carReviewRepository.findAllByUser(user.get());
-        carReviews.stream().forEach(r -> r.setUser(null));
-        carReviewRepository.saveAll(carReviews);
+      List<CarReview> carReviews = carReviewRepository.findAllByUser(user.get());
+      carReviews.stream().forEach(r -> r.setUser(null));
+      carReviewRepository.saveAll(carReviews);
     }
   }
 

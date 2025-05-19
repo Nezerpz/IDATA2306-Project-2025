@@ -10,6 +10,7 @@ import no.ntnu.rentalroulette.exception.UserNotFoundException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import no.ntnu.rentalroulette.util.ControllerUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -65,28 +66,26 @@ public class UserController {
   })
   @PreAuthorize("hasRole('ADMIN')")
   public ResponseEntity<String> updateUser(
-          @PathVariable int id,
-          HttpServletRequest request
+      @PathVariable int id,
+      HttpServletRequest request
   ) {
-    
-      // Updated values
-      ObjectNode requestBody = controllerUtil.getRequestBody(request);
-      String newFirstName = requestBody.get("firstName").asText();
-      String newLastName = requestBody.get("lastName").asText();
-      String newUsername = requestBody.get("username").asText();
-      String newEmail = requestBody.get("email").asText();
 
-      try {
-          userService.changeFirstName(id, newFirstName);
-          userService.changeLastName(id, newLastName);
-          userService.changeUsername(id, newUsername);
-          userService.changeEmail(id, newEmail);
-          return new ResponseEntity<>(HttpStatus.OK);
-      }
+    // Updated values
+    ObjectNode requestBody = controllerUtil.getRequestBody(request);
+    String newFirstName = requestBody.get("firstName").asText();
+    String newLastName = requestBody.get("lastName").asText();
+    String newUsername = requestBody.get("username").asText();
+    String newEmail = requestBody.get("email").asText();
 
-      catch (UserNotFoundException e) {
-          return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-      }
+    try {
+      userService.changeFirstName(id, newFirstName);
+      userService.changeLastName(id, newLastName);
+      userService.changeUsername(id, newUsername);
+      userService.changeEmail(id, newEmail);
+      return new ResponseEntity<>(HttpStatus.OK);
+    } catch (UserNotFoundException e) {
+      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
   }
 
   @GetMapping("/users/{id}")
@@ -199,12 +198,12 @@ public class UserController {
   public ResponseEntity<String> changePasswordSelf(HttpServletRequest request) {
     ObjectNode requestBody = controllerUtil.getRequestBody(request);
     try {
-        User user = controllerUtil.getUserBasedOnJWT(request);
-        String password = requestBody.get("password").asText();
-        userService.changePassword(user.getId(), password);
-        return new ResponseEntity<>(HttpStatus.OK);
+      User user = controllerUtil.getUserBasedOnJWT(request);
+      String password = requestBody.get("password").asText();
+      userService.changePassword(user.getId(), password);
+      return new ResponseEntity<>(HttpStatus.OK);
     } catch (Exception e) {
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+      return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
   }
 
@@ -225,18 +224,18 @@ public class UserController {
   })
   @PreAuthorize("hasRole('ADMIN')")
   public ResponseEntity<String> changePassword(
-          @PathVariable int id,
-          HttpServletRequest request
-    ) {
+      @PathVariable int id,
+      HttpServletRequest request
+  ) {
     ObjectNode requestBody = controllerUtil.getRequestBody(request);
     try {
-        User user = userService.getUserById(id);
-        System.out.println(requestBody);
-        String password = requestBody.get("password").asText();
-        userService.changePassword(user.getId(), password);
-        return new ResponseEntity<>(HttpStatus.OK);
+      User user = userService.getUserById(id);
+      System.out.println(requestBody);
+      String password = requestBody.get("password").asText();
+      userService.changePassword(user.getId(), password);
+      return new ResponseEntity<>(HttpStatus.OK);
     } catch (Exception e) {
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+      return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
   }
 

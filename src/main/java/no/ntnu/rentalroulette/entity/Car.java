@@ -28,6 +28,7 @@ import no.ntnu.rentalroulette.enums.CarStatus;
 import no.ntnu.rentalroulette.enums.FuelType;
 import no.ntnu.rentalroulette.enums.Manufacturer;
 import no.ntnu.rentalroulette.enums.TransmissionType;
+import no.ntnu.rentalroulette.util.ManufacturerUtil;
 
 /**
  *
@@ -54,7 +55,6 @@ public class Car {
   @Column(name = "image_path")
   private String imagePath;
 
-  @Getter
   @Enumerated(EnumType.STRING)
   private Manufacturer manufacturer;
 
@@ -186,7 +186,7 @@ public class Car {
     this.carStatus = CarStatus.AVAILABLE;
     this.features = features;
   }
-  
+
   @JsonProperty("user")
   public String getProviderName() {
     StringBuilder sb = new StringBuilder();
@@ -199,5 +199,13 @@ public class Car {
 
   public int getProviderId() {
     return user.getId();
+  }
+
+  public String getManufacturer() {
+    return ManufacturerUtil.formatManufacturer(manufacturer);
+  }
+
+  public void setManufacturer(String manufacturer) {
+    this.manufacturer = ManufacturerUtil.parseManufacturer(manufacturer);
   }
 }

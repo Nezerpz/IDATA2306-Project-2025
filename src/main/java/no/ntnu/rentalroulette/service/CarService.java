@@ -24,6 +24,7 @@ import no.ntnu.rentalroulette.repository.CarRepository;
 import no.ntnu.rentalroulette.repository.CarReviewRepository;
 import no.ntnu.rentalroulette.repository.FeatureRepository;
 import no.ntnu.rentalroulette.repository.OrderRepository;
+import no.ntnu.rentalroulette.util.ManufacturerUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -123,7 +124,7 @@ public class CarService {
         ? requestBody.get("imagePath").asText()
         : "";
     String model = requestBody.get("carModel").asText();
-    Manufacturer manufacturer = Manufacturer.valueOf(requestBody.get("manufacturer").asText());
+    String manufacturer = requestBody.get("manufacturer").asText();
     int seats = requestBody.get("numberOfSeats").asInt();
     TransmissionType transmissionType =
         TransmissionType.valueOf(requestBody.get("transmissionType").asText());
@@ -131,10 +132,25 @@ public class CarService {
     int price = requestBody.get("price").asInt();
     int productionYear = requestBody.get("productionYear").asInt();
     List<Feature> features = getFeaturesFromRequestBody(requestBody.get("features"));
-    Car car = new Car(imagePath, model, manufacturer, seats, transmissionType,
-        fuelType, price, productionYear, features);
+    Car car = new Car();
+    carSetOperations(imagePath, model, manufacturer, seats, transmissionType, fuelType, price,
+        productionYear, car);
+    car.setFeatures(features);
     car.setUser(user);
     carRepository.save(car);
+  }
+
+  private void carSetOperations(String imagePath, String model, String manufacturer, int seats,
+                                TransmissionType transmissionType, FuelType fuelType, int price,
+                                int productionYear, Car car) {
+    car.setImagePath(imagePath);
+    car.setCarModel(model);
+    car.setManufacturer(manufacturer);
+    car.setNumberOfSeats(seats);
+    car.setTransmissionType(transmissionType);
+    car.setFuelType(fuelType);
+    car.setPrice(price);
+    car.setProductionYear(productionYear);
   }
 
   @Transactional
@@ -142,7 +158,7 @@ public class CarService {
     System.out.println(requestBody);
     String imagePath = requestBody.get("imagePath").asText();
     String model = requestBody.get("carModel").asText();
-    Manufacturer manufacturer = Manufacturer.valueOf(requestBody.get("manufacturer").asText());
+    String manufacturer = requestBody.get("manufacturer").asText();
     int seats = requestBody.get("numberOfSeats").asInt();
     TransmissionType transmissionType =
         TransmissionType.valueOf(requestBody.get("transmissionType").asText());
@@ -152,14 +168,8 @@ public class CarService {
     CarStatus carStatus = CarStatus.valueOf(requestBody.get("carStatus").asText());
     List<Feature> features = getFeaturesFromRequestBody(requestBody.get("features"));
     Car car = carRepository.findById(carId);
-    car.setImagePath(imagePath);
-    car.setCarModel(model);
-    car.setManufacturer(manufacturer);
-    car.setNumberOfSeats(seats);
-    car.setTransmissionType(transmissionType);
-    car.setFuelType(fuelType);
-    car.setPrice(price);
-    car.setProductionYear(productionYear);
+    carSetOperations(imagePath, model, manufacturer, seats, transmissionType, fuelType, price,
+        productionYear, car);
     car.setCarStatus(carStatus);
     car.getFeatures().clear();
     car.setFeatures(features);
