@@ -63,6 +63,7 @@ public class SampleDataGenerator {
     UserReviewRepository userReviewRepository = this.context.getBean(UserReviewRepository.class);
     CarReviewRepository carReviewRepository = this.context.getBean(CarReviewRepository.class);
     createDefaultReviews(userRepository, carRepository, carReviewRepository, userReviewRepository);
+    createAdditionalCarReviews(userRepository, carRepository, carReviewRepository);
   }
 
   public static void updateCarStatus(List<Car> cars, CarStatus status) {
@@ -411,8 +412,9 @@ public class SampleDataGenerator {
         iOn4, iOn5));
     orderRepository.saveAll(orders);
 
-    for (Order order : orders){
-      if (order.getDateTo().isBefore(LocalDate.now()) && order.getOrderStatus() == OrderStatus.ONGOING) {
+    for (Order order : orders) {
+      if (order.getDateTo().isBefore(LocalDate.now()) &&
+          order.getOrderStatus() == OrderStatus.ONGOING) {
         order.setOrderStatus(OrderStatus.COMPLETED);
         Car car = order.getCar();
         car.setCarStatus(CarStatus.AVAILABLE);
@@ -617,5 +619,30 @@ public class SampleDataGenerator {
     customerReviews.add(new UserReview(kariNordmann, biggernesTesla, 5, "Great customer!"));
 
     userReviewRepository.saveAll(customerReviews);
+  }
+
+  private void createAdditionalCarReviews(UserRepository userRepository,
+                                          CarRepository carRepository,
+                                          CarReviewRepository carReviewRepository) {
+    List<User> users = userRepository.findAll();
+    List<Car> cars = carRepository.findAll();
+    List<CarReview> carReviews = new ArrayList<>();
+
+    int userIndex = 0;
+    for (Car car : cars) {
+      // Rotate through users for reviews
+      User reviewer = users.get(userIndex % users.size());
+      userIndex++;
+
+      // Add a review for the car
+      carReviews.add(
+          new CarReview(reviewer, car, (userIndex % 5) + 1, "Great car with excellent features!"));
+      if (userIndex % 2 == 0) {
+        carReviews.add(new CarReview(reviewer, car, (userIndex % 4) + 2,
+            "Good performance and comfortable to drive."));
+      }
+    }
+
+    carReviewRepository.saveAll(carReviews);
   }
 }

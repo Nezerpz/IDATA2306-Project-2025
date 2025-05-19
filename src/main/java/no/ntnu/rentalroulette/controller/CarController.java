@@ -86,6 +86,22 @@ public class CarController {
     return new ResponseEntity<>(cars, HttpStatus.OK);
   }
 
+  @GetMapping("/cars/top-rated")
+  @Operation(
+      summary = "Returns the top 4 cars with the highest average rating",
+      description = "Fetches the 4 cars with the highest average rating from the database"
+  )
+  @ApiResponses(value = {
+      @ApiResponse(
+          responseCode = "200",
+          description = "Successfully retrieved the top-rated cars"
+      )
+  })
+  public ResponseEntity<List<ObjectNode>> getTopRatedCars() {
+    List<ObjectNode> topRatedCars = carService.getTopRatedAvailableCars();
+    return new ResponseEntity<>(topRatedCars, HttpStatus.OK);
+  }
+
   @GetMapping("/cars/provider")
   @Operation(
       summary = "Returns all cars from provider",
