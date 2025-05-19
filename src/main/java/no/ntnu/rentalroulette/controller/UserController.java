@@ -182,6 +182,20 @@ public class UserController {
   }
 
   @PutMapping("/users/self/password")
+  @Operation(
+      summary = "Update personal password",
+      description = "Endpoint used to update your own password (based on JWT)"
+  )
+  @ApiResponses(value = {
+      @ApiResponse(
+          responseCode = "200",
+          description = "Everything good. Password updated"
+      ),
+      @ApiResponse(
+          responseCode = "400",
+          description = "Bad request. (JWT or something else not right)"
+      )
+  })
   public ResponseEntity<String> changePasswordSelf(HttpServletRequest request) {
     ObjectNode requestBody = controllerUtil.getRequestBody(request);
     try {
@@ -195,6 +209,20 @@ public class UserController {
   }
 
   @PutMapping("/users/{id}/password")
+  @Operation(
+      summary = "Update user password",
+      description = "Endpoint used by admins to update a user's password (based on id)"
+  )
+  @ApiResponses(value = {
+      @ApiResponse(
+          responseCode = "200",
+          description = "Everything good. Password updated"
+      ),
+      @ApiResponse(
+          responseCode = "400",
+          description = "Bad request. (id or something else not right)"
+      )
+  })
   @PreAuthorize("hasRole('ADMIN')")
   public ResponseEntity<String> changePassword(
           @PathVariable int id,
@@ -213,6 +241,16 @@ public class UserController {
   }
 
   @DeleteMapping("/users/{id}")
+  @Operation(
+      summary = "Update user password",
+      description = "Endpoint used by admins to delete a user (based on id)"
+  )
+  @ApiResponses(value = {
+      @ApiResponse(
+          responseCode = "200",
+          description = "Everything good. User deleted"
+      )
+  })
   @PreAuthorize("hasRole('ADMIN')")
   public ResponseEntity<String> deleteUser(@PathVariable int id) {
     userService.deleteUserById(id);
