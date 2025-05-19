@@ -6,6 +6,7 @@ import java.util.List;
 import no.ntnu.rentalroulette.entity.Car;
 import no.ntnu.rentalroulette.service.CarService;
 import no.ntnu.rentalroulette.entity.User;
+import no.ntnu.rentalroulette.util.ControllerUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
