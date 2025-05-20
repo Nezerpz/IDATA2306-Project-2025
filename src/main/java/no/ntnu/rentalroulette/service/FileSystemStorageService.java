@@ -27,7 +27,7 @@ public class FileSystemStorageService implements StorageService {
   private Path rootLocation;
 
   public FileSystemStorageService() throws StorageException {
-    Path uploadFolder = Paths.get("/user-uploads");
+    Path uploadFolder = Paths.get("user-uploads");
     if (!Files.exists(uploadFolder)) {
       try {
         Files.createDirectories(uploadFolder);
@@ -45,6 +45,7 @@ public class FileSystemStorageService implements StorageService {
 
   @Override
   public Path store(MultipartFile file) {
+    System.out.println(rootLocation);
     Path destinationFile = null;
     try {
       if (file.isEmpty()) {

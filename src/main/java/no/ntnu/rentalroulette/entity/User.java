@@ -1,6 +1,7 @@
 package no.ntnu.rentalroulette.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -9,7 +10,6 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
-
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -117,13 +117,6 @@ public class User {
   @Getter
   @Setter
   private boolean active;
-
-  @ManyToMany(cascade = CascadeType.ALL)
-  @JoinTable(name = "user_role",
-      joinColumns = @JoinColumn(name = "user_id"),
-      inverseJoinColumns = @JoinColumn(name = "role_id")
-  )
-  private Set<Role> roles = new LinkedHashSet<Role>();
 
   public User(UserType userType, String firstName, String lastName, String username,
               String password, String email, String telephoneNumber) {

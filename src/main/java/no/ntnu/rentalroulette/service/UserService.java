@@ -13,6 +13,7 @@ import no.ntnu.rentalroulette.repository.OrderRepository;
 import no.ntnu.rentalroulette.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @Service
 public class UserService {
@@ -28,6 +29,8 @@ public class UserService {
 
   @Autowired
   private CarService carService;
+
+  private BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(12);
 
   public List<User> getAllUsers() {
     return userRepository.findAll();
@@ -66,6 +69,7 @@ public class UserService {
         requestBody.get("email").asText(),
         requestBody.get("phone").asText()
     );
+    newUser.setPassword(encoder.encode(newUser.getPassword()));
     userRepository.save(newUser);
     return newUser;
   }

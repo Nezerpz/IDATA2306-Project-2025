@@ -11,6 +11,7 @@ import java.util.List;
 import java.lang.Integer;
 import java.util.ArrayList;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import no.ntnu.rentalroulette.entity.Car;
 import no.ntnu.rentalroulette.entity.User;
 import no.ntnu.rentalroulette.entity.CarReview;
@@ -117,6 +118,40 @@ public class CarService {
     return featureList;
   }
 
+  /**
+   * Get the 4 heighest rated cars.
+   *
+   * @return a list of the 4 highest rated cars
+   */
+  public List<ObjectNode> getTopRatedAvailableCars() {
+    return getCarsWithAverageRating(
+        carRepository.findAll().stream()
+            .filter(car -> orderRepository.findAllByCarId(car.getId()).stream()
+                .noneMatch(order -> order.getDateTo().isAfter(LocalDate.now()) ||
+                    (order.getDateTo().isEqual(LocalDate.now()) &&
+                        order.getTimeTo().isAfter(LocalTime.now()))))
+            .sorted((car1, car2) -> {
+              List<CarReview> reviews1 = carReviewRepository.findAllByCar(car1);
+              List<CarReview> reviews2 = carReviewRepository.findAllByCar(car2);
+
+              double avgRating1 = reviews1.isEmpty() ? 0.0 :
+                  reviews1.stream().mapToInt(CarReview::getRating).average().orElse(0.0);
+              double avgRating2 = reviews2.isEmpty() ? 0.0 :
+                  reviews2.stream().mapToInt(CarReview::getRating).average().orElse(0.0);
+
+              return Double.compare(avgRating2, avgRating1);
+            })
+            .filter(car -> {
+              List<CarReview> reviews = carReviewRepository.findAllByCar(car);
+              double avgRating = reviews.isEmpty() ? 0.0 :
+                  reviews.stream().mapToInt(CarReview::getRating).average().orElse(0.0);
+              return avgRating > 0;
+            })
+            .limit(3)
+            .toList()
+    );
+  }
+
 
   @Transactional
   public void addCar(ObjectNode requestBody, User user) {
@@ -137,6 +172,7 @@ public class CarService {
         productionYear, car);
     car.setFeatures(features);
     car.setUser(user);
+    car.setCarStatus(CarStatus.AVAILABLE);
     carRepository.save(car);
   }
 

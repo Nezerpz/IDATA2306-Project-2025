@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -87,6 +88,45 @@ public class UserController {
       return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
   }
+
+  @PutMapping("/users/self/update")
+  @Operation(
+      summary = "Updates own userinfo",
+      description = "Endpoint used by users to update their information"
+  )
+  @ApiResponses(value = {
+      @ApiResponse(
+          responseCode = "200",
+          description = "Everything good. User updated"
+      ),
+      @ApiResponse(
+          responseCode = "404",
+          description = "MetaphysicsException: Self not found"
+      )
+  })
+  public ResponseEntity<String> updateSelf(
+      HttpServletRequest request
+  ) {
+
+    User user = controllerUtil.getUserBasedOnJWT(request);
+    // Updated values
+    ObjectNode requestBody = controllerUtil.getRequestBody(request);
+    String newFirstName = requestBody.get("firstName").asText();
+    String newLastName = requestBody.get("lastName").asText();
+    String newUsername = requestBody.get("username").asText();
+    String newEmail = requestBody.get("email").asText();
+
+    try {
+      userService.changeFirstName(user.getId(), newFirstName);
+      userService.changeLastName(user.getId(), newLastName);
+      userService.changeUsername(user.getId(), newUsername);
+      userService.changeEmail(user.getId(), newEmail);
+      return new ResponseEntity<>(HttpStatus.OK);
+    } catch (UserNotFoundException e) {
+      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+  }
+
 
   @GetMapping("/users/{id}")
   @Operation(

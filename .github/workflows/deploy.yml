@@ -1,0 +1,25 @@
+name: Container Deployment
+run-name: ${{ github.actor }} merged to main!
+on:
+  pull_request:
+    branches: [ main ]
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}
+      cancel-in-progress: true
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v4
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build the rental-roulette Docker image
+        run: |
+          docker build -t rental-roulette . -f Containerfile --tag ghcr.io/Nezerpz/rental-roulette:latest
+          docker run ghcr.io/Nezerpz/rental-roulette:latest
+          docker push ghcr.io/Nezerpz/rental-roulette:latest

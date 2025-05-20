@@ -9,7 +9,7 @@ import no.ntnu.rentalroulette.entity.User;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import no.ntnu.rentalroulette.util.ControllerUtil;v
+import no.ntnu.rentalroulette.util.ControllerUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -40,6 +40,10 @@ public class CarController {
       @ApiResponse(
           responseCode = "200",
           description = "Everything good. Cars are sent in response"
+      ),
+      @ApiResponse(
+          responseCode = "403",
+          description = "You are not authorized to access this resource"
       )
   })
   @PreAuthorize("hasRole('ADMIN')")
@@ -57,10 +61,17 @@ public class CarController {
       @ApiResponse(
           responseCode = "200",
           description = "Everything good. Cars are sent in response"
+      ),
+      @ApiResponse(
+          responseCode = "404",
+          description = "Car not found"
       )
   })
   public ResponseEntity<Car> getCar(@PathVariable(value = "id") int id) {
     Car car = carService.getCarById(id);
+    if (car == null) {
+      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
     return new ResponseEntity<>(car, HttpStatus.OK);
   }
 
@@ -84,6 +95,22 @@ public class CarController {
         dateRange.getTimeTo()
     );
     return new ResponseEntity<>(cars, HttpStatus.OK);
+  }
+
+  @GetMapping("/cars/top-rated-available")
+  @Operation(
+      summary = "Returns the top 4 cars with the highest average rating",
+      description = "Fetches the 4 cars with the highest average rating from the database"
+  )
+  @ApiResponses(value = {
+      @ApiResponse(
+          responseCode = "200",
+          description = "Successfully retrieved the top-rated cars"
+      )
+  })
+  public ResponseEntity<List<ObjectNode>> getTopRatedCars() {
+    List<ObjectNode> topRatedCars = carService.getTopRatedAvailableCars();
+    return new ResponseEntity<>(topRatedCars, HttpStatus.OK);
   }
 
   @GetMapping("/cars/provider")
