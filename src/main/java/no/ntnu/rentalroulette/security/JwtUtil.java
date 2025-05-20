@@ -18,7 +18,7 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class JwtUtil {
-  @Value("${jwt_secret_key}")
+  @Value("${JWT_SECRET_KEY}")
   private String secretKey;
   /**
    * Key inside JWT token where roles are stored.
