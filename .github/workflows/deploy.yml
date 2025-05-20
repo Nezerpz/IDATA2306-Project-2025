@@ -21,5 +21,4 @@ jobs:
       - name: Build the rental-roulette docker image
         run: |
           docker build -t rental-roulette . -f Containerfile --tag ghcr.io/nezerpz/rental-roulette:latest
-          docker run ghcr.io/nezerpz/rental-roulette:latest
           docker push ghcr.io/nezerpz/rental-roulette:latest
