@@ -126,12 +126,12 @@ public class UserService {
     User user = getUserById(id);
 
     if (user == null) {
-        throw new UserNotFoundException("User not found");
+      throw new UserNotFoundException("User not found");
     }
 
-    if (firstName != null && !firstName.isEmpty()) { 
-        user.setFirstName(firstName);
-        userRepository.save(user);
+    if (firstName != null && !firstName.isEmpty()) {
+      user.setFirstName(firstName);
+      userRepository.save(user);
     }
   }
 
@@ -140,12 +140,12 @@ public class UserService {
     User user = getUserById(id);
 
     if (user == null) {
-        throw new UserNotFoundException("User not found");
+      throw new UserNotFoundException("User not found");
     }
 
-    if (lastName != null && !lastName.isEmpty()) { 
-        user.setLastName(lastName);
-        userRepository.save(user);
+    if (lastName != null && !lastName.isEmpty()) {
+      user.setLastName(lastName);
+      userRepository.save(user);
     }
   }
 
@@ -154,12 +154,12 @@ public class UserService {
     User user = getUserById(id);
 
     if (user == null) {
-        throw new UserNotFoundException("User not found");
+      throw new UserNotFoundException("User not found");
     }
 
-    if (username != null && !username.isEmpty()) { 
-        user.setUsername(username);
-        userRepository.save(user);
+    if (username != null && !username.isEmpty()) {
+      user.setUsername(username);
+      userRepository.save(user);
     }
   }
 
@@ -168,12 +168,12 @@ public class UserService {
     User user = getUserById(id);
 
     if (user == null) {
-        throw new UserNotFoundException("User not found");
+      throw new UserNotFoundException("User not found");
     }
 
     if (email != null && !email.isEmpty()) {
-        user.setEmail(email);
-        userRepository.save(user);
+      user.setEmail(email);
+      userRepository.save(user);
     }
   }
 
@@ -182,11 +182,11 @@ public class UserService {
     User user = getUserById(id);
 
     if (user == null) {
-        throw new UserNotFoundException("User not found");
+      throw new UserNotFoundException("User not found");
     }
 
     if (password != null && !password.isEmpty()) {
-      user.setPassword(password);
+      user.setPassword(encoder.encode(password));
       userRepository.save(user);
     }
   }
