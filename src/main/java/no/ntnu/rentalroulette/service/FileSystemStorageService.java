@@ -45,7 +45,6 @@ public class FileSystemStorageService implements StorageService {
 
   @Override
   public Path store(MultipartFile file) {
-    System.out.println(rootLocation);
     Path destinationFile = null;
     try {
       if (file.isEmpty()) {
@@ -77,9 +76,7 @@ public class FileSystemStorageService implements StorageService {
       throw new StorageException("Failed to store file.", e);
     }
 
-    System.out.println("File stored at: " + destinationFile);
-    System.out.println(this.rootLocation.relativize(destinationFile));
-    return this.rootLocation.relativize(destinationFile);
+    return Paths.get("/").resolve(Paths.get("/usr/share/java").relativize(destinationFile));
   }
 
   @Override
