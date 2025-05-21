@@ -77,6 +77,8 @@ public class FileSystemStorageService implements StorageService {
       throw new StorageException("Failed to store file.", e);
     }
 
+    System.out.println("File stored at: " + destinationFile);
+    System.out.println(this.rootLocation.relativize(destinationFile));
     return this.rootLocation.relativize(destinationFile);
   }
 
