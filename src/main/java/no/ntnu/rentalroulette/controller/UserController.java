@@ -281,7 +281,7 @@ public class UserController {
 
   @DeleteMapping("/users/{id}")
   @Operation(
-      summary = "Update user password",
+      summary = "Delete a user",
       description = "Endpoint used by admins to delete a user (based on id)"
   )
   @ApiResponses(value = {
