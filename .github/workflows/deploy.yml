@@ -18,8 +18,8 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Build the rental-roulette Docker image
+      - name: Build the rental-roulette docker image
         run: |
-          docker build -t rental-roulette . -f Containerfile --tag ghcr.io/Nezerpz/rental-roulette:latest
-          docker run ghcr.io/Nezerpz/rental-roulette:latest
-          docker push ghcr.io/Nezerpz/rental-roulette:latest
+          docker build -t rental-roulette . -f Containerfile --tag ghcr.io/nezerpz/rental-roulette:latest
+          docker run ghcr.io/nezerpz/rental-roulette:latest
+          docker push ghcr.io/nezerpz/rental-roulette:latest
