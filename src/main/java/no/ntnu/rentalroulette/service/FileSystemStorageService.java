@@ -77,7 +77,7 @@ public class FileSystemStorageService implements StorageService {
       throw new StorageException("Failed to store file.", e);
     }
 
-    return destinationFile;
+    return this.rootLocation.relativize(destinationFile);
   }
 
   @Override
