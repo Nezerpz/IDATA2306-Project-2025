@@ -21,10 +21,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import no.ntnu.rentalroulette.security.AuthenticationRequest;
 import no.ntnu.rentalroulette.security.JwtUtil;
 import no.ntnu.rentalroulette.security.AccessUserService;
+import org.springframework.web.bind.annotation.RequestMapping;
+
 
 
 //TODO: Look into this https://stackoverflow.com/questions/27726066/jwt-refresh-token-flow
 @RestController
+@RequestMapping("/api")
 public class AuthenticationController {
   @Autowired
   private AuthenticationManager authenticationManager;
