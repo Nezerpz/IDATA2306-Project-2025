@@ -15,8 +15,11 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.nio.file.Path;
+import org.springframework.web.bind.annotation.RequestMapping;
+
 
 @Controller
+@RequestMapping("/api")
 public class UploadController {
 
   private final StorageService storageService;

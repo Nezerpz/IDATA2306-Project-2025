@@ -319,7 +319,7 @@
 					"response": []
 				},
 				{
-					"name": "UpdateAnOrder (Id: 1) (Admin or provider)",
+					"name": "UpdateAnOrder (Id: 9) (Admin or provider)",
 					"event": [
 						{
 							"listen": "test",
@@ -537,7 +537,7 @@
 		},
 		{
 			"key": "URL",
-			"value": "http://localhost:8080",
+			"value": "http://localhost:8080/api",
 			"type": "string"
 		}
 	]
