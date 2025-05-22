@@ -19,4 +19,5 @@ ARG BUILD_DIR
 ARG APPDIR=/usr/share/java
 WORKDIR ${APPDIR}
 COPY --from=build ${BUILD_DIR}/target/*.jar .
+COPY --from=build ${BUILD_DIR}/user-uploads ./user-uploads
 CMD java -jar rentalroulette-0.0.1-SNAPSHOT.jar
