@@ -73,7 +73,7 @@ public class AuthenticationController {
         userDetailsService.loadUserByUsername(authenticationRequest.getUsername());
 
     if (!userDetails.isAccountNonLocked()) {
-        return new ResponseEntity<>("Your account is suspended", HttpStatus.FORBIDDEN);
+      return new ResponseEntity<>("Your account is suspended", HttpStatus.FORBIDDEN);
     }
 
     final String jwtAccessToken = jwtUtil.generateAccessToken(userDetails);
@@ -82,7 +82,7 @@ public class AuthenticationController {
     // Set the refresh token as a cookie in the response
     Cookie refreshTokenCookie = new Cookie("refreshToken", jwtRefreshToken);
     refreshTokenCookie.setHttpOnly(true);
-    refreshTokenCookie.setSecure(true); // Set to true in production
+    refreshTokenCookie.setSecure(true);
     refreshTokenCookie.setPath("/");
     refreshTokenCookie.setMaxAge(7 * 24 * 60 * 60); // 7 days
     response.addCookie(refreshTokenCookie);

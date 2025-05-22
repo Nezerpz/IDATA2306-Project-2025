@@ -1,0 +1,1139 @@
+{
+	"info": {
+		"_postman_id": "274cef53-581e-4781-94fe-3a07d645349b",
+		"name": "Project Customer",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "41325806"
+	},
+	"item": [
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "Login as Customer",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"response is ok\",  ()=>{\r",
+									"    pm.response.to.have.status(200)\r",
+									"})\r",
+									"var jsonData = JSON.parse(responseBody)\r",
+									"console.log(jsonData)\r",
+									"pm.collectionVariables.set(\"JWT\", jsonData.accessToken);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\":\"ola.nordmann\",\r\n    \"password\":\"teletubbies\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/authenticate",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"authenticate"
+							]
+						},
+						"description": "Logs user into an customer account. JWT is saved as a collection variable."
+					},
+					"response": []
+				},
+				{
+					"name": "Refresh token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Successful if status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/refresh-token",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"refresh-token"
+							]
+						},
+						"description": "Refreshes the JWT when it is expired if the refresh token has not expired (7 days)"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "TestAPI",
+			"item": [
+				{
+					"name": "Test API",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Successful if status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/hello",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"hello"
+							]
+						},
+						"description": "Testing"
+					},
+					"response": []
+				}
+			],
+			"description": "An api used to test"
+		},
+		{
+			"name": "Car",
+			"item": [
+				{
+					"name": "GetAllCars (No admin)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Successful if status code is 403\", function () {\r",
+									"    pm.response.to.have.status(403);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "",
+								"value": "",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{URL}}/cars",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"cars"
+							]
+						},
+						"description": "Returns an 403."
+					},
+					"response": []
+				},
+				{
+					"name": "Get an existing car (id: 8)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Successful if status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/cars/8",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"cars",
+								"8"
+							]
+						},
+						"description": "Gets a car from the database with the id."
+					},
+					"response": []
+				},
+				{
+					"name": "Get an non existing car",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Successful if status code is 404\", function () {\r",
+									"    pm.response.to.have.status(404);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/cars/89999",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"cars",
+								"89999"
+							]
+						},
+						"description": "Returns 404 for a not found car."
+					},
+					"response": []
+				},
+				{
+					"name": "GetAllCarsBetweenCertainDates",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Successful if status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"dateFrom\": \"2025-05-19\", \r\n    \"dateTo\": \"2025-05-26\", \r\n    \"timeFrom\": \"08:00\", \r\n    \"timeTo\": \"17:00\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/cars",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"cars"
+							]
+						},
+						"description": "Gets a list of all cars in the database. That is not INUSE during this time period."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "BecomeProvider (Customer)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Successful if status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{JWT}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/become-provider",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"become-provider"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Feature",
+			"item": [
+				{
+					"name": "GetAllFeatures",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Successful if status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/features",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"features"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Enum",
+			"item": [
+				{
+					"name": "GetAllManufacturers",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Successful if status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/manufacturers",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"manufacturers"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetAllTransmissionTypes",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Successful if status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/transmission-types",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"transmission-types"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetAllFuelTypes",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Successful if status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/fuel-types",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"fuel-types"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetAllCarStatuses",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Successful if status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/car-status",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"car-status"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetAllUserTypes",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Successful if status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/user-types",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"user-types"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetAllOrderTypes",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Successful if status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/order-statuses",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"order-statuses"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Review",
+			"item": [
+				{
+					"name": "ReviewUser",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Successful if status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"rating\": 5,\r\n  \"review\": \"Amazing customer if i do say so myself\",\r\n  \"reviewed_user_id\": 1,\r\n  \"reviewing_user_id\": 9\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/review-user",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"review-user"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ReviewUserThatDoesNotExist",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Successful if status code is 404\", function () {\r",
+									"    pm.response.to.have.status(404);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"rating\": 5,\r\n  \"review\": \"Amazing customer if i do say so myself\",\r\n  \"reviewed_user_id\": 1,\r\n  \"reviewing_user_id\": 2000\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/review-user",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"review-user"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ReviewPersonAgain",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Successful if status code is 409\", function () {\r",
+									"    pm.response.to.have.status(409);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"rating\": 5,\r\n  \"review\": \"Amazing customer if i do say so myself\",\r\n  \"reviewed_user_id\": 1,\r\n  \"reviewing_user_id\": 9\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/review-user",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"review-user"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ReviewSelf",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Successful if status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"rating\": 5,\r\n  \"review\": \"Amazing customer if i do say so myself\",\r\n  \"reviewed_user_id\": 1,\r\n  \"reviewing_user_id\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/review-user",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"review-user"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ReviewCar",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Successful if status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"order_id\": 2,\r\n  \"rating\": 5,\r\n  \"review\": \"Excellent car if i do say so myself, which i do. :)\",\r\n  \"user_id\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/review-car",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"review-car"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ReviewCarThatDoesNotExist",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Successful if status code is 404\", function () {\r",
+									"    pm.response.to.have.status(404);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"order_id\": 2000,\r\n  \"rating\": 5,\r\n  \"review\": \"Excellent car if i do say so myself, which i do. :)\",\r\n  \"user_id\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/review-car",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"review-car"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ReviewCarAgain",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Successful if status code is 409\", function () {\r",
+									"    pm.response.to.have.status(409);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"order_id\": 2,\r\n  \"rating\": 5,\r\n  \"review\": \"Excellent car if i do say so myself, which i do. :)\",\r\n  \"user_id\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/review-car",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"review-car"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ReviewOwnCar",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Successful if status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"order_id\": 1,\r\n  \"rating\": 5,\r\n  \"review\": \"Excellent car if i do say so myself, which i do. :)\",\r\n  \"user_id\": 4\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/review-car",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"review-car"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetUsersReviews",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Successful if status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/review/user/1",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"review",
+								"user",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetNonExistingUsersReviews",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Successful if status code is 404\", function () {\r",
+									"    pm.response.to.have.status(404);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/review/user/89999",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"review",
+								"user",
+								"89999"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetCarReviews",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Successful if status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/review/car/1",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"review",
+								"car",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetNonExistingCarsReviews",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Successful if status code is 404\", function () {\r",
+									"    pm.response.to.have.status(404);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/review/car/89999",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"review",
+								"car",
+								"89999"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Order",
+			"item": [
+				{
+					"name": "OrderACarInUse/Order (Id: 1)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Successful if status code is 500\", function () {\r",
+									"    pm.response.to.have.status(500);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/order",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"order"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "OrderACar (Id: 1)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Successful if status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{JWT}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"id\": 1,\r\n  \"dateFrom\": \"2025-10-01\",\r\n  \"dateTo\": \"2025-10-07\",\r\n  \"timeFrom\": \"08:00\",\r\n  \"timeTo\": \"18:00\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/order",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"order"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "JWT",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "URL",
+			"value": "http://localhost:8080",
+			"type": "string"
+		}
+	]
+}
