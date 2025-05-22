@@ -16,8 +16,11 @@ import org.springframework.web.bind.annotation.RestController;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import org.springframework.web.bind.annotation.RequestMapping;
+
 
 @RestController
+@RequestMapping("/api")
 public class EnumController {
 
   @GetMapping("/manufacturers")
