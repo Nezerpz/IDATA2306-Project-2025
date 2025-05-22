@@ -73,7 +73,7 @@ public class AuthenticationController {
         userDetailsService.loadUserByUsername(authenticationRequest.getUsername());
 
     if (!userDetails.isAccountNonLocked()) {
-        return new ResponseEntity<>("Your account is suspended", HttpStatus.FORBIDDEN);
+      return new ResponseEntity<>("Your account is suspended", HttpStatus.FORBIDDEN);
     }
 
     final String jwtAccessToken = jwtUtil.generateAccessToken(userDetails);
@@ -113,7 +113,12 @@ public class AuthenticationController {
   public ResponseEntity<?> refreshAccessToken(HttpServletRequest request) {
     Cookie[] cookies = request.getCookies();
     if (cookies == null) {
+      System.out.println("No cookies found");
       return new ResponseEntity<>("No cookies found", HttpStatus.UNAUTHORIZED);
+    }
+
+    for (Cookie cookie : cookies) {
+      System.out.println("Cookie: " + cookie.getName() + " = " + cookie.getValue());
     }
 
     String refreshToken = null;
@@ -125,12 +130,14 @@ public class AuthenticationController {
     }
 
     if (refreshToken == null) {
+      System.out.println("Refresh token not found");
       return new ResponseEntity<>("Refresh token not found", HttpStatus.UNAUTHORIZED);
     }
 
     String username = jwtUtil.extractUsername(refreshToken);
     UserDetails userDetails = userDetailsService.loadUserByUsername(username);
     if (!jwtUtil.validateToken(refreshToken, userDetails)) {
+      System.out.println("Invalid refresh token");
       return new ResponseEntity<>("Invalid refresh token", HttpStatus.FORBIDDEN);
     }
 
