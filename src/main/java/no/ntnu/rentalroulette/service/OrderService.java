@@ -2,8 +2,10 @@ package no.ntnu.rentalroulette.service;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import jakarta.transaction.Transactional;
+import java.time.Clock;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
@@ -138,7 +140,7 @@ public class OrderService {
 
     if (orderStatus == OrderStatus.COMPLETED || orderStatus == OrderStatus.CANCELLED) {
       LocalDate nowDate = LocalDate.now();
-      LocalTime nowTime = LocalTime.now();
+      LocalTime nowTime = LocalTime.now(Clock.system(ZoneId.of("Europe/Oslo")));
       if (existingOrder.getDateTo().isAfter(nowDate) ||
           (existingOrder.getDateTo().isEqual(nowDate) &&
               existingOrder.getTimeTo().isAfter(nowTime))) {

@@ -76,7 +76,8 @@ public class FileSystemStorageService implements StorageService {
       throw new StorageException("Failed to store file.", e);
     }
 
-    return Paths.get("/").resolve(Paths.get("/usr/share/java").relativize(destinationFile));
+    return Paths.get("/user-uploads/")
+        .resolve(Paths.get("/usr/share/java").relativize(destinationFile));
   }
 
   @Override

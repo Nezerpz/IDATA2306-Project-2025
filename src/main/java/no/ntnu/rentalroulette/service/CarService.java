@@ -92,11 +92,14 @@ public class CarService {
   public List<ObjectNode> getAllCarsByDate(LocalDate startDate, LocalDate endDate,
                                            LocalTime startTime,
                                            LocalTime endTime) {
-
     return getCarsWithAverageRating(
-        carRepository.findAvailableCars(startDate, endDate, startTime, endTime).stream().filter(
-            car -> car.getCarStatus() != CarStatus.UNAVAILABLE
-        ).toList());
+        carRepository.findAll().stream()
+            .filter(car -> orderRepository.findAllByCarId(car.getId()).stream()
+                .noneMatch(order -> order.getDateTo().isAfter(startDate) ||
+                    (order.getDateTo().isEqual(startDate) &&
+                        order.getTimeTo().isAfter(startTime))))
+            .filter(car -> car.getCarStatus() != CarStatus.UNAVAILABLE).toList()
+    );
   }
 
 
@@ -119,9 +122,9 @@ public class CarService {
   }
 
   /**
-   * Get the 4 heighest rated cars.
+   * Get the three highest rated cars.
    *
-   * @return a list of the 4 highest rated cars
+   * @return a list of the three highest rated cars
    */
   public List<ObjectNode> getTopRatedAvailableCars() {
     return getCarsWithAverageRating(
@@ -229,11 +232,8 @@ public class CarService {
       feature.getCars().remove(car);
     }
     featureRepository.saveAll(car.getFeatures());
-
     reviewService.deleteCarReviewsByCarId(car.getId());
-
     carRepository.save(car);
-
     carRepository.deleteById(car.getId());
   }
 }

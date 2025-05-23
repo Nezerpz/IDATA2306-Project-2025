@@ -50,7 +50,8 @@ public class UploadController {
   ) {
     try {
       Path filePath = storageService.store(file);
-      return new ResponseEntity<String>(filePath.toString(), HttpStatus.OK);
+      return new ResponseEntity<String>("/user-uploads/" + filePath.getFileName().toString(),
+          HttpStatus.OK);
     } catch (StorageException e) {
       System.out.println(e.getMessage());
       return new ResponseEntity<String>(e.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
