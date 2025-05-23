@@ -90,11 +90,17 @@ public class Order {
 
   @JsonProperty("customerId")
   public int getCustomerId() {
+    if (customer == null) {
+      return -1;
+    }
     return customer.getId();
   }
 
   @JsonProperty("providerId")
   public int getProviderId() {
+    if (provider == null) {
+      return -1;
+    }
     return provider.getId();
   }
 
