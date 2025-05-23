@@ -138,7 +138,7 @@ public class OrderService {
 
     if (orderStatus == OrderStatus.COMPLETED || orderStatus == OrderStatus.CANCELLED) {
       LocalDate nowDate = LocalDate.now();
-      LocalTime nowTime = LocalTime.now();
+      LocalTime nowTime = LocalTime.now(Clock.system(ZoneId.of("Europe/Oslo")));
       if (existingOrder.getDateTo().isAfter(nowDate) ||
           (existingOrder.getDateTo().isEqual(nowDate) &&
               existingOrder.getTimeTo().isAfter(nowTime))) {
